@@ -12,7 +12,6 @@ This section covers what is possible with the current UI and also documents the 
 - [Using the DefaultTHEOplayerUi](#using-the-defaulttheoplayerui)
 - [Creating your own custom UI](#creating-your-own-custom-ui)
 - [Available components](#available-components)
-- [Known Limitations](#known-limitations)
 
 ### Prerequisites
 
@@ -117,11 +116,3 @@ export default function App() {
   );
 }
 ```
-
-### Known Limitations
-
-With the UI come a number of limitations that we are currently working on, and should be tackled in future versions:
-
-- Support for TV platforms (remote control navigation)
-- Ad support
-- TextTrack styling

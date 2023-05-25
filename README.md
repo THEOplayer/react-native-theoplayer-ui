@@ -17,6 +17,11 @@ This projects falls under the license as defined in https://github.com/THEOplaye
 
 The `@theoplayer/react-native-ui` package provides a collection of UI components
 for `react-native-theoplayer`, the official THEOplayer React Native video player.
+The following platforms are supported:
+
+- Android, Android TV & FireTV
+- iOS & tvOS (Apple TV)
+- Web
 
 This document covers how to add a UI to your `THEOplayerView` component. For information on
 how to include `react-native-theoplayer` in your React Native app, we refer to the
@@ -36,4 +41,10 @@ React Native works to speed up the way of working with THEOplayer React Native S
 
 ## Getting Started
 
+This section starts with adding the `@theoplayer/react-native-ui` as a dependency to your project,
+after which a basic UI is built.
+Finally, some known limitations and issues are listed.
+
+- [Installation](./doc/installation.md)
 - [Getting started with the UI](./doc/ui.md)
+- [Limitations and known issues](./doc/limitations.md)
