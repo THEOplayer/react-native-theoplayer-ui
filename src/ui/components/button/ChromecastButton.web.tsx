@@ -1,4 +1,5 @@
-import { CastEvent, CastEventType, CastState, PlayerEventType, ActionButton } from 'react-native-theoplayer';
+import { CastEvent, CastEventType, CastState, PlayerEventType } from 'react-native-theoplayer';
+import { ActionButton } from '@theoplayer/react-native-ui';
 import React, { PureComponent } from 'react';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { ChromecastSvg } from './svg/ChromecastSvg';
