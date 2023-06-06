@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from 'react';
-import { FULLSCREEN_CENTER_STYLE, PlayerConfiguration, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
+import { PlayerConfiguration, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 import { SeekBar } from './components/seekbar/SeekBar';
 import { AirplayButton } from './components/button/AirplayButton';
 import { CenteredControlBar, ControlBar } from './components/controlbar/ControlBar';
@@ -16,6 +16,7 @@ import { SkipButton } from './components/button/SkipButton';
 import { Spacer } from './components/controlbar/Spacer';
 import { ChromecastButton } from './components/button/ChromecastButton';
 import { CenteredDelayedActivityIndicator } from './components/activityindicator/CenteredDelayedActivityIndicator';
+import { FULLSCREEN_CENTER_STYLE } from './components/uicontroller/UiContainer';
 
 export interface THEOplayerDefaultUiProps {
   /**

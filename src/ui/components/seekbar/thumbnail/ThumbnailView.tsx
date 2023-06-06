@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Image, StyleProp, View, ViewStyle } from 'react-native';
 import type { TextTrackCue } from 'react-native-theoplayer';
-import { isThumbnailTrack, StaticTimeLabel, TextTrack } from 'react-native-theoplayer';
+import { isThumbnailTrack, TextTrack } from 'react-native-theoplayer';
+import { StaticTimeLabel } from '@theoplayer/react-native-ui';
 import type { Thumbnail } from './Thumbnail';
 import { isTileMapThumbnail } from './Thumbnail';
 import { URL as URLPolyfill } from './Urlpolyfill';
