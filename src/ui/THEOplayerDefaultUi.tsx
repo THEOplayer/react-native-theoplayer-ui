@@ -52,7 +52,7 @@ export interface THEOplayerDefaultUiProps {
 export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
   const { theme, config, topSlot, bottomSlot, style } = props;
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
-  const chromeless = config?.chromeless ?? false;
+  const chromeless = config?.chromeless ?? true;
 
   const onPlayerReady = (player: THEOplayer) => {
     setPlayer(player);
