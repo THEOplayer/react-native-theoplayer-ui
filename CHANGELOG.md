@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed an issue where components were still tappable after the UI had faded out.
+
 ### Changed
 
 - Assume `PlayerConfiguration.chromeless` to be `true` if not specified.
