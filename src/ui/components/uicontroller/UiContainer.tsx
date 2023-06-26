@@ -308,7 +308,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
 
   render() {
     const { player, theme, top, center, bottom, children, style, topStyle, centerStyle, bottomStyle, behind } = this.props;
-    const { fadeAnimation, currentMenu, error, firstPlay, pip } = this.state;
+    const { fadeAnimation, currentMenu, error, firstPlay, pip, showing } = this.state;
 
     if (error !== undefined) {
       return <ErrorDisplay error={error} />;
@@ -328,6 +328,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
         <Animated.View
           style={[combinedContainerStyle, { opacity: fadeAnimation }]}
           onTouchStart={this.onUserAction_}
+          pointerEvents={showing ? 'auto' : 'box-only'}
           {...(Platform.OS === 'web' ? { onMouseMove: this.onUserAction_, onMouseLeave: this.doFadeOut_ } : {})}>
           <>
             {/* The UI background */}

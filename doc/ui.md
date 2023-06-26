@@ -27,7 +27,7 @@ npm install \
 
 The `THEOplayerDefaultUi` can be used to provide basic playback controls to the viewer.
 As the default UI also includes Chromecast & Airplay support, make sure to configure these first as explained in the
-[cast documentation](./cast.md).
+[cast documentation](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/cast.md).
 
 ```tsx
 const App = () => {
@@ -61,9 +61,6 @@ const App = () => {
 };
 ```
 
-This use-case is implemented in the [example app](./example-app.md) with the
-custom [SourceMenuButton](../example/src/custom/SourceMenuButton.tsx).
-
 ### Available components
 
 The available UI components with their documentation can be found [here](../src/ui).
@@ -74,7 +71,11 @@ All components inside the `DefaultTHEOplayerUi` are available through the `react
 be use these to create your own custom layout. Since `DefaultTHEOplayerUi` is our version of a "custom" UI, you could
 use this as a starting point for your own custom layout.
 
-This example shows a UI layout with only basic playback controls:
+This use-case is implemented in the [example app](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/example-app.md)
+that is included in the `react-native-theoplayer` repository, which adds a
+custom [SourceMenuButton](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/example/src/custom/SourceMenuButton.tsx).
+
+The following example shows a UI layout with only basic playback controls:
 
 ```tsx
 export default function App() {
