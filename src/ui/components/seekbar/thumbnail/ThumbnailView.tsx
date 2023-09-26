@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Image, StyleProp, View, ViewStyle } from 'react-native';
+import type { ImageErrorEventData, NativeSyntheticEvent, StyleProp, ViewStyle } from "react-native";
+import { Image, View } from 'react-native';
 import type { TextTrackCue } from 'react-native-theoplayer';
 import { isThumbnailTrack, TextTrack } from 'react-native-theoplayer';
 import { StaticTimeLabel } from '@theoplayer/react-native-ui';
@@ -166,7 +167,7 @@ export class ThumbnailView extends PureComponent<ThumbnailViewProps, ThumbnailVi
     }
   };
 
-  private onImageLoadError = (event: any) => {
+  private onImageLoadError = (event: NativeSyntheticEvent<ImageErrorEventData>) => {
     console.error(TAG, 'Failed to load thumbnail url:', event.nativeEvent.error);
   };
 
