@@ -1,5 +1,10 @@
 package com.example;
 
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.media.AudioManager;
+import android.os.Bundle;
+
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
@@ -28,5 +33,19 @@ public class MainActivity extends ReactActivity {
         getMainComponentName(),
         // If you opted-in for the New Architecture, we enable the Fabric Renderer.
         DefaultNewArchitectureEntryPoint.getFabricEnabled());
+  }
+
+  @Override
+  public void onUserLeaveHint () {
+    this.sendBroadcast(new Intent("onUserLeaveHint"));
+    super.onUserLeaveHint();
+  }
+
+  @Override
+  public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
+    super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+    Intent intent = new Intent("onPictureInPictureModeChanged");
+    intent.putExtra("isInPictureInPictureMode", isInPictureInPictureMode);
+    this.sendBroadcast(intent);
   }
 }
