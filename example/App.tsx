@@ -1,118 +1,68 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import * as React from 'react';
+import {StyleSheet, View} from 'react-native';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+  PlayerEventType,
+  THEOplayer,
+  THEOplayerView,
+} from 'react-native-theoplayer';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const playerConfig = {
+  license: 'YOUR_LICENSE_HERE',
+};
+const onPlayerReady = (player: THEOplayer) => {
+  // optional debug logs
+  player.addEventListener(PlayerEventType.SOURCE_CHANGE, console.log);
+  player.addEventListener(PlayerEventType.LOADED_DATA, console.log);
+  player.addEventListener(PlayerEventType.LOADED_METADATA, console.log);
+  player.addEventListener(PlayerEventType.READYSTATE_CHANGE, console.log);
+  player.addEventListener(PlayerEventType.PLAY, console.log);
+  player.addEventListener(PlayerEventType.PLAYING, console.log);
+  player.addEventListener(PlayerEventType.PAUSE, console.log);
+  player.addEventListener(PlayerEventType.SEEKING, console.log);
+  player.addEventListener(PlayerEventType.SEEKED, console.log);
+  player.addEventListener(PlayerEventType.ENDED, console.log);
+  player.source = {
+    sources: {
+      src: 'https://cdn.theoplayer.com/video/adultswim/clip.m3u8',
+      type: 'application/x-mpegurl',
+    },
+    poster: 'https://cdn.theoplayer.com/video/adultswim/poster.jpg',
+    metadata: {
+      title: 'The Venture Bros',
+      subtitle: 'Adult Swim',
+      album: 'React-Native THEOplayer demos',
+      displayIconUri: 'https://cdn.theoplayer.com/video/adultswim/poster.jpg',
+      artist: 'THEOplayer',
+      type: 'tv-show',
+      releaseDate: 'november 29th',
+      releaseYear: 1997,
+    },
+  };
+  player.muted = true;
+  player.autoplay = true;
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  player.backgroundAudioConfiguration = {enabled: true};
+  player.pipConfiguration = {startsAutomatically: true};
+  console.log('THEOplayer is ready:', player.version);
+};
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+export default function App() {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={styles.container}>
+      <THEOplayerView
+        style={StyleSheet.absoluteFill}
+        config={playerConfig}
+        onPlayerReady={onPlayerReady}
+      />
     </View>
   );
 }
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
-
-export default App;
