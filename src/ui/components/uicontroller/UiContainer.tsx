@@ -221,7 +221,13 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
   };
 
   private onPresentationModeChange = (event: PresentationModeChangeEvent) => {
-    this.setState({ pip: event.presentationMode === PresentationMode.pip });
+    this.setState({ pip: event.presentationMode === PresentationMode.pip }, () => {
+      if (!this.state.pip) {
+        // Show UI when exiting PIP
+        this.stopAnimationsAndShowUi_();
+        this.resumeAnimationsIfPossible_();
+      }
+    });
   };
 
   get buttonsEnabled_(): boolean {
