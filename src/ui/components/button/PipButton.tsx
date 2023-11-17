@@ -36,11 +36,12 @@ export class PipButton extends PureComponent<unknown, PipButtonState> {
   };
 
   private togglePip = () => {
-    const player = (this.context as UiContext).player;
+    const context = this.context as UiContext;
+    const player = context.player;
     switch (player.presentationMode) {
       case 'inline':
       case 'fullscreen':
-        player.presentationMode = PresentationMode.pip;
+        context.ui.enterPip_();
         break;
       case 'picture-in-picture':
         player.presentationMode = PresentationMode.inline;

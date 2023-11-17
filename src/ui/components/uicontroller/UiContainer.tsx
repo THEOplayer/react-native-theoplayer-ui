@@ -258,6 +258,22 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     this.resumeAnimationsIfPossible_();
   };
 
+  public enterPip_ = () => {
+    // Make sure the UI is disabled first before entering PIP
+    clearTimeout(this._currentFadeOutTimeout);
+    const { fadeAnimation } = this.state;
+    this.setState({ buttonsEnabled: false });
+    Animated.timing(fadeAnimation, {
+      useNativeDriver: true,
+      toValue: 0,
+      duration: 0,
+    }).start(() => {
+      this.setState({ showing: false }, () => {
+        this.props.player.presentationMode = PresentationMode.pip;
+      });
+    });
+  };
+
   private stopAnimationsAndShowUi_() {
     clearTimeout(this._currentFadeOutTimeout);
     this._currentFadeOutTimeout = undefined;

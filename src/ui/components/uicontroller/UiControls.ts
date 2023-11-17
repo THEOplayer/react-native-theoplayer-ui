@@ -28,4 +28,9 @@ export interface UiControls {
    * Closes the current menu. If this was a sub-menu, the parent menu will re-open.
    */
   closeCurrentMenu_: () => void;
+
+  /*
+   * Enter picture-in-picture mode.
+   */
+  enterPip_: () => void;
 }
