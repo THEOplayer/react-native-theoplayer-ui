@@ -254,8 +254,9 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
   public closeCurrentMenu_ = () => {
     this._menus.pop();
     const nextMenu = this._menus.length > 0 ? this._menus[this._menus.length - 1] : undefined;
-    this.setState({ currentMenu: nextMenu?.() });
-    this.resumeAnimationsIfPossible_();
+    this.setState({ currentMenu: nextMenu?.() }, () => {
+      this.resumeAnimationsIfPossible_();
+    });
   };
 
   public enterPip_ = () => {
