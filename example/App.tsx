@@ -30,7 +30,7 @@ import {Platform, StyleSheet, View, ViewStyle} from 'react-native';
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   // Without a license, only demo sources hosted on '*.theoplayer.com' domains can be played.
-  license: 'YOUR_LICENSE_HERE',
+  license: undefined, // insert your license here
   chromeless: true,
   libraryLocation: 'theoplayer',
   mediaControl: {
