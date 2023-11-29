@@ -221,7 +221,13 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
   };
 
   private onPresentationModeChange = (event: PresentationModeChangeEvent) => {
-    this.setState({ pip: event.presentationMode === PresentationMode.pip });
+    this.setState({ pip: event.presentationMode === PresentationMode.pip }, () => {
+      if (!this.state.pip) {
+        // Show UI when exiting PIP
+        this.stopAnimationsAndShowUi_();
+        this.resumeAnimationsIfPossible_();
+      }
+    });
   };
 
   get buttonsEnabled_(): boolean {
@@ -248,8 +254,25 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
   public closeCurrentMenu_ = () => {
     this._menus.pop();
     const nextMenu = this._menus.length > 0 ? this._menus[this._menus.length - 1] : undefined;
-    this.setState({ currentMenu: nextMenu?.() });
-    this.resumeAnimationsIfPossible_();
+    this.setState({ currentMenu: nextMenu?.() }, () => {
+      this.resumeAnimationsIfPossible_();
+    });
+  };
+
+  public enterPip_ = () => {
+    // Make sure the UI is disabled first before entering PIP
+    clearTimeout(this._currentFadeOutTimeout);
+    const { fadeAnimation } = this.state;
+    this.setState({ buttonsEnabled: false });
+    Animated.timing(fadeAnimation, {
+      useNativeDriver: true,
+      toValue: 0,
+      duration: 0,
+    }).start(() => {
+      this.setState({ showing: false }, () => {
+        this.props.player.presentationMode = PresentationMode.pip;
+      });
+    });
   };
 
   private stopAnimationsAndShowUi_() {
