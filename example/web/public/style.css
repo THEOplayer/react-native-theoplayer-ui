@@ -1,0 +1,17 @@
+h1,
+h5,
+span {
+    color: #ffffff;
+}
+
+body {
+    background-color: #373a3c;
+}
+
+.container {
+  flex: 1
+}
+
+.theoplayer-container {
+  z-index: 0;
+}
