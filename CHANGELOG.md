@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 23-12-01
+
+### Fixed
+
+- Fixed several transitioning issues related to PiP state changes and closing menus.
+
 ## [0.2.0] - 23-06-26
 
 ### Fixed
