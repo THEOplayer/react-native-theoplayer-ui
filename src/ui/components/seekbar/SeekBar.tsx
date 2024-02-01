@@ -71,12 +71,12 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
   }
 
   componentWillUnmount() {
-    const context = this.context as UiContext;
-    context.player.removeEventListener(PlayerEventType.LOADED_METADATA, this._onLoadedMetadata);
-    context.player.removeEventListener(PlayerEventType.DURATION_CHANGE, this._onDurationChange);
-    context.player.removeEventListener(PlayerEventType.TIME_UPDATE, this._onTimeUpdate);
-    context.player.removeEventListener(PlayerEventType.PROGRESS, this._onProgress);
-    context.player.removeEventListener(PlayerEventType.AD_EVENT, this._onAdEvent);
+    const player = (this.context as UiContext).player;
+    player.removeEventListener(PlayerEventType.LOADED_METADATA, this._onLoadedMetadata);
+    player.removeEventListener(PlayerEventType.DURATION_CHANGE, this._onDurationChange);
+    player.removeEventListener(PlayerEventType.TIME_UPDATE, this._onTimeUpdate);
+    player.removeEventListener(PlayerEventType.PROGRESS, this._onProgress);
+    player.removeEventListener(PlayerEventType.AD_EVENT, this._onAdEvent);
     clearTimeout(this._seekBlockingTimeout);
     clearTimeout(this._clearIsScrubbingTimout);
   }
