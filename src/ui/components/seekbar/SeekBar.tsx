@@ -1,6 +1,15 @@
 import React, { PureComponent } from 'react';
 import { LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { DurationChangeEvent, LoadedMetadataEvent, PlayerEventType, ProgressEvent, TimeRange, TimeUpdateEvent } from 'react-native-theoplayer';
+import {
+  AdEvent,
+  AdEventType,
+  DurationChangeEvent,
+  LoadedMetadataEvent,
+  PlayerEventType,
+  ProgressEvent,
+  TimeRange,
+  TimeUpdateEvent,
+} from 'react-native-theoplayer';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import Slider from '@react-native-community/slider';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
@@ -20,6 +29,7 @@ interface SeekBarState {
   duration: number;
   sliderTime: number;
   width: number;
+  playingAd: boolean;
 }
 
 /**
@@ -34,6 +44,7 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
     seekable: [],
     pausedDueToScrubbing: false,
     width: 0,
+    playingAd: false,
   };
 
   private _seekBlockingTimeout: NodeJS.Timeout | undefined;
@@ -50,6 +61,7 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
     player.addEventListener(PlayerEventType.DURATION_CHANGE, this._onDurationChange);
     player.addEventListener(PlayerEventType.TIME_UPDATE, this._onTimeUpdate);
     player.addEventListener(PlayerEventType.PROGRESS, this._onProgress);
+    player.addEventListener(PlayerEventType.AD_EVENT, this._onAdEvent);
     this.setState({
       ...SeekBar.initialState,
       sliderTime: player.currentTime,
@@ -64,6 +76,7 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
     context.player.removeEventListener(PlayerEventType.DURATION_CHANGE, this._onDurationChange);
     context.player.removeEventListener(PlayerEventType.TIME_UPDATE, this._onTimeUpdate);
     context.player.removeEventListener(PlayerEventType.PROGRESS, this._onProgress);
+    context.player.removeEventListener(PlayerEventType.AD_EVENT, this._onAdEvent);
     clearTimeout(this._seekBlockingTimeout);
     clearTimeout(this._clearIsScrubbingTimout);
   }
@@ -76,6 +89,14 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
   private _onLoadedMetadata = (event: LoadedMetadataEvent) => this.setState({ duration: event.duration });
   private _onDurationChange = (event: DurationChangeEvent) => this.setState({ duration: event.duration });
   private _onProgress = (event: ProgressEvent) => this.setState({ seekable: event.seekable });
+
+  private _onAdEvent = (event: AdEvent) => {
+    if (event.subType === AdEventType.AD_BREAK_BEGIN) {
+      this.setState({ playingAd: true });
+    } else if (event.subType === AdEventType.AD_BREAK_END) {
+      this.setState({ playingAd: false });
+    }
+  };
 
   private _onSlidingStart = (value: number) => {
     this.setState({ sliderTime: value });
@@ -138,7 +159,7 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
   };
 
   render() {
-    const { seekable, sliderTime, duration, isSeeking, width } = this.state;
+    const { seekable, sliderTime, duration, isSeeking, width, playingAd } = this.state;
     const { style } = this.props;
     const seekableStart = seekable.length > 0 ? seekable[0].start : 0;
     const seekableEnd = seekable.length > 0 ? seekable[0].end : 0;
@@ -154,10 +175,10 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
               <SingleThumbnailView seekableStart={seekableStart} seekableEnd={seekableEnd} currentTime={sliderTime} seekBarWidth={width} />
             )}
             <Slider
-              disabled={!(duration > 0) && seekable.length > 0}
+              disabled={(!(duration > 0) && seekable.length > 0) || playingAd}
               style={[StyleSheet.absoluteFill, style]}
               minimumValue={seekableStart}
-              maximumValue={seekableEnd}
+              maximumValue={playingAd ? duration : seekableEnd}
               step={1000}
               onSlidingStart={this._onSlidingStart}
               onValueChange={this._onValueChange}
