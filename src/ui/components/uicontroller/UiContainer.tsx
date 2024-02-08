@@ -1,8 +1,8 @@
 import React, { PureComponent, ReactNode } from 'react';
 import { Animated, Platform, StyleProp, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
-import type { PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
-import { CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
+import type { AdEvent, PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
+import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
@@ -123,6 +123,7 @@ interface UiContainerState {
   paused: boolean;
   casting: boolean;
   pip: boolean;
+  adInProgress: boolean;
 }
 
 /**
@@ -146,6 +147,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     paused: true,
     casting: false,
     pip: false,
+    adInProgress: false,
   };
 
   constructor(props: UiContainerProps) {
@@ -165,6 +167,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     player.addEventListener(PlayerEventType.CAST_EVENT, this.onCastEvent);
     player.addEventListener(PlayerEventType.ENDED, this.onEnded);
     player.addEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
+    player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
     if (player.source !== undefined && player.currentTime !== 0) {
       this.onPlay();
     }
@@ -183,6 +186,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     player.removeEventListener(PlayerEventType.CAST_EVENT, this.onCastEvent);
     player.removeEventListener(PlayerEventType.ENDED, this.onEnded);
     player.removeEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
+    player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
     clearTimeout(this._currentFadeOutTimeout);
   }
 
@@ -228,6 +232,15 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
         this.resumeAnimationsIfPossible_();
       }
     });
+  };
+
+  private onAdEvent = (event: AdEvent) => {
+    const type = event.subType;
+    if (type === AdEventType.AD_BREAK_BEGIN) {
+      this.setState({ adInProgress: true });
+    } else if (type === AdEventType.AD_BREAK_END) {
+      this.setState({ adInProgress: false });
+    }
   };
 
   get buttonsEnabled_(): boolean {
@@ -331,7 +344,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
 
   render() {
     const { player, theme, top, center, bottom, children, style, topStyle, centerStyle, bottomStyle, behind } = this.props;
-    const { fadeAnimation, currentMenu, error, firstPlay, pip, showing } = this.state;
+    const { fadeAnimation, currentMenu, error, firstPlay, pip, showing, adInProgress } = this.state;
 
     if (error !== undefined) {
       return <ErrorDisplay error={error} />;
@@ -344,7 +357,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     const combinedContainerStyle = [UI_CONTAINER_STYLE, style];
 
     return (
-      <PlayerContext.Provider value={{ player, style: theme, ui: this }}>
+      <PlayerContext.Provider value={{ player, style: theme, ui: this, adInProgress }}>
         {/* The View behind the UI, that is always visible.*/}
         <View style={FULLSCREEN_CENTER_STYLE}>{behind}</View>
         {/* The Animated.View is for showing and hiding the UI*/}
