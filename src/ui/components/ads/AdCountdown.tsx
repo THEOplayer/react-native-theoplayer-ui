@@ -25,8 +25,13 @@ export class AdCountdown extends PureComponent<AdCountdownProps, AdCountdownStat
   }
 
   componentDidMount() {
-    const player = (this.context as UiContext).player;
+    const context = this.context as UiContext;
+    const player = context.player;
     player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
+    if (context.adInProgress) {
+      void this.update();
+      player.addEventListener(PlayerEventType.TIME_UPDATE, this.onTimeUpdateEvent);
+    }
   }
 
   componentWillUnmount() {
