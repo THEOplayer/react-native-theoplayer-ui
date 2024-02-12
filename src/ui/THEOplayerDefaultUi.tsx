@@ -10,13 +10,12 @@ import { MuteButton } from './components/button/MuteButton';
 import { CastMessage } from './components/message/CastMessage';
 import { DEFAULT_THEOPLAYER_THEME, THEOplayerTheme } from './THEOplayerTheme';
 import { Platform, StyleProp, View, ViewStyle } from 'react-native';
-import { UiContainer } from './components/uicontroller/UiContainer';
+import { FULLSCREEN_CENTER_STYLE, UiContainer } from './components/uicontroller/UiContainer';
 import { PlayButton } from './components/button/PlayButton';
 import { SkipButton } from './components/button/SkipButton';
 import { Spacer } from './components/controlbar/Spacer';
 import { ChromecastButton } from './components/button/ChromecastButton';
 import { CenteredDelayedActivityIndicator } from './components/activityindicator/CenteredDelayedActivityIndicator';
-import { FULLSCREEN_CENTER_STYLE } from './components/uicontroller/UiContainer';
 
 export interface THEOplayerDefaultUiProps {
   /**
