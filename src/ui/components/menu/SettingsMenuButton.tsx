@@ -14,7 +14,7 @@ export interface SettingsMenuButtonProps {
   /**
    * The icon component used in the button.
    */
-  icon?: ReactNode
+  icon?: ReactNode;
 }
 
 /**

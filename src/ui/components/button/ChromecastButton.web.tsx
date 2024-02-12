@@ -13,7 +13,7 @@ interface CastButtonProps {
   /**
    * The icon component used in the button. Only overrideable for web.
    */
-  icon?: ReactNode
+  icon?: ReactNode;
 }
 
 export function isConnected(state: CastState | undefined): boolean {

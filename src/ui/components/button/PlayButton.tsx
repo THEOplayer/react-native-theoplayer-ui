@@ -16,7 +16,7 @@ interface PlayButtonProps {
   /**
    * The icon components used in the button.
    */
-  icon?: { play: ReactNode, pause: ReactNode, replay: ReactNode }
+  icon?: { play: ReactNode; pause: ReactNode; replay: ReactNode };
 }
 
 interface PlayButtonState {
@@ -102,13 +102,11 @@ export class PlayButton extends PureComponent<PlayButtonProps, PlayButtonState> 
     const { paused, ended } = this.state;
     const { style, icon } = this.props;
 
-    const playSvg: ReactNode = icon?.play ?? <PlaySvg/>;
-    const pauseSvg: ReactNode = icon?.pause ?? <PauseSvg/>;
-    const replaySvg: ReactNode = icon?.replay ?? <ReplaySvg/>;
+    const playSvg: ReactNode = icon?.play ?? <PlaySvg />;
+    const pauseSvg: ReactNode = icon?.pause ?? <PauseSvg />;
+    const replaySvg: ReactNode = icon?.replay ?? <ReplaySvg />;
 
-    return (
-      <ActionButton style={style} touchable={true} svg={ended ? replaySvg : paused ? playSvg : pauseSvg} onPress={this.togglePlayPause}/>
-    );
+    return <ActionButton style={style} touchable={true} svg={ended ? replaySvg : paused ? playSvg : pauseSvg} onPress={this.togglePlayPause} />;
   }
 }
 

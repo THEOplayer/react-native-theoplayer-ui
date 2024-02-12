@@ -24,7 +24,7 @@ interface SkipButtonProps {
   /**
    * The icon components used in the button.
    */
-  icon?: { forward: ReactNode, backward: ReactNode }
+  icon?: { forward: ReactNode; backward: ReactNode };
 }
 
 interface SkipButtonState {
@@ -92,8 +92,8 @@ export class SkipButton extends PureComponent<SkipButtonProps, SkipButtonState> 
       outputRange: skip >= 0 ? ['0deg', '360deg'] : ['360deg', '0deg'],
     });
 
-    const forwardSvg: ReactNode = icon?.forward ?? <ForwardSvg />
-    const backwardSvg: ReactNode = icon?.backward ?? <BackwardSvg />
+    const forwardSvg: ReactNode = icon?.forward ?? <ForwardSvg />;
+    const backwardSvg: ReactNode = icon?.backward ?? <BackwardSvg />;
 
     return (
       <>

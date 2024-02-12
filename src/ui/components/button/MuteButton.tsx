@@ -14,7 +14,7 @@ interface MuteButtonProps {
   /**
    * The icon components used in the button.
    */
-  icon?: { volumeUp: ReactNode, volumeOff: ReactNode }
+  icon?: { volumeUp: ReactNode; volumeOff: ReactNode };
 }
 
 /**
@@ -53,8 +53,8 @@ export class MuteButton extends PureComponent<MuteButtonProps, MuteButtonState> 
     if (Platform.isTV) {
       return <></>;
     }
-    const volumeUpSvg: ReactNode = icon?.volumeUp ?? <VolumeUpSvg />
-    const volumeOffSvg: ReactNode = icon?.volumeOff ?? <VolumeOffSvg />
+    const volumeUpSvg: ReactNode = icon?.volumeUp ?? <VolumeUpSvg />;
+    const volumeOffSvg: ReactNode = icon?.volumeOff ?? <VolumeOffSvg />;
     return <ActionButton svg={muted ? volumeOffSvg : volumeUpSvg} onPress={this.toggleMuted} touchable={true} />;
   }
 }

@@ -15,7 +15,7 @@ interface FullscreenProps {
   /**
    * The icon components used in the button.
    */
-  icon?: { enter: ReactNode, exit: ReactNode }
+  icon?: { enter: ReactNode; exit: ReactNode };
 }
 
 /**
@@ -61,8 +61,8 @@ export class FullscreenButton extends PureComponent<FullscreenProps, FullscreenB
     if (Platform.isTV) {
       return <></>;
     }
-    const enterSvg: ReactNode = icon?.enter ?? <FullscreenEnterSvg />
-    const exitSvg: ReactNode = icon?.exit ?? <FullscreenExitSvg />
+    const enterSvg: ReactNode = icon?.enter ?? <FullscreenEnterSvg />;
+    const exitSvg: ReactNode = icon?.exit ?? <FullscreenExitSvg />;
     return <ActionButton svg={presentationMode === 'fullscreen' ? exitSvg : enterSvg} onPress={this.toggleFullScreen} />;
   }
 }

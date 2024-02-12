@@ -15,7 +15,7 @@ interface PipButtonProps {
   /**
    * The icon components used in the button.
    */
-  icon?: { enter: ReactNode, exit: ReactNode }
+  icon?: { enter: ReactNode; exit: ReactNode };
 }
 
 /**
@@ -62,8 +62,8 @@ export class PipButton extends PureComponent<PipButtonProps, PipButtonState> {
       return <></>;
     }
     const { presentationMode } = this.state;
-    const enterSvg: ReactNode = icon?.enter ?? <PipEnterSvg />
-    const exitSvg: ReactNode = icon?.exit ?? <PipExitSvg />
+    const enterSvg: ReactNode = icon?.enter ?? <PipEnterSvg />;
+    const exitSvg: ReactNode = icon?.exit ?? <PipExitSvg />;
     return <ActionButton svg={presentationMode === 'picture-in-picture' ? exitSvg : enterSvg} onPress={this.togglePip} />;
   }
 }
