@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import type { MediaTrack } from 'react-native-theoplayer';
 import { PlayerEventType, TextTrack } from 'react-native-theoplayer';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
@@ -20,6 +20,11 @@ export interface LanguageMenuButtonProps {
    * The style overrides.
    */
   menuStyle?: StyleProp<ViewStyle>;
+
+  /**
+   * The icon component used in the button.
+   */
+  icon?: ReactNode
 }
 
 /**
@@ -54,7 +59,7 @@ export class LanguageMenuButton extends PureComponent<LanguageMenuButtonProps, L
 
   render() {
     const { audioTracks, textTracks } = this.state;
-    const { menuStyle } = this.props;
+    const { menuStyle, icon } = this.props;
 
     const selectableTextTracks = filterRenderableTracks(textTracks);
 
@@ -66,7 +71,7 @@ export class LanguageMenuButton extends PureComponent<LanguageMenuButtonProps, L
       return <LanguageMenuView style={menuStyle} />;
     };
 
-    return <MenuButton svg={<LanguageSvg />} menuConstructor={createMenu} />;
+    return <MenuButton svg={icon ?? <LanguageSvg />} menuConstructor={createMenu} />;
   }
 }
 

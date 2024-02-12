@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { MenuButton } from './common/MenuButton';
 import { SettingsSvg } from '../button/svg/SettingsSvg';
 import { MenuView } from './common/MenuView';
@@ -10,16 +10,21 @@ export interface SettingsMenuButtonProps {
    * Overrides for the style of the menu.
    */
   menuStyle?: StyleProp<ViewStyle>;
+
+  /**
+   * The icon component used in the button.
+   */
+  icon?: ReactNode
 }
 
 /**
  * A button component that opens a settings menu containing all children for the `react-native-theoplayer` UI.
  */
 export const SettingsMenuButton = (props: React.PropsWithChildren<SettingsMenuButtonProps>) => {
-  const { children, menuStyle } = props;
+  const { children, menuStyle, icon } = props;
   const createMenu = () => {
     return <MenuView style={menuStyle} menu={<ScrollableMenu title={'Settings'} items={children} />} />;
   };
 
-  return <MenuButton svg={<SettingsSvg />} menuConstructor={createMenu} />;
+  return <MenuButton svg={icon ?? <SettingsSvg />} menuConstructor={createMenu} />;
 };

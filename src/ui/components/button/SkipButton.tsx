@@ -1,5 +1,5 @@
 import { ActionButton } from './actionbutton/ActionButton';
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { ForwardSvg } from './svg/ForwardSvg';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -20,6 +20,11 @@ interface SkipButtonProps {
    * Whether the skip button should do a rotation animation when pressed instead of fading.
    */
   rotate?: boolean;
+
+  /**
+   * The icon components used in the button.
+   */
+  icon?: { forward: ReactNode, backward: ReactNode }
 }
 
 interface SkipButtonState {
@@ -75,7 +80,7 @@ export class SkipButton extends PureComponent<SkipButtonProps, SkipButtonState> 
   };
 
   render() {
-    const { style, skip, rotate } = this.props;
+    const { style, skip, rotate, icon } = this.props;
     const { enabled, spinValue } = this.state;
 
     if (!enabled) {
@@ -87,6 +92,9 @@ export class SkipButton extends PureComponent<SkipButtonProps, SkipButtonState> 
       outputRange: skip >= 0 ? ['0deg', '360deg'] : ['360deg', '0deg'],
     });
 
+    const forwardSvg: ReactNode = icon?.forward ?? <ForwardSvg />
+    const backwardSvg: ReactNode = icon?.backward ?? <BackwardSvg />
+
     return (
       <>
         <PlayerContext.Consumer>
@@ -96,7 +104,7 @@ export class SkipButton extends PureComponent<SkipButtonProps, SkipButtonState> 
                 activeOpacity={rotate === true ? 1 : 0.2}
                 style={[{ height: '100%', aspectRatio: 1, justifyContent: 'center' }, style]}
                 onPress={this.onPress}>
-                <ActionButton touchable={false} svg={skip < 0 ? <BackwardSvg /> : <ForwardSvg />} />
+                <ActionButton touchable={false} svg={skip < 0 ? backwardSvg : forwardSvg} />
                 <View style={[StyleSheet.absoluteFill, { justifyContent: 'center' }]}>
                   <Text style={[context.style.text, { color: context.style.colors.text }]}>{Math.abs(skip)}</Text>
                 </View>

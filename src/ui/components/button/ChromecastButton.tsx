@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import { CastButton } from 'react-native-google-cast';
 import type { CastEvent } from 'react-native-theoplayer';
 import { CastEventType, CastState, PlayerEventType } from 'react-native-theoplayer';
@@ -9,6 +9,13 @@ interface CastButtonState {
   connected: boolean;
 }
 
+interface CastButtonProps {
+  /**
+   * The icon component used in the button. Only overrideable for web.
+   */
+  icon?: ReactNode
+}
+
 export function isConnected(state: CastState | undefined): boolean {
   return state === 'connecting' || state === 'connected';
 }
@@ -17,12 +24,12 @@ export function isConnected(state: CastState | undefined): boolean {
  * The native button to enable Chromecast for the `react-native-theoplayer` UI.
  * This component uses the button from `react-native-google-cast` and is not supported on web.
  */
-export class ChromecastButton extends PureComponent<unknown, CastButtonState> {
+export class ChromecastButton extends PureComponent<CastButtonProps, CastButtonState> {
   private static initialState: CastButtonState = {
     connected: false,
   };
 
-  constructor(props: unknown) {
+  constructor(props: CastButtonProps) {
     super(props);
     this.state = ChromecastButton.initialState;
   }

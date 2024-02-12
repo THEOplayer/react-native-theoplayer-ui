@@ -1,10 +1,9 @@
 import { ActionButton } from './actionbutton/ActionButton';
 import type { StyleProp, ViewStyle } from 'react-native';
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import { PlayerEventType } from 'react-native-theoplayer';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { PlaySvg } from './svg/PlaySvg';
-
 import { PauseSvg } from './svg/PauseSvg';
 import { ReplaySvg } from './svg/ReplaySvg';
 
@@ -13,6 +12,11 @@ interface PlayButtonProps {
    * The style overrides for the play/pause button.
    */
   style?: StyleProp<ViewStyle>;
+
+  /**
+   * The icon components used in the button.
+   */
+  icon?: { play: ReactNode, pause: ReactNode, replay: ReactNode }
 }
 
 interface PlayButtonState {
@@ -96,10 +100,14 @@ export class PlayButton extends PureComponent<PlayButtonProps, PlayButtonState> 
 
   render() {
     const { paused, ended } = this.state;
-    const { style } = this.props;
+    const { style, icon } = this.props;
+
+    const playSvg: ReactNode = icon?.play ?? <PlaySvg/>;
+    const pauseSvg: ReactNode = icon?.pause ?? <PauseSvg/>;
+    const replaySvg: ReactNode = icon?.replay ?? <ReplaySvg/>;
 
     return (
-      <ActionButton style={style} touchable={true} svg={ended ? <ReplaySvg /> : paused ? <PlaySvg /> : <PauseSvg />} onPress={this.togglePlayPause} />
+      <ActionButton style={style} touchable={true} svg={ended ? replaySvg : paused ? playSvg : pauseSvg} onPress={this.togglePlayPause}/>
     );
   }
 }
