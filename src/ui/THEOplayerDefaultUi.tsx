@@ -100,6 +100,14 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                 </ControlBar>
               </>
             }
+            ad={
+              <>
+                <ControlBar>
+                  <MuteButton />
+                  <SeekBar />
+                </ControlBar>
+              </>
+            }
           />
         )}
       </THEOplayerView>
