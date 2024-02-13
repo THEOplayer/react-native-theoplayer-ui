@@ -29,7 +29,7 @@ interface UiContainerProps {
    */
   centerStyle?: StyleProp<ViewStyle>;
   /**
-   * The style of the button slot.
+   * The style of the bottom slot.
    */
   bottomStyle?: StyleProp<ViewStyle>;
   /**
@@ -64,7 +64,7 @@ export const FULLSCREEN_CENTER_STYLE: ViewStyle = {
 };
 
 /**
- * The default style for the center container.
+ * The default style for the UI container.
  */
 export const UI_CONTAINER_STYLE: ViewStyle = {
   position: 'absolute',
