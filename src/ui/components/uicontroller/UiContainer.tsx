@@ -33,6 +33,10 @@ interface UiContainerProps {
    */
   bottomStyle?: StyleProp<ViewStyle>;
   /**
+   * The style of the ad slot.
+   */
+  adStyle?: StyleProp<ViewStyle>;
+  /**
    * The components to be put in the top slot.
    */
   top?: ReactNode;
@@ -44,6 +48,10 @@ interface UiContainerProps {
    * The components to be put in the bottom slot.
    */
   bottom?: ReactNode;
+  /**
+   * The components to be put in the ad slot.
+   */
+  ad?: ReactNode;
   /**
    * A slot to put components behind the UI background.
    */
@@ -103,6 +111,20 @@ export const CENTER_UI_CONTAINER_STYLE: ViewStyle = {
  * The default style for the bottom container.
  */
 export const BOTTOM_UI_CONTAINER_STYLE: ViewStyle = {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  bottom: 0,
+  zIndex: 1,
+  paddingBottom: 10,
+  paddingLeft: 10,
+  paddingRight: 10,
+};
+
+/**
+ * The default style for the ad container.
+ */
+export const AD_UI_CONTAINER_STYLE: ViewStyle = {
   position: 'absolute',
   left: 0,
   right: 0,
@@ -343,7 +365,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
   }
 
   render() {
-    const { player, theme, top, center, bottom, children, style, topStyle, centerStyle, bottomStyle, behind } = this.props;
+    const { player, theme, top, center, bottom, ad, children, style, topStyle, centerStyle, bottomStyle, adStyle, behind } = this.props;
     const { fadeAnimation, currentMenu, error, firstPlay, pip, showing, adInProgress } = this.state;
 
     if (error !== undefined) {
@@ -378,7 +400,8 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
               <>
                 {firstPlay && <View style={[TOP_UI_CONTAINER_STYLE, topStyle]}>{top}</View>}
                 <View style={[CENTER_UI_CONTAINER_STYLE, centerStyle]}>{center}</View>
-                {firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, bottomStyle]}>{bottom}</View>}
+                {!adInProgress && firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, bottomStyle]}>{bottom}</View>}
+                {adInProgress && <View style={[AD_UI_CONTAINER_STYLE, adStyle]}>{ad}</View>}
                 {children}
               </>
             )}
