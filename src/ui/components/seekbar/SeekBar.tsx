@@ -146,7 +146,7 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
       <PlayerContext.Consumer>
         {(context: UiContext) => (
           <View
-            style={[StyleSheet.absoluteFill, style]}
+            style={[style ?? { flex: 1 }]}
             onLayout={(event: LayoutChangeEvent) => {
               this.setState({ width: event.nativeEvent.layout.width });
             }}>
