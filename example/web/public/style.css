@@ -35,3 +35,10 @@ body {
 .theoplayer-ad-touch-clickthrough {
     display: none !important;
 }
+
+/*
+ * Hack: hide overflow so that when google ima is enabled the screen won't shake furiously anymore.
+ */
+.theoplayer-container {
+  overflow-y: hidden;
+}
