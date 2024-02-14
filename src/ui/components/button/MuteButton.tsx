@@ -1,5 +1,5 @@
 import { ActionButton } from './actionbutton/ActionButton';
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { PlayerEventType, VolumeChangeEvent } from 'react-native-theoplayer';
 import { Platform } from 'react-native';
@@ -10,11 +10,18 @@ interface MuteButtonState {
   muted: boolean;
 }
 
+interface MuteButtonProps {
+  /**
+   * The icon components used in the button.
+   */
+  icon?: { volumeUp: ReactNode; volumeOff: ReactNode };
+}
+
 /**
  * The default mute button for the `react-native-theoplayer` UI.
  */
-export class MuteButton extends PureComponent<unknown, MuteButtonState> {
-  constructor(props: unknown) {
+export class MuteButton extends PureComponent<MuteButtonProps, MuteButtonState> {
+  constructor(props: MuteButtonProps) {
     super(props);
     this.state = { muted: false };
   }
@@ -42,10 +49,13 @@ export class MuteButton extends PureComponent<unknown, MuteButtonState> {
 
   render() {
     const { muted } = this.state;
+    const { icon } = this.props;
     if (Platform.isTV) {
       return <></>;
     }
-    return <ActionButton svg={muted ? <VolumeOffSvg /> : <VolumeUpSvg />} onPress={this.toggleMuted} touchable={true} />;
+    const volumeUpSvg: ReactNode = icon?.volumeUp ?? <VolumeUpSvg />;
+    const volumeOffSvg: ReactNode = icon?.volumeOff ?? <VolumeOffSvg />;
+    return <ActionButton svg={muted ? volumeOffSvg : volumeUpSvg} onPress={this.toggleMuted} touchable={true} />;
   }
 }
 

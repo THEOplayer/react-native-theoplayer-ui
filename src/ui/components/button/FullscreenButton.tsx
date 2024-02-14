@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import type { PresentationModeChangeEvent } from 'react-native-theoplayer';
 import { PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import { Platform } from 'react-native';
@@ -11,11 +11,18 @@ interface FullscreenButtonState {
   presentationMode: PresentationMode;
 }
 
+interface FullscreenProps {
+  /**
+   * The icon components used in the button.
+   */
+  icon?: { enter: ReactNode; exit: ReactNode };
+}
+
 /**
  * The button to enable/disable fullscreen for the `react-native-theoplayer` UI.
  */
-export class FullscreenButton extends PureComponent<unknown, FullscreenButtonState> {
-  constructor(props: unknown) {
+export class FullscreenButton extends PureComponent<FullscreenProps, FullscreenButtonState> {
+  constructor(props: FullscreenProps) {
     super(props);
     this.state = { presentationMode: PresentationMode.inline };
   }
@@ -50,10 +57,13 @@ export class FullscreenButton extends PureComponent<unknown, FullscreenButtonSta
 
   render() {
     const { presentationMode } = this.state;
+    const { icon } = this.props;
     if (Platform.isTV) {
       return <></>;
     }
-    return <ActionButton svg={presentationMode === 'fullscreen' ? <FullscreenExitSvg /> : <FullscreenEnterSvg />} onPress={this.toggleFullScreen} />;
+    const enterSvg: ReactNode = icon?.enter ?? <FullscreenEnterSvg />;
+    const exitSvg: ReactNode = icon?.exit ?? <FullscreenExitSvg />;
+    return <ActionButton svg={presentationMode === 'fullscreen' ? exitSvg : enterSvg} onPress={this.toggleFullScreen} />;
   }
 }
 
