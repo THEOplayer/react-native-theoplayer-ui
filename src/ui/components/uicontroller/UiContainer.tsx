@@ -1,5 +1,5 @@
 import React, { PureComponent, ReactNode } from 'react';
-import { Animated, Platform, StyleProp, View, ViewStyle } from 'react-native';
+import { Animated, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import type { AdEvent, PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
 import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
@@ -79,6 +79,20 @@ export const UI_CONTAINER_STYLE: ViewStyle = {
   top: 0,
   left: 0,
   bottom: 0,
+  right: 0,
+  zIndex: 0,
+  justifyContent: 'center',
+  overflow: 'hidden',
+};
+
+/**
+ * The default style for the ad container.
+ */
+export const AD_CONTAINER_STYLE: ViewStyle = {
+  position: 'absolute',
+  top: 100,
+  left: 0,
+  bottom: 100,
   right: 0,
   zIndex: 0,
   justifyContent: 'center',
@@ -364,6 +378,14 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     return !firstPlay || currentMenu !== undefined || casting || pip;
   }
 
+  private playPause_ = () => {
+    if (this.state.paused) {
+      this.props.player.play();
+    } else {
+      this.props.player.pause();
+    }
+  };
+
   render() {
     const { player, theme, top, center, bottom, ad, children, style, topStyle, centerStyle, bottomStyle, adStyle, behind } = this.props;
     const { fadeAnimation, currentMenu, error, firstPlay, pip, showing, adInProgress } = this.state;
@@ -376,37 +398,50 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
       return <></>;
     }
 
-    const combinedContainerStyle = [UI_CONTAINER_STYLE, style];
+    const combinedUiContainerStyle = [UI_CONTAINER_STYLE, style];
+    const combinedAdContainerStyle = [AD_CONTAINER_STYLE, style];
+
+    const showMobileAdLayout = adInProgress && Platform.OS != 'web';
 
     return (
       <PlayerContext.Provider value={{ player, style: theme, ui: this, adInProgress }}>
         {/* The View behind the UI, that is always visible.*/}
-        <View style={FULLSCREEN_CENTER_STYLE}>{behind}</View>
+        <View style={FULLSCREEN_CENTER_STYLE} pointerEvents={'none'}>
+          {behind}
+        </View>
         {/* The Animated.View is for showing and hiding the UI*/}
-        <Animated.View
-          style={[combinedContainerStyle, { opacity: fadeAnimation }]}
-          onTouchStart={this.onUserAction_}
-          pointerEvents={showing ? 'auto' : 'box-only'}
-          {...(Platform.OS === 'web' ? { onMouseMove: this.onUserAction_, onMouseLeave: this.doFadeOut_ } : {})}>
-          <>
-            {/* The UI background */}
-            <View style={[combinedContainerStyle, { backgroundColor: theme.colors.uiBackground }]} onTouchStart={this.doFadeOut_} />
+        {!showMobileAdLayout && (
+          <Animated.View
+            style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
+            onTouchStart={this.onUserAction_}
+            pointerEvents={showing ? 'auto' : 'box-only'}
+            {...(Platform.OS === 'web' ? { onMouseMove: this.onUserAction_, onMouseLeave: this.doFadeOut_ } : {})}>
+            <>
+              {/* The UI background */}
+              <View style={[combinedUiContainerStyle, { backgroundColor: theme.colors.uiBackground }]} onTouchStart={this.doFadeOut_} />
 
-            {/* The Settings Menu */}
-            {currentMenu !== undefined && <View style={[combinedContainerStyle]}>{currentMenu}</View>}
+              {/* The Settings Menu */}
+              {currentMenu !== undefined && <View style={[combinedUiContainerStyle]}>{currentMenu}</View>}
 
-            {/* The UI control bars*/}
-            {currentMenu === undefined && (
-              <>
-                {firstPlay && <View style={[TOP_UI_CONTAINER_STYLE, topStyle]}>{top}</View>}
-                <View style={[CENTER_UI_CONTAINER_STYLE, centerStyle]}>{center}</View>
-                {!adInProgress && firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, bottomStyle]}>{bottom}</View>}
-                {adInProgress && <View style={[AD_UI_CONTAINER_STYLE, adStyle]}>{ad}</View>}
-                {children}
-              </>
-            )}
-          </>
-        </Animated.View>
+              {/* The UI control bars*/}
+              {currentMenu === undefined && (
+                <>
+                  {firstPlay && <View style={[TOP_UI_CONTAINER_STYLE, topStyle]}>{top}</View>}
+                  <View style={[CENTER_UI_CONTAINER_STYLE, centerStyle]}>{center}</View>
+                  {!adInProgress && firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, bottomStyle]}>{bottom}</View>}
+                  {adInProgress && <View style={[AD_UI_CONTAINER_STYLE, adStyle]}>{ad}</View>}
+                  {children}
+                </>
+              )}
+            </>
+          </Animated.View>
+        )}
+        {/* Simplistic ad view to allow play pause during an ad on mobile. */}
+        {showMobileAdLayout && (
+          <View style={[combinedAdContainerStyle]}>
+            <TouchableOpacity style={[FULLSCREEN_CENTER_STYLE]} onPress={this.playPause_}></TouchableOpacity>
+          </View>
+        )}
       </PlayerContext.Provider>
     );
   }
