@@ -12,6 +12,7 @@ import {
   PlaybackRateSubMenu,
   PlayButton,
   QualitySubMenu,
+  SeekBar,
   SettingsMenuButton,
   SkipButton,
   Spacer,
@@ -26,6 +27,9 @@ import {
 } from 'react-native-theoplayer';
 
 import {Platform, StyleSheet, View, ViewStyle} from 'react-native';
+import {AdDisplay} from '../src/ui/components/ads/AdDisplay';
+import {AdCountdown} from '../src/ui/components/ads/AdCountdown';
+import {AdSkipButton} from '../src/ui/components/ads/AdSkipButton';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -114,14 +118,29 @@ export default function App() {
               }
               bottom={
                 <>
-                  <ControlBar style={{justifyContent: 'flex-start'}} />
-                  <ControlBar />
+                  <ControlBar>
+                    <SeekBar />
+                  </ControlBar>
                   <ControlBar>
                     <MuteButton />
                     <TimeLabel showDuration={true} />
                     <Spacer />
                     <PipButton />
                     <FullscreenButton />
+                  </ControlBar>
+                </>
+              }
+              ad={
+                <>
+                  <ControlBar style={{justifyContent: 'flex-start'}}>
+                    <AdDisplay style={{marginLeft: '10px'}} />
+                    <AdCountdown style={{marginLeft: '15px'}} />
+                    <Spacer />
+                    <AdSkipButton />
+                  </ControlBar>
+                  <ControlBar>
+                    <MuteButton />
+                    <SeekBar />
                   </ControlBar>
                 </>
               }
