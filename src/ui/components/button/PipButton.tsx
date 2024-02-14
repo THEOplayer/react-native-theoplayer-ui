@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import type { PresentationModeChangeEvent } from 'react-native-theoplayer';
 import { PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import { Platform } from 'react-native';
@@ -11,11 +11,18 @@ interface PipButtonState {
   presentationMode: PresentationMode;
 }
 
+interface PipButtonProps {
+  /**
+   * The icon components used in the button.
+   */
+  icon?: { enter: ReactNode; exit: ReactNode };
+}
+
 /**
  * The default button to enable picture-in-picture for the `react-native-theoplayer` UI.
  */
-export class PipButton extends PureComponent<unknown, PipButtonState> {
-  constructor(props: unknown) {
+export class PipButton extends PureComponent<PipButtonProps, PipButtonState> {
+  constructor(props: PipButtonProps) {
     super(props);
     this.state = { presentationMode: PresentationMode.inline };
   }
@@ -50,12 +57,14 @@ export class PipButton extends PureComponent<unknown, PipButtonState> {
   };
 
   render() {
+    const { icon } = this.props;
     if (Platform.isTV) {
       return <></>;
     }
     const { presentationMode } = this.state;
-
-    return <ActionButton svg={presentationMode === 'picture-in-picture' ? <PipExitSvg /> : <PipEnterSvg />} onPress={this.togglePip} />;
+    const enterSvg: ReactNode = icon?.enter ?? <PipEnterSvg />;
+    const exitSvg: ReactNode = icon?.exit ?? <PipExitSvg />;
+    return <ActionButton svg={presentationMode === 'picture-in-picture' ? exitSvg : enterSvg} onPress={this.togglePip} />;
   }
 }
 

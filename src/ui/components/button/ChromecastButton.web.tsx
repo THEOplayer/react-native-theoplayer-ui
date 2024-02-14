@@ -1,12 +1,19 @@
 import { CastEvent, CastEventType, CastState, PlayerEventType } from 'react-native-theoplayer';
 import { ActionButton } from '@theoplayer/react-native-ui';
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { ChromecastSvg } from './svg/ChromecastSvg';
 import { Platform } from 'react-native';
 
 interface CastButtonState {
   castState: CastState;
+}
+
+interface CastButtonProps {
+  /**
+   * The icon component used in the button. Only overrideable for web.
+   */
+  icon?: ReactNode;
 }
 
 export function isConnected(state: CastState | undefined): boolean {
@@ -16,12 +23,12 @@ export function isConnected(state: CastState | undefined): boolean {
 /**
  * The button to enable Chromecast for web for the `react-native-theoplayer` UI
  */
-export class ChromecastButton extends PureComponent<unknown, CastButtonState> {
+export class ChromecastButton extends PureComponent<CastButtonProps, CastButtonState> {
   private static initialState: CastButtonState = {
     castState: CastState.unavailable,
   };
 
-  constructor(props: unknown) {
+  constructor(props: CastButtonProps) {
     super(props);
     this.state = ChromecastButton.initialState;
   }
@@ -55,11 +62,12 @@ export class ChromecastButton extends PureComponent<unknown, CastButtonState> {
 
   render() {
     const { castState } = this.state;
+    const { icon } = this.props;
     // TODO: state is reported as unavailable by Android bridge when it is available.
     if (Platform.OS === 'web' && castState === CastState.unavailable) {
       return <></>;
     }
-    return <ActionButton svg={<ChromecastSvg />} touchable={true} onPress={this.onPress} highlighted={isConnected(castState)} />;
+    return <ActionButton svg={icon ?? <ChromecastSvg />} touchable={true} onPress={this.onPress} highlighted={isConnected(castState)} />;
   }
 }
 

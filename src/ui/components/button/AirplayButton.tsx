@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import { Platform } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { isConnected } from './ChromecastButton';
@@ -10,15 +10,22 @@ interface CastButtonState {
   castState: CastState;
 }
 
+interface AirplayButtonProps {
+  /**
+   * The icon component used in the button.
+   */
+  icon?: ReactNode;
+}
+
 /**
  * The default button to enable Airplay for the `react-native-theoplayer` UI.
  */
-export class AirplayButton extends PureComponent<unknown, CastButtonState> {
+export class AirplayButton extends PureComponent<AirplayButtonProps, CastButtonState> {
   private static initialState: CastButtonState = {
     castState: CastState.unavailable,
   };
 
-  constructor(props: unknown) {
+  constructor(props: AirplayButtonProps) {
     super(props);
     this.state = AirplayButton.initialState;
   }
@@ -54,10 +61,11 @@ export class AirplayButton extends PureComponent<unknown, CastButtonState> {
 
   render() {
     const { castState } = this.state;
+    const { icon } = this.props;
     if (castState === CastState.unavailable || Platform.isTV) {
       return <></>;
     }
-    return <ActionButton svg={<AirplaySvg />} touchable={true} onPress={this.onUIAirplayToggled} highlighted={isConnected(castState)} />;
+    return <ActionButton svg={icon ?? <AirplaySvg />} touchable={true} onPress={this.onUIAirplayToggled} highlighted={isConnected(castState)} />;
   }
 }
 
