@@ -140,8 +140,9 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
   render() {
     const { seekable, sliderTime, duration, isSeeking, width } = this.state;
     const { style } = this.props;
+    const normalizedDuration = isNaN(duration) ? 0 : duration;
     const seekableStart = seekable.length > 0 ? seekable[0].start : 0;
-    const seekableEnd = seekable.length > 0 ? seekable[0].end : 0;
+    const seekableEnd = seekable.length > 0 ? seekable[0].end : normalizedDuration;
     return (
       <PlayerContext.Consumer>
         {(context: UiContext) => (
@@ -157,7 +158,7 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
               disabled={(!(duration > 0) && seekable.length > 0) || context.adInProgress}
               style={[StyleSheet.absoluteFill, style]}
               minimumValue={seekableStart}
-              maximumValue={context.adInProgress ? duration : seekableEnd}
+              maximumValue={seekableEnd}
               step={1000}
               onSlidingStart={this._onSlidingStart}
               onValueChange={this._onValueChange}
