@@ -16,6 +16,9 @@ import { SkipButton } from './components/button/SkipButton';
 import { Spacer } from './components/controlbar/Spacer';
 import { ChromecastButton } from './components/button/ChromecastButton';
 import { CenteredDelayedActivityIndicator } from './components/activityindicator/CenteredDelayedActivityIndicator';
+import { AdDisplay } from './components/ads/AdDisplay';
+import { AdCountdown } from './components/ads/AdCountdown';
+import { AdSkipButton } from './components/ads/AdSkipButton';
 
 export interface THEOplayerDefaultUiProps {
   /**
@@ -102,6 +105,12 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
             }
             ad={
               <>
+                <ControlBar style={{ justifyContent: 'flex-start' }}>
+                  <AdDisplay style={{ marginLeft: '10px' }} />
+                  <AdCountdown style={{ marginLeft: '15px' }} />
+                  <Spacer />
+                  <AdSkipButton />
+                </ControlBar>
                 <ControlBar>
                   <MuteButton />
                   <SeekBar />
