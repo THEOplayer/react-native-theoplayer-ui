@@ -80,11 +80,8 @@ export class AdSkipButton extends PureComponent<AdSkipButtonProps, AdSkipButtonS
   render() {
     const { currentAd, timeToSkip } = this.state;
     const { style } = this.props;
-    if (timeToSkip === undefined || isNaN(timeToSkip)) {
-      return <></>;
-    }
 
-    if (currentAd && currentAd.integration === 'google-ima') {
+    if (timeToSkip === undefined || isNaN(timeToSkip) || (currentAd && currentAd.integration === 'google-ima')) {
       return <></>;
     }
 
