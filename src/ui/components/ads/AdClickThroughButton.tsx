@@ -72,11 +72,8 @@ export class AdClickThroughButton extends PureComponent<unknown, AdClickThroughB
 
   render() {
     const { clickThrough, currentAd } = this.state;
-    if (clickThrough === undefined) {
-      return <></>;
-    }
 
-    if (currentAd && currentAd.integration === 'google-ima') {
+    if (clickThrough === undefined || (currentAd && currentAd.integration === 'google-ima')) {
       return <></>;
     }
 
