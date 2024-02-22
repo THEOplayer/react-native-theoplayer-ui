@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- Fixed connected state for chromecastButton to not take into account the casting state in general (e.g. airplay should not influence this state).
+
 ## [0.4.0] - 24-02-14
 
 ### Added
