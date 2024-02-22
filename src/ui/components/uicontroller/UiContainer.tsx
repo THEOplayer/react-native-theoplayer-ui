@@ -138,16 +138,7 @@ export const BOTTOM_UI_CONTAINER_STYLE: ViewStyle = {
 /**
  * The default style for the ad container.
  */
-export const AD_UI_CONTAINER_STYLE: ViewStyle = {
-  position: 'absolute',
-  left: 0,
-  right: 0,
-  bottom: 0,
-  zIndex: 1,
-  paddingBottom: 10,
-  paddingLeft: 10,
-  paddingRight: 10,
-};
+export const AD_UI_CONTAINER_STYLE: ViewStyle = BOTTOM_UI_CONTAINER_STYLE;
 
 interface UiContainerState {
   fadeAnimation: Animated.Value;
