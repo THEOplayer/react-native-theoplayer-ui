@@ -94,9 +94,7 @@ export class AdSkipButton extends PureComponent<AdSkipButtonProps, AdSkipButtonS
       );
     }
 
-    return (
-      <PlayerContext.Consumer>{(_context: UiContext) => <Button title="Skip to content" onPress={this.onPress}></Button>}</PlayerContext.Consumer>
-    );
+    return <PlayerContext.Consumer>{(_context: UiContext) => <Button title="Skip Ad" onPress={this.onPress}></Button>}</PlayerContext.Consumer>;
   }
 }
 
