@@ -133,8 +133,8 @@ export default function App() {
               ad={
                 <>
                   <ControlBar style={{justifyContent: 'flex-start'}}>
-                    <AdDisplay style={{marginLeft: '10px'}} />
-                    <AdCountdown style={{marginLeft: '15px'}} />
+                    <AdDisplay />
+                    <AdCountdown />
                     <Spacer />
                     <AdSkipButton />
                   </ControlBar>
