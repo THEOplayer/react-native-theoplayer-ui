@@ -81,7 +81,21 @@ export class AdDisplay extends PureComponent<AdDisplayProps, AdDisplayState> {
 
     return (
       <PlayerContext.Consumer>
-        {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>}
+        {(context: UiContext) => (
+          <Text
+            style={[
+              context.style.text,
+              {
+                color: context.style.colors.adDiplayText,
+                backgroundColor: context.style.colors.adDisplayBackground,
+                borderRadius: 2,
+                padding: 5,
+              },
+              style,
+            ]}>
+            {label}
+          </Text>
+        )}
       </PlayerContext.Consumer>
     );
   }
