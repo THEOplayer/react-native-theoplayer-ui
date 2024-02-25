@@ -1,15 +1,25 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
-import { Button, StyleProp, Text, TextStyle } from 'react-native';
+import { StyleProp, Text, TextStyle, TouchableOpacity, View } from 'react-native';
 import { Ad, AdEvent, AdEventType, PlayerEventType, TimeUpdateEvent } from 'react-native-theoplayer';
 import { arrayFind } from '../../utils/ArrayUtils';
 import { isLinearAd } from '../../utils/AdUtils';
+import { ActionButton } from '../button/actionbutton/ActionButton';
+import { SkipNextSvg } from '../button/svg/SkipNext';
 
 interface AdSkipButtonProps {
   /**
-   * Optional style applied to the AdSkipButton
+   * Optional style applied to the ad skip button
    */
   style?: StyleProp<TextStyle>;
+  /**
+   * The style overrides for the text in the ad skip button.
+   */
+  textStyle?: StyleProp<TextStyle>;
+  /**
+   * The icon components used in the button.
+   */
+  icon?: ReactNode;
 }
 
 interface AdSkipButtonState {
@@ -79,7 +89,7 @@ export class AdSkipButton extends PureComponent<AdSkipButtonProps, AdSkipButtonS
 
   render() {
     const { currentAd, timeToSkip } = this.state;
-    const { style } = this.props;
+    const { style, textStyle, icon } = this.props;
 
     if (timeToSkip === undefined || isNaN(timeToSkip) || (currentAd && currentAd.integration === 'google-ima')) {
       return <></>;
@@ -94,7 +104,19 @@ export class AdSkipButton extends PureComponent<AdSkipButtonProps, AdSkipButtonS
       );
     }
 
-    return <PlayerContext.Consumer>{(_context: UiContext) => <Button title="Skip Ad" onPress={this.onPress}></Button>}</PlayerContext.Consumer>;
+    const skipSvg: ReactNode = icon ?? <SkipNextSvg />;
+    return (
+      <PlayerContext.Consumer>
+        {(context: UiContext) => (
+          <View style={[{ flexDirection: 'row', backgroundColor: context.style.colors.adSkipBackground, padding: 5 }, style]}>
+            <TouchableOpacity style={[{ flexDirection: 'row' }, style]} onPress={this.onPress}>
+              <Text style={[context.style.text, { color: context.style.colors.text }, textStyle]}>Skip Ad</Text>
+              <ActionButton touchable={false} svg={skipSvg} />
+            </TouchableOpacity>
+          </View>
+        )}
+      </PlayerContext.Consumer>
+    );
   }
 }
 
