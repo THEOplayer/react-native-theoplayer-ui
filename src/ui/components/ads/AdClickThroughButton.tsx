@@ -1,22 +1,29 @@
 import React, { PureComponent } from 'react';
-import { Button, Linking } from 'react-native';
+import { Linking, StyleProp, Text, TextStyle, TouchableOpacity } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { Ad, AdEvent, AdEventType, PlayerEventType, TimeUpdateEvent } from 'react-native-theoplayer';
 import { arrayFind } from '../../utils/ArrayUtils';
 import { isLinearAd } from '../../utils/AdUtils';
+
+interface AdClickThroughButtonProps {
+  /**
+   * Optional style applied to the ad click through button
+   */
+  style?: StyleProp<TextStyle>;
+}
 
 interface AdClickThroughButtonState {
   currentAd: Ad | undefined;
   clickThrough: string | undefined;
 }
 
-export class AdClickThroughButton extends PureComponent<unknown, AdClickThroughButtonState> {
+export class AdClickThroughButton extends PureComponent<AdClickThroughButtonProps, AdClickThroughButtonState> {
   private static initialState = {
     currentAd: undefined,
     clickThrough: undefined,
   };
 
-  constructor(props: unknown) {
+  constructor(props: AdClickThroughButtonProps) {
     super(props);
     this.state = AdClickThroughButton.initialState;
   }
@@ -72,13 +79,20 @@ export class AdClickThroughButton extends PureComponent<unknown, AdClickThroughB
 
   render() {
     const { clickThrough, currentAd } = this.state;
+    const { style } = this.props;
 
     if (clickThrough === undefined || (currentAd && currentAd.integration === 'google-ima')) {
       return <></>;
     }
 
     return (
-      <PlayerContext.Consumer>{(_context: UiContext) => <Button title="Visit Advertiser" onPress={this.onPress}></Button>}</PlayerContext.Consumer>
+      <PlayerContext.Consumer>
+        {(context: UiContext) => (
+          <TouchableOpacity style={{ padding: 5 }} onPress={this.onPress}>
+            <Text style={[context.style.text, { color: context.style.colors.text }, style]}>Visit Advertiser</Text>
+          </TouchableOpacity>
+        )}
+      </PlayerContext.Consumer>
     );
   }
 }
