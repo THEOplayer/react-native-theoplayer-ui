@@ -73,7 +73,7 @@ export class AdCountdown extends PureComponent<AdCountdownProps, AdCountdownStat
 
     return (
       <PlayerContext.Consumer>
-        {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>}
+        {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text, padding: 10 }, style]}>{label}</Text>}
       </PlayerContext.Consumer>
     );
   }
