@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useState} from 'react';
 import {
+  AdClickThroughButton,
   CenteredControlBar,
   CenteredDelayedActivityIndicator,
   ControlBar,
@@ -130,20 +131,34 @@ export default function App() {
                   </ControlBar>
                 </>
               }
-              ad={
-                <>
-                  <ControlBar style={{justifyContent: 'flex-start'}}>
-                    <AdDisplay />
-                    <AdCountdown />
-                    <Spacer />
-                    <AdSkipButton />
-                  </ControlBar>
-                  <ControlBar>
-                    <MuteButton />
-                    <SeekBar />
-                  </ControlBar>
-                </>
-              }
+              ad={{
+                top: (
+                  <>
+                    <ControlBar>
+                      <AdClickThroughButton />
+                    </ControlBar>
+                  </>
+                ),
+                center: (
+                  <>
+                    <CenteredControlBar middle={<PlayButton />} />
+                  </>
+                ),
+                bottom: (
+                  <>
+                    <ControlBar style={{justifyContent: 'flex-start'}}>
+                      <AdDisplay />
+                      <AdCountdown />
+                      <Spacer />
+                      <AdSkipButton />
+                    </ControlBar>
+                    <ControlBar>
+                      <MuteButton />
+                      <SeekBar />
+                    </ControlBar>
+                  </>
+                ),
+              }}
             />
           )}
         </THEOplayerView>

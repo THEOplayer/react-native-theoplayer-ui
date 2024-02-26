@@ -19,6 +19,7 @@ import { CenteredDelayedActivityIndicator } from './components/activityindicator
 import { AdDisplay } from './components/ads/AdDisplay';
 import { AdCountdown } from './components/ads/AdCountdown';
 import { AdSkipButton } from './components/ads/AdSkipButton';
+import { AdClickThroughButton } from './components/ads/AdClickThroughButton';
 
 export interface THEOplayerDefaultUiProps {
   /**
@@ -103,20 +104,34 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                 </ControlBar>
               </>
             }
-            ad={
-              <>
-                <ControlBar style={{ justifyContent: 'flex-start' }}>
-                  <AdDisplay style={{ marginLeft: '10px' }} />
-                  <AdCountdown style={{ marginLeft: '15px' }} />
-                  <Spacer />
-                  <AdSkipButton />
-                </ControlBar>
-                <ControlBar>
-                  <MuteButton />
-                  <SeekBar />
-                </ControlBar>
-              </>
-            }
+            ad={{
+              top: (
+                <>
+                  <ControlBar>
+                    <AdClickThroughButton />
+                  </ControlBar>
+                </>
+              ),
+              center: (
+                <>
+                  <CenteredControlBar middle={<PlayButton />} />
+                </>
+              ),
+              bottom: (
+                <>
+                  <ControlBar style={{ justifyContent: 'flex-start' }}>
+                    <AdDisplay />
+                    <AdCountdown />
+                    <Spacer />
+                    <AdSkipButton />
+                  </ControlBar>
+                  <ControlBar>
+                    <MuteButton />
+                    <SeekBar />
+                  </ControlBar>
+                </>
+              ),
+            }}
           />
         )}
       </THEOplayerView>

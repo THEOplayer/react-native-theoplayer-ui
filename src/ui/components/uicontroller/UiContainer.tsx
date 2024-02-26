@@ -33,9 +33,17 @@ interface UiContainerProps {
    */
   bottomStyle?: StyleProp<ViewStyle>;
   /**
-   * The style of the ad slot.
+   * The style of the top ad slot.
    */
-  adStyle?: StyleProp<ViewStyle>;
+  adTopStyle?: StyleProp<ViewStyle>;
+  /**
+   * The style of the center ad slot.
+   */
+  adCenterStyle?: StyleProp<ViewStyle>;
+  /**
+   * The style of the bottom ad slot.
+   */
+  adBottomStyle?: StyleProp<ViewStyle>;
   /**
    * The components to be put in the top slot.
    */
@@ -49,13 +57,31 @@ interface UiContainerProps {
    */
   bottom?: ReactNode;
   /**
-   * The components to be put in the ad slot.
+   * The components to be put in the ad slots.
+   *
+   * @remarks
+   * <br/> - Currently only supported for web.
    */
-  ad?: ReactNode;
+  ad?: AdUiContainer;
   /**
    * A slot to put components behind the UI background.
    */
   behind?: ReactNode;
+}
+
+interface AdUiContainer {
+  /**
+   * The components to be put in the top slot during an ad.
+   */
+  top?: ReactNode;
+  /**
+   * The components to be put in the center slot during an ad.
+   */
+  center?: ReactNode;
+  /**
+   * The components to be put in the bottom slot during an ad.
+   */
+  bottom?: ReactNode;
 }
 
 /**
@@ -138,7 +164,9 @@ export const BOTTOM_UI_CONTAINER_STYLE: ViewStyle = {
 /**
  * The default style for the ad container.
  */
-export const AD_UI_CONTAINER_STYLE: ViewStyle = BOTTOM_UI_CONTAINER_STYLE;
+export const AD_UI_TOP_CONTAINER_STYLE: ViewStyle = TOP_UI_CONTAINER_STYLE;
+export const AD_UI_CENTER_CONTAINER_STYLE: ViewStyle = CENTER_UI_CONTAINER_STYLE;
+export const AD_UI_BOTTOM_CONTAINER_STYLE: ViewStyle = BOTTOM_UI_CONTAINER_STYLE;
 
 interface UiContainerState {
   fadeAnimation: Animated.Value;
@@ -378,7 +406,23 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
   };
 
   render() {
-    const { player, theme, top, center, bottom, ad, children, style, topStyle, centerStyle, bottomStyle, adStyle, behind } = this.props;
+    const {
+      player,
+      theme,
+      top,
+      center,
+      bottom,
+      ad,
+      children,
+      style,
+      topStyle,
+      centerStyle,
+      bottomStyle,
+      adTopStyle,
+      adCenterStyle,
+      adBottomStyle,
+      behind,
+    } = this.props;
     const { fadeAnimation, currentMenu, error, firstPlay, pip, showing, adInProgress } = this.state;
 
     if (error !== undefined) {
@@ -415,13 +459,21 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
               {currentMenu !== undefined && <View style={[combinedUiContainerStyle]}>{currentMenu}</View>}
 
               {/* The UI control bars*/}
-              {currentMenu === undefined && (
+              {currentMenu === undefined && !adInProgress && (
                 <>
                   {firstPlay && <View style={[TOP_UI_CONTAINER_STYLE, topStyle]}>{top}</View>}
                   <View style={[CENTER_UI_CONTAINER_STYLE, centerStyle]}>{center}</View>
-                  {!adInProgress && firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, bottomStyle]}>{bottom}</View>}
-                  {adInProgress && <View style={[AD_UI_CONTAINER_STYLE, adStyle]}>{ad}</View>}
+                  {firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, bottomStyle]}>{bottom}</View>}
                   {children}
+                </>
+              )}
+
+              {/* The Ad UI */}
+              {currentMenu === undefined && adInProgress && (
+                <>
+                  <View style={[AD_UI_TOP_CONTAINER_STYLE, adTopStyle]}>{ad?.top}</View>
+                  <View style={[AD_UI_CENTER_CONTAINER_STYLE, adCenterStyle]}>{ad?.center}</View>
+                  <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, adBottomStyle]}>{ad?.bottom}</View>
                 </>
               )}
             </>
