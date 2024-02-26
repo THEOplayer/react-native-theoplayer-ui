@@ -57,31 +57,30 @@ interface UiContainerProps {
    */
   bottom?: ReactNode;
   /**
-   * The components to be put in the ad slots.
+   * The components to be put in the top slot during an ad.
    *
    * @remarks
    * <br/> - Currently only supported for web.
    */
-  ad?: AdUiContainer;
+  adTop?: ReactNode;
+  /**
+   * The components to be put in the center slot during an ad.
+   *
+   * @remarks
+   * <br/> - Currently only supported for web.
+   */
+  adCenter?: ReactNode;
+  /**
+   * The components to be put in the bottom slot during an ad.
+   *
+   * @remarks
+   * <br/> - Currently only supported for web.
+   */
+  adBottom?: ReactNode;
   /**
    * A slot to put components behind the UI background.
    */
   behind?: ReactNode;
-}
-
-interface AdUiContainer {
-  /**
-   * The components to be put in the top slot during an ad.
-   */
-  top?: ReactNode;
-  /**
-   * The components to be put in the center slot during an ad.
-   */
-  center?: ReactNode;
-  /**
-   * The components to be put in the bottom slot during an ad.
-   */
-  bottom?: ReactNode;
 }
 
 /**
@@ -412,7 +411,9 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
       top,
       center,
       bottom,
-      ad,
+      adTop,
+      adCenter,
+      adBottom,
       children,
       style,
       topStyle,
@@ -471,9 +472,9 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
               {/* The Ad UI */}
               {currentMenu === undefined && adInProgress && (
                 <>
-                  <View style={[AD_UI_TOP_CONTAINER_STYLE, adTopStyle]}>{ad?.top}</View>
-                  <View style={[AD_UI_CENTER_CONTAINER_STYLE, adCenterStyle]}>{ad?.center}</View>
-                  <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, adBottomStyle]}>{ad?.bottom}</View>
+                  <View style={[AD_UI_TOP_CONTAINER_STYLE, adTopStyle]}>{adTop}</View>
+                  <View style={[AD_UI_CENTER_CONTAINER_STYLE, adCenterStyle]}>{adCenter}</View>
+                  <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, adBottomStyle]}>{adBottom}</View>
                 </>
               )}
             </>

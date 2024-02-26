@@ -131,34 +131,32 @@ export default function App() {
                   </ControlBar>
                 </>
               }
-              ad={{
-                top: (
-                  <>
-                    <ControlBar>
-                      <AdClickThroughButton />
-                    </ControlBar>
-                  </>
-                ),
-                center: (
-                  <>
-                    <CenteredControlBar middle={<PlayButton />} />
-                  </>
-                ),
-                bottom: (
-                  <>
-                    <ControlBar style={{justifyContent: 'flex-start'}}>
-                      <AdDisplay />
-                      <AdCountdown />
-                      <Spacer />
-                      <AdSkipButton />
-                    </ControlBar>
-                    <ControlBar>
-                      <MuteButton />
-                      <SeekBar />
-                    </ControlBar>
-                  </>
-                ),
-              }}
+              adTop={
+                <>
+                  <ControlBar>
+                    <AdClickThroughButton />
+                  </ControlBar>
+                </>
+              }
+              adCenter={
+                <>
+                  <CenteredControlBar middle={<PlayButton />} />
+                </>
+              }
+              adBottom={
+                <>
+                  <ControlBar style={{justifyContent: 'flex-start'}}>
+                    <AdDisplay />
+                    <AdCountdown />
+                    <Spacer />
+                    <AdSkipButton />
+                  </ControlBar>
+                  <ControlBar>
+                    <MuteButton />
+                    <SeekBar />
+                  </ControlBar>
+                </>
+              }
             />
           )}
         </THEOplayerView>
