@@ -59,11 +59,11 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
   }
 
   componentWillUnmount() {
-    const context = this.context as UiContext;
-    context.player.removeEventListener(PlayerEventType.LOADED_METADATA, this._onLoadedMetadata);
-    context.player.removeEventListener(PlayerEventType.DURATION_CHANGE, this._onDurationChange);
-    context.player.removeEventListener(PlayerEventType.TIME_UPDATE, this._onTimeUpdate);
-    context.player.removeEventListener(PlayerEventType.PROGRESS, this._onProgress);
+    const player = (this.context as UiContext).player;
+    player.removeEventListener(PlayerEventType.LOADED_METADATA, this._onLoadedMetadata);
+    player.removeEventListener(PlayerEventType.DURATION_CHANGE, this._onDurationChange);
+    player.removeEventListener(PlayerEventType.TIME_UPDATE, this._onTimeUpdate);
+    player.removeEventListener(PlayerEventType.PROGRESS, this._onProgress);
     clearTimeout(this._seekBlockingTimeout);
     clearTimeout(this._clearIsScrubbingTimout);
   }
@@ -140,13 +140,14 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
   render() {
     const { seekable, sliderTime, duration, isSeeking, width } = this.state;
     const { style } = this.props;
+    const normalizedDuration = isNaN(duration) ? 0 : duration;
     const seekableStart = seekable.length > 0 ? seekable[0].start : 0;
-    const seekableEnd = seekable.length > 0 ? seekable[0].end : 0;
+    const seekableEnd = seekable.length > 0 ? seekable[0].end : normalizedDuration;
     return (
       <PlayerContext.Consumer>
         {(context: UiContext) => (
           <View
-            style={[StyleSheet.absoluteFill, style]}
+            style={[style ?? { flex: 1 }]}
             onLayout={(event: LayoutChangeEvent) => {
               this.setState({ width: event.nativeEvent.layout.width });
             }}>
@@ -154,7 +155,7 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
               <SingleThumbnailView seekableStart={seekableStart} seekableEnd={seekableEnd} currentTime={sliderTime} seekBarWidth={width} />
             )}
             <Slider
-              disabled={!(duration > 0) && seekable.length > 0}
+              disabled={(!(duration > 0) && seekable.length > 0) || context.adInProgress}
               style={[StyleSheet.absoluteFill, style]}
               minimumValue={seekableStart}
               maximumValue={seekableEnd}

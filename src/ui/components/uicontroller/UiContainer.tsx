@@ -1,8 +1,8 @@
 import React, { PureComponent, ReactNode } from 'react';
-import { Animated, Platform, StyleProp, View, ViewStyle } from 'react-native';
+import { Animated, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
-import type { PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
-import { CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
+import type { AdEvent, PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
+import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
@@ -29,9 +29,21 @@ interface UiContainerProps {
    */
   centerStyle?: StyleProp<ViewStyle>;
   /**
-   * The style of the button slot.
+   * The style of the bottom slot.
    */
   bottomStyle?: StyleProp<ViewStyle>;
+  /**
+   * The style of the top ad slot.
+   */
+  adTopStyle?: StyleProp<ViewStyle>;
+  /**
+   * The style of the center ad slot.
+   */
+  adCenterStyle?: StyleProp<ViewStyle>;
+  /**
+   * The style of the bottom ad slot.
+   */
+  adBottomStyle?: StyleProp<ViewStyle>;
   /**
    * The components to be put in the top slot.
    */
@@ -44,6 +56,27 @@ interface UiContainerProps {
    * The components to be put in the bottom slot.
    */
   bottom?: ReactNode;
+  /**
+   * The components to be put in the top slot during an ad.
+   *
+   * @remarks
+   * <br/> - Currently only supported for web.
+   */
+  adTop?: ReactNode;
+  /**
+   * The components to be put in the center slot during an ad.
+   *
+   * @remarks
+   * <br/> - Currently only supported for web.
+   */
+  adCenter?: ReactNode;
+  /**
+   * The components to be put in the bottom slot during an ad.
+   *
+   * @remarks
+   * <br/> - Currently only supported for web.
+   */
+  adBottom?: ReactNode;
   /**
    * A slot to put components behind the UI background.
    */
@@ -64,13 +97,27 @@ export const FULLSCREEN_CENTER_STYLE: ViewStyle = {
 };
 
 /**
- * The default style for the center container.
+ * The default style for the UI container.
  */
 export const UI_CONTAINER_STYLE: ViewStyle = {
   position: 'absolute',
   top: 0,
   left: 0,
   bottom: 0,
+  right: 0,
+  zIndex: 0,
+  justifyContent: 'center',
+  overflow: 'hidden',
+};
+
+/**
+ * The default style for the ad container.
+ */
+export const AD_CONTAINER_STYLE: ViewStyle = {
+  position: 'absolute',
+  top: 100,
+  left: 0,
+  bottom: 100,
   right: 0,
   zIndex: 0,
   justifyContent: 'center',
@@ -113,6 +160,13 @@ export const BOTTOM_UI_CONTAINER_STYLE: ViewStyle = {
   paddingRight: 10,
 };
 
+/**
+ * The default style for the ad container.
+ */
+export const AD_UI_TOP_CONTAINER_STYLE: ViewStyle = TOP_UI_CONTAINER_STYLE;
+export const AD_UI_CENTER_CONTAINER_STYLE: ViewStyle = CENTER_UI_CONTAINER_STYLE;
+export const AD_UI_BOTTOM_CONTAINER_STYLE: ViewStyle = BOTTOM_UI_CONTAINER_STYLE;
+
 interface UiContainerState {
   fadeAnimation: Animated.Value;
   currentMenu: ReactNode | undefined;
@@ -123,6 +177,7 @@ interface UiContainerState {
   paused: boolean;
   casting: boolean;
   pip: boolean;
+  adInProgress: boolean;
 }
 
 /**
@@ -146,6 +201,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     paused: true,
     casting: false,
     pip: false,
+    adInProgress: false,
   };
 
   constructor(props: UiContainerProps) {
@@ -165,6 +221,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     player.addEventListener(PlayerEventType.CAST_EVENT, this.onCastEvent);
     player.addEventListener(PlayerEventType.ENDED, this.onEnded);
     player.addEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
+    player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
     if (player.source !== undefined && player.currentTime !== 0) {
       this.onPlay();
     }
@@ -183,6 +240,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     player.removeEventListener(PlayerEventType.CAST_EVENT, this.onCastEvent);
     player.removeEventListener(PlayerEventType.ENDED, this.onEnded);
     player.removeEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
+    player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
     clearTimeout(this._currentFadeOutTimeout);
   }
 
@@ -228,6 +286,15 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
         this.resumeAnimationsIfPossible_();
       }
     });
+  };
+
+  private onAdEvent = (event: AdEvent) => {
+    const type = event.subType;
+    if (type === AdEventType.AD_BREAK_BEGIN) {
+      this.setState({ adInProgress: true });
+    } else if (type === AdEventType.AD_BREAK_END) {
+      this.setState({ adInProgress: false });
+    }
   };
 
   get buttonsEnabled_(): boolean {
@@ -329,9 +396,35 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     return !firstPlay || currentMenu !== undefined || casting || pip;
   }
 
+  private playPause_ = () => {
+    if (this.state.paused) {
+      this.props.player.play();
+    } else {
+      this.props.player.pause();
+    }
+  };
+
   render() {
-    const { player, theme, top, center, bottom, children, style, topStyle, centerStyle, bottomStyle, behind } = this.props;
-    const { fadeAnimation, currentMenu, error, firstPlay, pip, showing } = this.state;
+    const {
+      player,
+      theme,
+      top,
+      center,
+      bottom,
+      adTop,
+      adCenter,
+      adBottom,
+      children,
+      style,
+      topStyle,
+      centerStyle,
+      bottomStyle,
+      adTopStyle,
+      adCenterStyle,
+      adBottomStyle,
+      behind,
+    } = this.props;
+    const { fadeAnimation, currentMenu, error, firstPlay, pip, showing, adInProgress } = this.state;
 
     if (error !== undefined) {
       return <ErrorDisplay error={error} />;
@@ -341,36 +434,58 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
       return <></>;
     }
 
-    const combinedContainerStyle = [UI_CONTAINER_STYLE, style];
+    const combinedUiContainerStyle = [UI_CONTAINER_STYLE, style];
+    const combinedAdContainerStyle = [AD_CONTAINER_STYLE, style];
+
+    const showMobileAdLayout = adInProgress && Platform.OS != 'web';
 
     return (
-      <PlayerContext.Provider value={{ player, style: theme, ui: this }}>
+      <PlayerContext.Provider value={{ player, style: theme, ui: this, adInProgress }}>
         {/* The View behind the UI, that is always visible.*/}
-        <View style={FULLSCREEN_CENTER_STYLE}>{behind}</View>
+        <View style={FULLSCREEN_CENTER_STYLE} pointerEvents={'none'}>
+          {behind}
+        </View>
         {/* The Animated.View is for showing and hiding the UI*/}
-        <Animated.View
-          style={[combinedContainerStyle, { opacity: fadeAnimation }]}
-          onTouchStart={this.onUserAction_}
-          pointerEvents={showing ? 'auto' : 'box-only'}
-          {...(Platform.OS === 'web' ? { onMouseMove: this.onUserAction_, onMouseLeave: this.doFadeOut_ } : {})}>
-          <>
-            {/* The UI background */}
-            <View style={[combinedContainerStyle, { backgroundColor: theme.colors.uiBackground }]} onTouchStart={this.doFadeOut_} />
+        {!showMobileAdLayout && (
+          <Animated.View
+            style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
+            onTouchStart={this.onUserAction_}
+            pointerEvents={showing ? 'auto' : 'box-only'}
+            {...(Platform.OS === 'web' ? { onMouseMove: this.onUserAction_, onMouseLeave: this.doFadeOut_ } : {})}>
+            <>
+              {/* The UI background */}
+              <View style={[combinedUiContainerStyle, { backgroundColor: theme.colors.uiBackground }]} onTouchStart={this.doFadeOut_} />
 
-            {/* The Settings Menu */}
-            {currentMenu !== undefined && <View style={[combinedContainerStyle]}>{currentMenu}</View>}
+              {/* The Settings Menu */}
+              {currentMenu !== undefined && <View style={[combinedUiContainerStyle]}>{currentMenu}</View>}
 
-            {/* The UI control bars*/}
-            {currentMenu === undefined && (
-              <>
-                {firstPlay && <View style={[TOP_UI_CONTAINER_STYLE, topStyle]}>{top}</View>}
-                <View style={[CENTER_UI_CONTAINER_STYLE, centerStyle]}>{center}</View>
-                {firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, bottomStyle]}>{bottom}</View>}
-                {children}
-              </>
-            )}
-          </>
-        </Animated.View>
+              {/* The UI control bars*/}
+              {currentMenu === undefined && !adInProgress && (
+                <>
+                  {firstPlay && <View style={[TOP_UI_CONTAINER_STYLE, topStyle]}>{top}</View>}
+                  <View style={[CENTER_UI_CONTAINER_STYLE, centerStyle]}>{center}</View>
+                  {firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, bottomStyle]}>{bottom}</View>}
+                  {children}
+                </>
+              )}
+
+              {/* The Ad UI */}
+              {currentMenu === undefined && adInProgress && (
+                <>
+                  <View style={[AD_UI_TOP_CONTAINER_STYLE, adTopStyle]}>{adTop}</View>
+                  <View style={[AD_UI_CENTER_CONTAINER_STYLE, adCenterStyle]}>{adCenter}</View>
+                  <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, adBottomStyle]}>{adBottom}</View>
+                </>
+              )}
+            </>
+          </Animated.View>
+        )}
+        {/* Simplistic ad view to allow play pause during an ad on mobile. */}
+        {showMobileAdLayout && (
+          <View style={[combinedAdContainerStyle]}>
+            <TouchableOpacity style={[FULLSCREEN_CENTER_STYLE]} onPress={this.playPause_}></TouchableOpacity>
+          </View>
+        )}
       </PlayerContext.Provider>
     );
   }

@@ -17,6 +17,11 @@ export interface UiContext {
    * UI controls for the components to communicate with the UI.
    */
   readonly ui: UiControls;
+
+  /**
+   * Whether a linear ad is currently in progress.
+   */
+  readonly adInProgress: boolean;
 }
 
 /**
@@ -26,4 +31,5 @@ export const PlayerContext = React.createContext<UiContext>({
   player: undefined as unknown as THEOplayer,
   style: DEFAULT_THEOPLAYER_THEME,
   ui: undefined as unknown as UiControls,
+  adInProgress: false,
 });
