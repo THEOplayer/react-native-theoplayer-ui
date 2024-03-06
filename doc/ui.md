@@ -76,6 +76,15 @@ This use-case is implemented in the [example app](https://github.com/THEOplayer/
 that is included in the `react-native-theoplayer` repository, which adds a
 custom [SourceMenuButton](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/example/src/custom/SourceMenuButton.tsx).
 
+During ad playback the UI probably needs to be different compared to during content. This can include disabling seeking,
+showing the ad break duration and when the user can skip to content.
+
+Similarly to content playback, the ad UI can be customized by adding components to their respective
+slots: `adTop`, `adCenter` and `adBottom`.
+
+The customized ad UI is only available for web at this moment. Android and iOS will have a play/pause interaction
+in the middle of the screen together with the default Google IMA ad layout.
+
 The following example shows a UI layout with only basic playback controls:
 
 ```tsx
@@ -111,41 +120,6 @@ export default function App() {
                 </ControlBar>
               </>
             }
-          />
-        )}
-      </THEOplayerView>
-    </View>
-  );
-}
-```
-
-### Ad UI
-
-During ad playback the UI might need to be different compared to during content. This can include disabling seeking,
-showing the ad break duration and when the user can skip to content.
-
-Similarly to content playback, the ad UI can be customized by adding components to their respective
-slots: `adTop`, `adCenter` and `adBottom`.
-
-The customized ad UI is only available for web at this moment. Android and iOS will have a play/pause interaction
-in the middle of the screen together with the default Google IMA ad layout.
-
-The following example shows a generic ad UI layout:
-
-```tsx
-export default function App() {
-  const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
-  const onPlayerReady = (player: THEOplayer) => {
-    setPlayer(player);
-  };
-  return (
-    <View style={StyleSheet.absoluteFill}>
-      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}>
-        {player !== undefined && (
-          <UiContainer
-            theme={DEFAULT_THEOPLAYER_THEME}
-            player={player}
-            behind={<CenteredDelayedActivityIndicator size={50}/>}
             adTop={
               <ControlBar>
                 <AdClickThroughButton />
