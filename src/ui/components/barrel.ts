@@ -1,4 +1,5 @@
 export * from './activityindicator/barrel';
+export * from './ads/barrel';
 export * from './button/barrel';
 export * from './controlbar/barrel';
 export * from './menu/barrel';

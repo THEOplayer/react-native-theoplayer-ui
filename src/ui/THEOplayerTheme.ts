@@ -44,6 +44,18 @@ export interface ColorTheme {
    * The color of the dot on the seek bar.
    */
   seekBarDot: string;
+  /**
+   * The color of the ad display text
+   */
+  adDiplayText: string;
+  /**
+   * The color of the ad display background.
+   */
+  adDisplayBackground: string;
+  /**
+   * The color of the ad skip button background.
+   */
+  adSkipBackground: string;
 }
 
 /**
@@ -97,6 +109,9 @@ export const DEFAULT_THEOPLAYER_THEME: THEOplayerTheme = {
     seekBarMinimum: '#FFFFFF',
     seekBarMaximum: '#FFFFFF50',
     seekBarDot: '#FFFFFF',
+    adDiplayText: '#000',
+    adDisplayBackground: '#FFC50F',
+    adSkipBackground: '#00000070',
   },
   text: {
     textAlignVertical: 'center',

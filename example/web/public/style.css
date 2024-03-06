@@ -15,3 +15,30 @@ body {
 .theoplayer-container {
   z-index: 0;
 }
+
+/*
+ * Hack: THEOplayer's own linear ad UI is not positioned correctly by default
+ * when using the chromeless player.
+ */
+.theoplayer-ad-linear {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+}
+
+/*
+ * Hack: hide THEOplayer's built-in ad UI, so we can use our own components instead
+ * such as <AdCountdown /> and <AdSkipButton />.
+ */
+.theo-ad-remaining-container,
+.theoplayer-ad-skip,
+.theoplayer-ad-touch-clickthrough {
+    display: none !important;
+}
+
+/*
+ * Hack: hide overflow so that when google ima is enabled the screen won't shake furiously anymore.
+ */
+.theoplayer-container {
+  overflow-y: hidden;
+}

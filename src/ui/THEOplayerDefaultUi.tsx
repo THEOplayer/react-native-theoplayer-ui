@@ -10,13 +10,16 @@ import { MuteButton } from './components/button/MuteButton';
 import { CastMessage } from './components/message/CastMessage';
 import { DEFAULT_THEOPLAYER_THEME, THEOplayerTheme } from './THEOplayerTheme';
 import { Platform, StyleProp, View, ViewStyle } from 'react-native';
-import { UiContainer } from './components/uicontroller/UiContainer';
+import { FULLSCREEN_CENTER_STYLE, UiContainer } from './components/uicontroller/UiContainer';
 import { PlayButton } from './components/button/PlayButton';
 import { SkipButton } from './components/button/SkipButton';
 import { Spacer } from './components/controlbar/Spacer';
 import { ChromecastButton } from './components/button/ChromecastButton';
 import { CenteredDelayedActivityIndicator } from './components/activityindicator/CenteredDelayedActivityIndicator';
-import { FULLSCREEN_CENTER_STYLE } from './components/uicontroller/UiContainer';
+import { AdDisplay } from './components/ads/AdDisplay';
+import { AdCountdown } from './components/ads/AdCountdown';
+import { AdSkipButton } from './components/ads/AdSkipButton';
+import { AdClickThroughButton } from './components/ads/AdClickThroughButton';
 
 export interface THEOplayerDefaultUiProps {
   /**
@@ -98,6 +101,32 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
 
                   {bottomSlot}
                   <FullscreenButton />
+                </ControlBar>
+              </>
+            }
+            adTop={
+              <>
+                <ControlBar>
+                  <AdClickThroughButton />
+                </ControlBar>
+              </>
+            }
+            adCenter={
+              <>
+                <CenteredControlBar middle={<PlayButton />} />
+              </>
+            }
+            adBottom={
+              <>
+                <ControlBar style={{ justifyContent: 'flex-start' }}>
+                  <AdDisplay />
+                  <AdCountdown />
+                  <Spacer />
+                  <AdSkipButton />
+                </ControlBar>
+                <ControlBar>
+                  <MuteButton />
+                  <SeekBar />
                 </ControlBar>
               </>
             }
