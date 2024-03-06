@@ -68,7 +68,7 @@ The available UI components with their documentation can be found [here](../src/
 ### Creating your own custom UI
 
 All components inside the `DefaultTHEOplayerUi` are available through the `react-native-theoplayer` package and can
-be use these to create your own custom layout. Since `DefaultTHEOplayerUi` is our version of a "custom" UI, you could
+be used to create your own custom layout. Since `DefaultTHEOplayerUi` is our version of a "custom" UI, you could
 use this as a starting point for your own custom layout.
 
 This use-case is implemented in the [example app](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/example-app.md)
