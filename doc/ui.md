@@ -12,6 +12,7 @@ This section covers what is possible with the current UI and also documents the 
 - [Using the DefaultTHEOplayerUi](#using-the-defaulttheoplayerui)
 - [Creating your own custom UI](#creating-your-own-custom-ui)
 - [Available components](#available-components)
+- [Ad UI](#ad-ui)
 
 ### Prerequisites
 
@@ -107,6 +108,61 @@ export default function App() {
                   <TimeLabel showDuration={true}/>
                   <Spacer/>
                   <FullscreenButton/>
+                </ControlBar>
+              </>
+            }
+          />
+        )}
+      </THEOplayerView>
+    </View>
+  );
+}
+```
+
+### Ad UI
+
+During ad playback the UI might need to be different compared to during content. This can include disabling seeking,
+showing the ad break duration and when the user can skip to content.
+
+Similarly to content playback, the ad UI can be customized by adding components to their respective
+slots: `adTop`, `adCenter` and `adBottom`.
+
+The customized ad UI is only available for web at this moment. Android and iOS will have a play/pause interaction
+in the middle of the screen together with the default Google IMA ad layout.
+
+The following example shows a generic ad UI layout:
+
+```tsx
+export default function App() {
+  const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
+  const onPlayerReady = (player: THEOplayer) => {
+    setPlayer(player);
+  };
+  return (
+    <View style={StyleSheet.absoluteFill}>
+      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}>
+        {player !== undefined && (
+          <UiContainer
+            theme={DEFAULT_THEOPLAYER_THEME}
+            player={player}
+            behind={<CenteredDelayedActivityIndicator size={50}/>}
+            adTop={
+              <ControlBar>
+                <AdClickThroughButton />
+              </ControlBar>
+            }
+            adCenter={<CenteredControlBar middle={<PlayButton />} />}
+            adBottom={
+              <>
+                <ControlBar style={{justifyContent: 'flex-start'}}>
+                  <AdDisplay />
+                  <AdCountdown />
+                  <Spacer />
+                  <AdSkipButton />
+                </ControlBar>
+                <ControlBar>
+                  <MuteButton />
+                  <SeekBar />
                 </ControlBar>
               </>
             }
