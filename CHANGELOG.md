@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Added support for CSAI.
+
 ### Fixed
 
 - Fixed connected state for chromecastButton to not take into account the casting state in general (e.g. airplay should not influence this state).
