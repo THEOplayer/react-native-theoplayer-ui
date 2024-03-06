@@ -12,7 +12,6 @@ This section covers what is possible with the current UI and also documents the 
 - [Using the DefaultTHEOplayerUi](#using-the-defaulttheoplayerui)
 - [Creating your own custom UI](#creating-your-own-custom-ui)
 - [Available components](#available-components)
-- [Ad UI](#ad-ui)
 
 ### Prerequisites
 
