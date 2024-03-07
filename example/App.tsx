@@ -132,17 +132,11 @@ export default function App() {
                 </>
               }
               adTop={
-                <>
-                  <ControlBar>
-                    <AdClickThroughButton />
-                  </ControlBar>
-                </>
+                <ControlBar>
+                  <AdClickThroughButton />
+                </ControlBar>
               }
-              adCenter={
-                <>
-                  <CenteredControlBar middle={<PlayButton />} />
-                </>
-              }
+              adCenter={<CenteredControlBar middle={<PlayButton />} />}
               adBottom={
                 <>
                   <ControlBar style={{justifyContent: 'flex-start'}}>
