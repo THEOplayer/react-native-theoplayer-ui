@@ -1,3 +1,9 @@
+---
+sidebar_position: 3
+sidebar_custom_props: { 'icon': '⚠️' }
+slug: /react-native-ui/limitations-and-known-issues
+---
+
 # Limitations and Known Issues
 
 - Support for remote control navigation on TV platforms.

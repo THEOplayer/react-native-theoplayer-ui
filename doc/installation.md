@@ -1,4 +1,10 @@
-# Installing @theoplayer/react-native-ui
+---
+sidebar_position: 2
+sidebar_custom_props: { 'icon': '📦' }
+slug: /react-native-ui/installation
+---
+
+# Installation
 
 ## Prerequisites
 

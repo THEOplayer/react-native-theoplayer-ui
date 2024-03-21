@@ -1,4 +1,12 @@
-# Getting started with the react-native-theoplayer UI
+---
+title: Getting started
+description: Start building your UI in just a few minutes!
+sidebar_position: 1
+sidebar_custom_props: { 'icon': '🚀' }
+slug: /react-native-ui/getting-started
+---
+
+# Getting started with the React Native THEOplayer UI
 
 The `@theoplayer/react-native-ui` package provides UI components and a `THEOplayerDefaultUi` that can be used with
 alongside the `THEOplayerView`.
