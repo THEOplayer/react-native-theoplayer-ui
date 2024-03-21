@@ -46,7 +46,9 @@ npm install \
 
 The package contains a number of transitive dependencies that contain native iOS and Android platform code
 as well. These are not auto-linked if your project does not already have them as a dependency,
-so they need to be explicitly defined in the `react-native.config.js` file in project's root:
+so they need to be explicitly defined in the
+[`react-native.config.js`](https://github.com/react-native-community/cli/blob/main/docs/configuration.md) file
+in project's root:
 
 ```typescript title="react-native.config.js"
 module.exports = {
