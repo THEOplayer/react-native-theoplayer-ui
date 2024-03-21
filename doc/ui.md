@@ -102,23 +102,24 @@ export default function App() {
           <UiContainer
             theme={DEFAULT_THEOPLAYER_THEME}
             player={player}
-            behind={<CenteredDelayedActivityIndicator size={50}/>}
+            behind={<CenteredDelayedActivityIndicator size={50} />}
             center={
               <CenteredControlBar
                 left={<SkipButton skip={-10}/>}
                 middle={<PlayButton/>}
                 right={<SkipButton skip={30}/>}
-              />}
+              />
+            }
             bottom={
               <>
                 <ControlBar>
-                  <SeekBar/>
+                  <SeekBar />
                 </ControlBar>
                 <ControlBar>
-                  <MuteButton/>
-                  <TimeLabel showDuration={true}/>
-                  <Spacer/>
-                  <FullscreenButton/>
+                  <MuteButton />
+                  <TimeLabel showDuration={true} />
+                  <Spacer />
+                  <FullscreenButton />
                 </ControlBar>
               </>
             }
@@ -130,7 +131,7 @@ export default function App() {
             adCenter={<CenteredControlBar middle={<PlayButton />} />}
             adBottom={
               <>
-                <ControlBar style={{justifyContent: 'flex-start'}}>
+                <ControlBar style={{ justifyContent: 'flex-start' }}>
                   <AdDisplay />
                   <AdCountdown />
                   <Spacer />
