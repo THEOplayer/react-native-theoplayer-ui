@@ -45,6 +45,5 @@ This section starts with adding the `@theoplayer/react-native-ui` as a dependenc
 after which a basic UI is built.
 Finally, some known limitations and issues are listed.
 
-- [Installation](docs/installation.md)
 - [Getting started with the UI](docs/ui.md)
 - [Limitations and known issues](docs/limitations.md)
