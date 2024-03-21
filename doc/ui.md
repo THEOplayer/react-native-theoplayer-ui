@@ -7,12 +7,6 @@ This section covers what is possible with the current UI and also documents the 
 
 ![basic-ui](./example-app-player-ui.png)
 
-### Table of Contents
-
-- [Using the DefaultTHEOplayerUi](#using-the-defaulttheoplayerui)
-- [Creating your own custom UI](#creating-your-own-custom-ui)
-- [Available components](#available-components)
-
 ### Prerequisites
 
 The UI components have a few non-transitive dependencies that are required to be installed manually:
