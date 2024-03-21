@@ -1,11 +1,11 @@
-## Installing @theoplayer/react-native-ui
+# Installing @theoplayer/react-native-ui
 
-### Prerequisites
+## Prerequisites
 
 The UI components will depend on a `THEOplayerView` instance provided by `react-native-theoplayer`, so make
 sure this package is installed.
 
-### Adding the package dependency
+## Adding the package dependency
 
 Using the `npm`, `yarn`, or any other package manager, add the dependency to your project.
 

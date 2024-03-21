@@ -1,4 +1,4 @@
-## Getting started with the react-native-theoplayer UI
+# Getting started with the react-native-theoplayer UI
 
 The `@theoplayer/react-native-ui` package provides UI components and a `DefaultTHEOplayerUi` that can be used with
 alongside the `THEOplayerView`.
@@ -7,7 +7,7 @@ This section covers what is possible with the current UI and also documents the 
 
 ![basic-ui](./example-app-player-ui.png)
 
-### Prerequisites
+## Prerequisites
 
 The UI components have a few non-transitive dependencies that are required to be installed manually:
 
@@ -17,7 +17,7 @@ npm install \
   @react-native-community/slider
 ```
 
-### Using the DefaultTHEOplayerUi
+## Using the DefaultTHEOplayerUi
 
 The `THEOplayerDefaultUi` can be used to provide basic playback controls to the viewer.
 As the default UI also includes Chromecast & Airplay support, make sure to configure these first as explained in the
@@ -55,12 +55,12 @@ const App = () => {
 };
 ```
 
-### Available components
+## Available components
 
 The API documentation of all available components can be found [here](https://theoplayer.github.io/react-native-theoplayer-ui/api/).
 Their source code can be found [here](https://github.com/THEOplayer/react-native-theoplayer-ui/tree/develop/src/ui).
 
-### Creating your own custom UI
+## Creating your own custom UI
 
 All components inside the `DefaultTHEOplayerUi` are available through the `react-native-theoplayer` package and can
 be used to create your own custom layout. Since `DefaultTHEOplayerUi` is our version of a "custom" UI, you could
