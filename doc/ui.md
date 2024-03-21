@@ -9,18 +9,39 @@ slug: /react-native-ui/getting-started
 # Getting started with the React Native THEOplayer UI
 
 The `@theoplayer/react-native-ui` package provides UI components and a `THEOplayerDefaultUi` that can be used
-alongside the `THEOplayerView` from `react-native-theoplayer`.
+alongside the `THEOplayerView` from the THEOplayer React Native SDK.
 
 ![basic-ui](./example-app-player-ui.png)
 
-## Prerequisites
+## Installation
 
-The UI components have a few non-transitive dependencies that are required to be installed manually:
+Using `npm`, `yarn`, or any other package manager, add `@theoplayer/react-native-ui` to your project's dependencies.
+
+The UI components will depend on a `THEOplayerView` instance provided by `react-native-theoplayer`, so make
+sure this package is installed.
+
+The UI components also have a few non-transitive dependencies that are required to be installed manually.
 
 ```bash
 npm install \
+  @theoplayer/react-native-ui \
+  react-native-theoplayer \
   react-native-svg \
   @react-native-community/slider
+```
+
+The package contains a number of transitive dependencies that contain native iOS and Android platform code
+as well. These are not auto-linked if your project does not already have them as a dependency,
+so they need to be explicitly defined in the `react-native.config.js` file in project's root:
+
+```typescript title="react-native.config.js"
+module.exports = {
+  dependencies: {
+    'react-native-google-cast': {},
+    'react-native-svg': {},
+    '@react-native-community/slider': {},
+  },
+};
 ```
 
 ## Using the THEOplayerDefaultUi
