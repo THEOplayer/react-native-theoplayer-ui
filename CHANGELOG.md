@@ -10,13 +10,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [0.6.0] - 24-03-27
+## 0.6.0 (2024-03-27)
 
 ### Fixed
 
 - Fixed an issue where the skip buttons would remain disabled for MP4 sources.
 
-## [0.5.0] - 24-03-06
+## 0.5.0 (2024-03-06)
 
 ### Added
 
@@ -26,19 +26,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed connected state for chromecastButton to not take into account the casting state in general (e.g. airplay should not influence this state).
 
-## [0.4.0] - 24-02-14
+## 0.4.0 (2024-02-14)
 
 ### Added
 
 - Added support for overriding button icons.
 
-## [0.3.0] - 23-12-01
+## 0.3.0 (2023-12-01)
 
 ### Fixed
 
 - Fixed several transitioning issues related to PiP state changes and closing menus.
 
-## [0.2.0] - 23-06-26
+## 0.2.0 (2023-06-26)
 
 ### Fixed
 
@@ -48,12 +48,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Assume `PlayerConfiguration.chromeless` to be `true` if not specified.
 
-## [0.1.1] - 23-06-06
+## 0.1.1 (2023-06-06)
 
 ### Fixed
 
 - Fixed an issue on Web where using the `ChromecastButton` component would result in a crash.
 
-## [0.1.0] - 23-06-05
+## 0.1.0 (2023-06-05)
 
 - Initial release.
