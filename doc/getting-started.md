@@ -8,10 +8,24 @@ slug: /react-native-ui/getting-started
 
 # Getting started with the React Native THEOplayer UI
 
-The `@theoplayer/react-native-ui` package provides UI components and a `THEOplayerDefaultUi` that can be used
-alongside the `THEOplayerView` from the THEOplayer React Native SDK.
+The [`@theoplayer/react-native-ui`](https://www.npmjs.com/package/@theoplayer/react-native-ui) package provides
+a collection of UI components for [`react-native-theoplayer`](https://www.npmjs.com/package/react-native-theoplayer),
+the official THEOplayer React Native video player.
+The following platforms are supported:
+
+- Android, Android TV & FireTV
+- iOS & tvOS (Apple TV)
+- Web
+
+This guide covers how to set up the React Native UI, and how to add a UI to your `THEOplayerView` component.
 
 ![basic-ui](./example-app-player-ui.png)
+
+## Prerequisites
+
+If you have no previous experience in React Native, we encourage you to first explore the
+[React Native Documentation](https://reactnative.dev/docs/getting-started),
+as it gives you a good start on one of the most popular app development frameworks.
 
 ## Installation
 
