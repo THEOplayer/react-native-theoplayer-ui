@@ -1,6 +1,6 @@
 # React Native THEOplayer UI
 
-![](./doc/logo-react-native.png) ![](./doc/logo-theo.png)
+![](docs/logo-react-native.png) ![](docs/logo-theo.png)
 
 ## License
 
@@ -45,6 +45,6 @@ This section starts with adding the `@theoplayer/react-native-ui` as a dependenc
 after which a basic UI is built.
 Finally, some known limitations and issues are listed.
 
-- [Installation](./doc/installation.md)
-- [Getting started with the UI](./doc/ui.md)
-- [Limitations and known issues](./doc/limitations.md)
+- [Installation](docs/installation.md)
+- [Getting started with the UI](docs/ui.md)
+- [Limitations and known issues](docs/limitations.md)
