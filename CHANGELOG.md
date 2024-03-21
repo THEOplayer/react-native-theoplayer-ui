@@ -1,3 +1,8 @@
+---
+description: Find out what's new in the React Native UI.
+sidebar_custom_props: { 'icon': '📰' }
+---
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
