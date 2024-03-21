@@ -8,10 +8,8 @@ slug: /react-native-ui/getting-started
 
 # Getting started with the React Native THEOplayer UI
 
-The `@theoplayer/react-native-ui` package provides UI components and a `THEOplayerDefaultUi` that can be used with
-alongside the `THEOplayerView`.
-
-This section covers what is possible with the current UI and also documents the known limitations.
+The `@theoplayer/react-native-ui` package provides UI components and a `THEOplayerDefaultUi` that can be used
+alongside the `THEOplayerView` from `react-native-theoplayer`.
 
 ![basic-ui](./example-app-player-ui.png)
 
