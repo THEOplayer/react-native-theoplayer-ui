@@ -58,7 +58,7 @@ export class SkipButton extends PureComponent<SkipButtonProps, SkipButtonState> 
   }
 
   private readonly onProgress = (event: ProgressEvent) => {
-    this.setState({ enabled: event.seekable.length > 0 });
+    this.setState({ enabled: event.seekable.length > 0 || event.buffered.length > 0 });
   };
 
   private readonly onPress = () => {
