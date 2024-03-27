@@ -48,17 +48,24 @@ export class SkipButton extends PureComponent<SkipButtonProps, SkipButtonState> 
 
   componentDidMount() {
     const player = (this.context as UiContext).player;
-    player.addEventListener(PlayerEventType.PROGRESS, this.onTimeupdate);
+    player.addEventListener(PlayerEventType.PROGRESS, this.onProgress);
+    player.addEventListener(PlayerEventType.PLAYING, this.onPlaying);
     this.setState({ enabled: player.seekable.length > 0 });
   }
 
   componentWillUnmount() {
     const player = (this.context as UiContext).player;
-    player.removeEventListener(PlayerEventType.PROGRESS, this.onTimeupdate);
+    player.removeEventListener(PlayerEventType.PROGRESS, this.onProgress);
+    player.removeEventListener(PlayerEventType.PLAYING, this.onPlaying);
   }
 
-  private readonly onTimeupdate = (event: ProgressEvent) => {
-    this.setState({ enabled: event.seekable.length > 0 });
+  private readonly onProgress = (event: ProgressEvent) => {
+    this.setState({ enabled: event.seekable.length > 0 || event.buffered.length > 0 });
+  };
+
+  private readonly onPlaying = () => {
+    const player = (this.context as UiContext).player;
+    this.setState({ enabled: player.seekable.length > 0 || player.buffered.length > 0 });
   };
 
   private readonly onPress = () => {
