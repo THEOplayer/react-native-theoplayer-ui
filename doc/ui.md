@@ -68,12 +68,21 @@ The available UI components with their documentation can be found [here](../src/
 ### Creating your own custom UI
 
 All components inside the `DefaultTHEOplayerUi` are available through the `react-native-theoplayer` package and can
-be use these to create your own custom layout. Since `DefaultTHEOplayerUi` is our version of a "custom" UI, you could
+be used to create your own custom layout. Since `DefaultTHEOplayerUi` is our version of a "custom" UI, you could
 use this as a starting point for your own custom layout.
 
 This use-case is implemented in the [example app](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/example-app.md)
 that is included in the `react-native-theoplayer` repository, which adds a
 custom [SourceMenuButton](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/example/src/custom/SourceMenuButton.tsx).
+
+During ad playback the UI probably needs to be different compared to during content. This can include disabling seeking,
+showing the ad break duration and when the user can skip to content.
+
+Similarly to content playback, the ad UI can be customized by adding components to their respective
+slots: `adTop`, `adCenter` and `adBottom`.
+
+The customized ad UI is only available for web at this moment. Android and iOS will have a play/pause interaction
+in the middle of the screen together with the default Google IMA ad layout.
 
 The following example shows a UI layout with only basic playback controls:
 
@@ -107,6 +116,26 @@ export default function App() {
                   <TimeLabel showDuration={true}/>
                   <Spacer/>
                   <FullscreenButton/>
+                </ControlBar>
+              </>
+            }
+            adTop={
+              <ControlBar>
+                <AdClickThroughButton />
+              </ControlBar>
+            }
+            adCenter={<CenteredControlBar middle={<PlayButton />} />}
+            adBottom={
+              <>
+                <ControlBar style={{justifyContent: 'flex-start'}}>
+                  <AdDisplay />
+                  <AdCountdown />
+                  <Spacer />
+                  <AdSkipButton />
+                </ControlBar>
+                <ControlBar>
+                  <MuteButton />
+                  <SeekBar />
                 </ControlBar>
               </>
             }
