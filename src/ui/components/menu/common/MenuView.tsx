@@ -6,7 +6,7 @@ import { TOP_UI_CONTAINER_STYLE } from '../../uicontroller/UiContainer';
 import { BackSvg } from '../../button/svg/BackSvg';
 import { ActionButton } from '../../button/actionbutton/ActionButton';
 
-interface MenuViewProps {
+export interface MenuViewProps {
   /**
    * The menu to render inside the menu view.
    */

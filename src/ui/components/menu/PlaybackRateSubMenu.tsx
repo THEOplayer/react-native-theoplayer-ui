@@ -29,7 +29,7 @@ export const DEFAULT_PLAYBACK_RATE_MENU_VALUES: PlaybackRateValue[] = [
   { value: 2, label: '2x' },
 ];
 
-interface PlaybackRateSubMenuProps {
+export interface PlaybackRateSubMenuProps {
   /**
    * Overrides for the default playbackRate values.
    */
@@ -56,7 +56,7 @@ export const PlaybackRateSubMenu = (props: PlaybackRateSubMenuProps) => {
   return <SubMenuWithButton menuConstructor={createMenu} label={'Speed'} preview={preview} />;
 };
 
-interface PlaybackSelectionViewProps {
+export interface PlaybackSelectionViewProps {
   menuStyle?: StyleProp<ViewStyle>;
   values: PlaybackRateValue[];
 }

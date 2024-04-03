@@ -10,7 +10,7 @@ export const DEFAULT_CONTROL_BAR_STYLE: ViewStyle = {
   justifyContent: 'flex-end',
 };
 
-interface ControlBarProps {
+export interface ControlBarProps {
   /**
    * The style overrides for the control bar.
    */
@@ -31,7 +31,7 @@ export const ControlBar = (props: React.PropsWithChildren<ControlBarProps>) => {
   );
 };
 
-interface CenteredControlBarProps {
+export interface CenteredControlBarProps {
   /**
    * The style overrides for the control bar.
    */

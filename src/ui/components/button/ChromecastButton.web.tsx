@@ -9,7 +9,7 @@ interface CastButtonState {
   castState: CastState;
 }
 
-interface CastButtonProps {
+export interface CastButtonProps {
   /**
    * The icon component used in the button. Only overrideable for web.
    */

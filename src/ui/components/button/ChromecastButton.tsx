@@ -9,7 +9,7 @@ interface CastButtonState {
   connected: boolean;
 }
 
-interface CastButtonProps {
+export interface CastButtonProps {
   /**
    * The icon component used in the button. Only overrideable for web.
    */

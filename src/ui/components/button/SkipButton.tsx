@@ -7,7 +7,7 @@ import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'reac
 import { BackwardSvg } from './svg/BackwardSvg';
 import { PlayerEventType, ProgressEvent } from 'react-native-theoplayer';
 
-interface SkipButtonProps {
+export interface SkipButtonProps {
   /**
    * The style overrides for the skip button.
    */

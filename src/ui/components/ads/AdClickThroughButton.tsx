@@ -5,7 +5,7 @@ import { Ad, AdEvent, AdEventType, PlayerEventType, TimeUpdateEvent } from 'reac
 import { arrayFind } from '../../utils/ArrayUtils';
 import { isLinearAd } from '../../utils/AdUtils';
 
-interface AdClickThroughButtonProps {
+export interface AdClickThroughButtonProps {
   /**
    * Optional style applied to the ad click through button
    */

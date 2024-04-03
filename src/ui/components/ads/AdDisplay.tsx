@@ -5,7 +5,7 @@ import { AdEvent, AdEventType, PlayerEventType } from 'react-native-theoplayer';
 import { arrayFind } from '../../utils/ArrayUtils';
 import { isLinearAd } from '../../utils/AdUtils';
 
-interface AdDisplayProps {
+export interface AdDisplayProps {
   /**
    * Optional style applied to the AdDisplay
    */
