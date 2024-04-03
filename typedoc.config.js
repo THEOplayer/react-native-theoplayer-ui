@@ -25,4 +25,17 @@ module.exports = {
       externalBaseURL: 'https://theoplayer.github.io/react-native-theoplayer/api',
     },
   },
+  externalSymbolLinkMappings: {
+    react: {
+      'Component': 'https://react.dev/reference/react/Component',
+      'PureComponent': 'https://react.dev/reference/react/PureComponent',
+      '*': 'https://react.dev/reference/react'
+    },
+    'react-native': {
+      'Platform': 'https://reactnative.dev/docs/platform',
+      'Text': 'https://reactnative.dev/docs/text',
+      'View': 'https://reactnative.dev/docs/view',
+      '*': 'https://reactnative.dev/docs/components-and-apis'
+    }
+  },
 };
