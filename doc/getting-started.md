@@ -3,7 +3,6 @@ title: Getting started
 description: Start building your UI in just a few minutes!
 sidebar_position: 1
 sidebar_custom_props: { 'icon': '🚀' }
-slug: /react-native-ui/getting-started
 ---
 
 # Getting started with the React Native THEOplayer UI
