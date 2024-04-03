@@ -10,7 +10,7 @@ interface CastButtonState {
   castState: CastState;
 }
 
-interface AirplayButtonProps {
+export interface AirplayButtonProps {
   /**
    * The icon component used in the button.
    */

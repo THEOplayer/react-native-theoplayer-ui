@@ -10,7 +10,7 @@ interface MuteButtonState {
   muted: boolean;
 }
 
-interface MuteButtonProps {
+export interface MuteButtonProps {
   /**
    * The icon components used in the button.
    */

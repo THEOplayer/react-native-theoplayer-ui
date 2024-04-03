@@ -11,7 +11,7 @@ interface FullscreenButtonState {
   presentationMode: PresentationMode;
 }
 
-interface FullscreenProps {
+export interface FullscreenProps {
   /**
    * The icon components used in the button.
    */

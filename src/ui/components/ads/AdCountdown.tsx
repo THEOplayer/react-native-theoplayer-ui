@@ -3,7 +3,7 @@ import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { StyleProp, Text, TextStyle } from 'react-native';
 import { AdEvent, AdEventType, PlayerEventType, TimeUpdateEvent } from 'react-native-theoplayer';
 
-interface AdCountdownProps {
+export interface AdCountdownProps {
   /**
    * Optional style applied to the AdCountdown
    */

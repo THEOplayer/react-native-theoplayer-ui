@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { SafeAreaView, ScrollView, View, ViewStyle } from 'react-native';
 import { MenuTitle } from './MenuTitle';
 
-interface ScrollableMenuProps {
+export interface ScrollableMenuProps {
   /**
    * The title of the scrollable menu.
    */

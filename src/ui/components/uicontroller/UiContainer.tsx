@@ -7,7 +7,7 @@ import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
 
-interface UiContainerProps {
+export interface UiContainerProps {
   /**
    * The player that is provided to all children using PlayerContext.
    */
@@ -167,7 +167,7 @@ export const AD_UI_TOP_CONTAINER_STYLE: ViewStyle = TOP_UI_CONTAINER_STYLE;
 export const AD_UI_CENTER_CONTAINER_STYLE: ViewStyle = CENTER_UI_CONTAINER_STYLE;
 export const AD_UI_BOTTOM_CONTAINER_STYLE: ViewStyle = BOTTOM_UI_CONTAINER_STYLE;
 
-interface UiContainerState {
+export interface UiContainerState {
   fadeAnimation: Animated.Value;
   currentMenu: ReactNode | undefined;
   showing: boolean;

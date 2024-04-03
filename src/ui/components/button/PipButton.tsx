@@ -11,7 +11,7 @@ interface PipButtonState {
   presentationMode: PresentationMode;
 }
 
-interface PipButtonProps {
+export interface PipButtonProps {
   /**
    * The icon components used in the button.
    */
