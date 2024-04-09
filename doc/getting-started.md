@@ -1,29 +1,65 @@
-## Getting started with the react-native-theoplayer UI
+---
+title: Getting started
+description: Start building your UI in just a few minutes!
+sidebar_position: 1
+sidebar_custom_props: { 'icon': '🚀' }
+---
 
-The `@theoplayer/react-native-ui` package provides UI components and a `DefaultTHEOplayerUi` that can be used with
-alongside the `THEOplayerView`.
+# Getting started with the React Native THEOplayer UI
 
-This section covers what is possible with the current UI and also documents the known limitations.
+The [`@theoplayer/react-native-ui`](https://www.npmjs.com/package/@theoplayer/react-native-ui) package provides
+a collection of UI components for [`react-native-theoplayer`](https://www.npmjs.com/package/react-native-theoplayer),
+the official THEOplayer React Native video player.
+The following platforms are supported:
+
+- Android, Android TV & FireTV
+- iOS & tvOS (Apple TV)
+- Web
+
+This guide covers how to set up the React Native UI, and how to add a UI to your `THEOplayerView` component.
 
 ![basic-ui](./example-app-player-ui.png)
 
-### Table of Contents
+## Prerequisites
 
-- [Using the DefaultTHEOplayerUi](#using-the-defaulttheoplayerui)
-- [Creating your own custom UI](#creating-your-own-custom-ui)
-- [Available components](#available-components)
+If you have no previous experience in React Native, we encourage you to first explore the
+[React Native Documentation](https://reactnative.dev/docs/getting-started),
+as it gives you a good start on one of the most popular app development frameworks.
 
-### Prerequisites
+## Installation
 
-The UI components have a few non-transitive dependencies that are required to be installed manually:
+Using `npm`, `yarn`, or any other package manager, add `@theoplayer/react-native-ui` to your project's dependencies.
+
+The UI components will depend on a `THEOplayerView` instance provided by `react-native-theoplayer`, so make
+sure this package is installed.
+
+The UI components also have a few non-transitive dependencies that are required to be installed manually.
 
 ```bash
 npm install \
+  @theoplayer/react-native-ui \
+  react-native-theoplayer \
   react-native-svg \
   @react-native-community/slider
 ```
 
-### Using the DefaultTHEOplayerUi
+The package contains a number of transitive dependencies that contain native iOS and Android platform code
+as well. These are not auto-linked if your project does not already have them as a dependency,
+so they need to be explicitly defined in the
+[`react-native.config.js`](https://github.com/react-native-community/cli/blob/main/docs/configuration.md) file
+in project's root:
+
+```typescript title="react-native.config.js"
+module.exports = {
+  dependencies: {
+    'react-native-google-cast': {},
+    'react-native-svg': {},
+    '@react-native-community/slider': {},
+  },
+};
+```
+
+## Using the THEOplayerDefaultUi
 
 The `THEOplayerDefaultUi` can be used to provide basic playback controls to the viewer.
 As the default UI also includes Chromecast & Airplay support, make sure to configure these first as explained in the
@@ -61,15 +97,15 @@ const App = () => {
 };
 ```
 
-### Available components
+## Available components
 
 The API documentation of all available components can be found [here](https://theoplayer.github.io/react-native-theoplayer-ui/api/).
 Their source code can be found [here](https://github.com/THEOplayer/react-native-theoplayer-ui/tree/develop/src/ui).
 
-### Creating your own custom UI
+## Creating your own custom UI
 
-All components inside the `DefaultTHEOplayerUi` are available through the `react-native-theoplayer` package and can
-be used to create your own custom layout. Since `DefaultTHEOplayerUi` is our version of a "custom" UI, you could
+All components inside the `THEOplayerDefaultUi` are available through the `react-native-theoplayer` package and can
+be used to create your own custom layout. Since `THEOplayerDefaultUi` is our version of a "custom" UI, you could
 use this as a starting point for your own custom layout.
 
 This use-case is implemented in the [example app](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/example-app.md)
@@ -100,23 +136,24 @@ export default function App() {
           <UiContainer
             theme={DEFAULT_THEOPLAYER_THEME}
             player={player}
-            behind={<CenteredDelayedActivityIndicator size={50}/>}
+            behind={<CenteredDelayedActivityIndicator size={50} />}
             center={
               <CenteredControlBar
                 left={<SkipButton skip={-10}/>}
                 middle={<PlayButton/>}
                 right={<SkipButton skip={30}/>}
-              />}
+              />
+            }
             bottom={
               <>
                 <ControlBar>
-                  <SeekBar/>
+                  <SeekBar />
                 </ControlBar>
                 <ControlBar>
-                  <MuteButton/>
-                  <TimeLabel showDuration={true}/>
-                  <Spacer/>
-                  <FullscreenButton/>
+                  <MuteButton />
+                  <TimeLabel showDuration={true} />
+                  <Spacer />
+                  <FullscreenButton />
                 </ControlBar>
               </>
             }
@@ -128,7 +165,7 @@ export default function App() {
             adCenter={<CenteredControlBar middle={<PlayButton />} />}
             adBottom={
               <>
-                <ControlBar style={{justifyContent: 'flex-start'}}>
+                <ControlBar style={{ justifyContent: 'flex-start' }}>
                   <AdDisplay />
                   <AdCountdown />
                   <Spacer />
