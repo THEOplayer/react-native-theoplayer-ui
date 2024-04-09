@@ -63,7 +63,8 @@ const App = () => {
 
 ### Available components
 
-The available UI components with their documentation can be found [here](../src/ui).
+The API documentation of all available components can be found [here](https://theoplayer.github.io/react-native-theoplayer-ui/api/).
+Their source code can be found [here](https://github.com/THEOplayer/react-native-theoplayer-ui/tree/develop/src/ui).
 
 ### Creating your own custom UI
 
