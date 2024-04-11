@@ -58,9 +58,9 @@
     "react-native-builder-bob": "^0.18.0",
     "react-native-google-cast": "^4.6.2",
     "react-native-svg": "^13.8.0",
-    "react-native-theoplayer": "^3.8.0",
+    "react-native-theoplayer": "^7.0.0",
     "release-it": "^16.2.0",
-    "theoplayer": "^6.9.0",
+    "theoplayer": "^7.1.0",
     "typedoc": "^0.25.12",
     "typedoc-plugin-external-resolver": "^1.0.3",
     "typedoc-plugin-mdn-links": "^3.1.19",
@@ -72,8 +72,8 @@
     "react-native": "*",
     "react-native-google-cast": "^4.6.2",
     "react-native-svg": "^13.8.0",
-    "react-native-theoplayer": "^2.7.0 || ^3",
-    "theoplayer": "^5.0.1 || ^6"
+    "react-native-theoplayer": "^2.7.0 || ^3 || ^7",
+    "theoplayer": "^5.0.1 || ^6 || ^7"
   },
   "peerDependenciesMeta": {
     "theoplayer": {

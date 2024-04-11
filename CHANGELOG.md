@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Added support for THEOplayer 7.0 and React Native THEOplayer 7.0.
+
 ### Fixed
 
 - Fixed TypeScript type definitions to export interfaces describing the props for all components.
