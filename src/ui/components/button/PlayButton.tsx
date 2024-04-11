@@ -7,7 +7,7 @@ import { PlaySvg } from './svg/PlaySvg';
 import { PauseSvg } from './svg/PauseSvg';
 import { ReplaySvg } from './svg/ReplaySvg';
 
-interface PlayButtonProps {
+export interface PlayButtonProps {
   /**
    * The style overrides for the play/pause button.
    */

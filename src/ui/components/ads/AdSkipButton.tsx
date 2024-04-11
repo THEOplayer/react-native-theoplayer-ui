@@ -7,7 +7,7 @@ import { isLinearAd } from '../../utils/AdUtils';
 import { ActionButton } from '../button/actionbutton/ActionButton';
 import { SkipNextSvg } from '../button/svg/SkipNext';
 
-interface AdSkipButtonProps {
+export interface AdSkipButtonProps {
   /**
    * Optional style applied to the ad skip button
    */
