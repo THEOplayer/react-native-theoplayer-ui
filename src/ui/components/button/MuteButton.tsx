@@ -45,6 +45,7 @@ export class MuteButton extends PureComponent<MuteButtonProps, MuteButtonState> 
   private toggleMuted = () => {
     const player = (this.context as UiContext).player;
     player.muted = !player.muted;
+    this.setState({ muted: player.muted });
   };
 
   render() {
