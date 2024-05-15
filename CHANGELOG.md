@@ -10,6 +10,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- Fixed an issue where the `SeekBar`'s seekable state was not updated when switching to a MP4 source.
+- Fixed an issue where the `SkipButton` components are not rendered when switching sources while casting.
+
 ## 0.7.1 (2024-04-16)
 
 ### Fixed
