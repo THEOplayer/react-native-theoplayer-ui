@@ -65,7 +65,8 @@ export class SkipButton extends PureComponent<SkipButtonProps, SkipButtonState> 
 
   private readonly onPlaying = () => {
     const player = (this.context as UiContext).player;
-    this.setState({ enabled: player.seekable.length > 0 || player.buffered.length > 0 });
+    const isCasting =  player.cast.chromecast?.casting ?? false
+    this.setState({ enabled: player.seekable.length > 0 || player.buffered.length > 0 || isCasting});
   };
 
   private readonly onPress = () => {
