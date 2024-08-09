@@ -46,7 +46,7 @@ export class PlayButton extends PureComponent<PlayButtonProps, PlayButtonState> 
     context.player.addEventListener(PlayerEventType.SEEKING, this.onSeeking);
     this.setState({
       paused: context.player.paused,
-      ended: context.player.currentTime === context.player.duration,
+      ended: (context.player.duration > 0) && (context.player.currentTime === context.player.duration),
     });
   }
 
