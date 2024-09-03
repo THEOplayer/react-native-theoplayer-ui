@@ -72,8 +72,8 @@
     "react-native": "*",
     "react-native-google-cast": "^4.6.2",
     "react-native-svg": "^13.8.0 || ^14 || ^15",
-    "react-native-theoplayer": "^2.7.0 || ^3 || ^7",
-    "theoplayer": "^5.0.1 || ^6 || ^7"
+    "react-native-theoplayer": "^2.7.0 || ^3 || ^7 || ^8",
+    "theoplayer": "^5.0.1 || ^6 || ^7 || ^8"
   },
   "peerDependenciesMeta": {
     "theoplayer": {
