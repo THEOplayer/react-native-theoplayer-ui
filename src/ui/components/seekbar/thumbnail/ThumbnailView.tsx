@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import type { ImageErrorEventData, NativeSyntheticEvent, StyleProp, ViewStyle } from "react-native";
+import type { ImageErrorEventData, NativeSyntheticEvent, StyleProp, ViewStyle } from 'react-native';
 import { Image, View } from 'react-native';
 import type { TextTrackCue } from 'react-native-theoplayer';
 import { isThumbnailTrack, TextTrack } from 'react-native-theoplayer';

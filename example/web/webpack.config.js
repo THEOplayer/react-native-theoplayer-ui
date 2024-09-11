@@ -26,12 +26,19 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin({
     {
       // Copy transmuxer worker files.
       // THEOplayer will find them by setting `libraryLocation` in the playerConfiguration.
-      from: path.resolve(projectDirectory, './node_modules/theoplayer/THEOplayer.transmux.*').replace(/\\/g, '/'),
+      from: path
+        .resolve(
+          projectDirectory,
+          './node_modules/theoplayer/THEOplayer.transmux.*',
+        )
+        .replace(/\\/g, '/'),
       to: `${libraryLocation}/[name][ext]`,
     },
     {
       // Copy CSS files
-      from: path.resolve(projectDirectory, './web/public/*.css').replace(/\\/g, '/'),
+      from: path
+        .resolve(projectDirectory, './web/public/*.css')
+        .replace(/\\/g, '/'),
       to: `[name][ext]`,
     },
   ],
@@ -88,15 +95,25 @@ module.exports = {
       'react-native$': 'react-native-web',
       'react-native-url-polyfill': 'url-polyfill',
       'react-native-google-cast': path.resolve(stubDirectory, 'CastButtonStub'),
-      'react-native-web': path.resolve(projectDirectory, 'node_modules/react-native-web'),
-      'react-native-svg': path.resolve(projectDirectory, 'node_modules/react-native-svg-web'),
+      'react-native-web': path.resolve(
+        projectDirectory,
+        'node_modules/react-native-web',
+      ),
+      'react-native-svg': path.resolve(
+        projectDirectory,
+        'node_modules/react-native-svg-web',
+      ),
 
       // Avoid duplicate react env.
-      'react': path.resolve(projectDirectory, 'node_modules/react'),
-      'react-dom': path.resolve(projectDirectory, 'node_modules/react-dom')
+      react: path.resolve(projectDirectory, 'node_modules/react'),
+      'react-dom': path.resolve(projectDirectory, 'node_modules/react-dom'),
     },
   },
-  plugins: [HTMLWebpackPluginConfig, CopyWebpackPluginConfig, new NodePolyfillPlugin()],
+  plugins: [
+    HTMLWebpackPluginConfig,
+    CopyWebpackPluginConfig,
+    new NodePolyfillPlugin(),
+  ],
   devServer: {
     // Tells dev-server to open the browser after server had been started.
     open: true,

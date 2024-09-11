@@ -77,7 +77,7 @@ export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
   private _onDurationChange = (event: DurationChangeEvent) => {
     const player = (this.context as UiContext).player;
     this.setState({ duration: event.duration, seekable: player.seekable });
-  }
+  };
   private _onProgress = (event: ProgressEvent) => this.setState({ seekable: event.seekable });
 
   private _onSlidingStart = (value: number) => {
