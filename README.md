@@ -19,8 +19,8 @@ The `@theoplayer/react-native-ui` package provides a collection of UI components
 for `react-native-theoplayer`, the official THEOplayer React Native video player.
 The following platforms are supported:
 
-- Android, Android TV & FireTV
-- iOS & tvOS (Apple TV)
+- Mobile Android
+- Mobile iOS
 - Web
 
 This document covers how to add a UI to your `THEOplayerView` component. For information on
