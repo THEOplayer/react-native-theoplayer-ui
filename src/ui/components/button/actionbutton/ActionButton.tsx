@@ -15,7 +15,7 @@ export interface ActionButtonProps {
   /**
    * Whether the button should be touchable. This is `true` by default.
    */
-  touchable: boolean;
+  touchable?: boolean;
   /**
    * The callback when the button is pressed.
    */
@@ -43,12 +43,11 @@ export const DEFAULT_ACTION_BUTTON_STYLE: ViewStyle = {
  * The default button component that renders an image/svg source for the `react-native-theoplayer` UI.
  */
 export const ActionButton = (props: ActionButtonProps) => {
-  const { icon, style, touchable, svg, onPress, highlighted } = props;
+  const { icon, style, svg, onPress, highlighted } = props;
   const [focused, setFocused] = useState<boolean>(false);
   const context = useContext(PlayerContext);
-
   const shouldChangeTintColor = highlighted || (focused && Platform.isTV);
-
+  const touchable = props.touchable != false;
   if (!touchable) {
     return <View style={[DEFAULT_ACTION_BUTTON_STYLE, style]}>{svg}</View>;
   }
@@ -98,8 +97,4 @@ export const ActionButton = (props: ActionButtonProps) => {
       )}
     </PlayerContext.Consumer>
   );
-};
-
-ActionButton.defaultProps = {
-  touchable: true,
 };
