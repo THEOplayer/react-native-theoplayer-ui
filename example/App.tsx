@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 import {
   AdClickThroughButton,
   CenteredControlBar,
@@ -20,17 +20,12 @@ import {
   TimeLabel,
   UiContainer,
 } from '@theoplayer/react-native-ui';
-import {
-  PlayerConfiguration,
-  PlayerEventType,
-  THEOplayer,
-  THEOplayerView,
-} from 'react-native-theoplayer';
+import { PlayerConfiguration, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 
-import {Platform, StyleSheet, View, ViewStyle} from 'react-native';
-import {AdDisplay} from '../src/ui/components/ads/AdDisplay';
-import {AdCountdown} from '../src/ui/components/ads/AdCountdown';
-import {AdSkipButton} from '../src/ui/components/ads/AdSkipButton';
+import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
+import { AdDisplay } from '../src/ui/components/ads/AdDisplay';
+import { AdCountdown } from '../src/ui/components/ads/AdCountdown';
+import { AdSkipButton } from '../src/ui/components/ads/AdSkipButton';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -74,8 +69,8 @@ export default function App() {
     player.muted = true;
     player.autoplay = true;
 
-    player.backgroundAudioConfiguration = {enabled: true};
-    player.pipConfiguration = {startsAutomatically: true};
+    player.backgroundAudioConfiguration = { enabled: true };
+    player.pipConfiguration = { startsAutomatically: true };
     console.log('THEOplayer is ready:', player.version);
   };
 
@@ -92,12 +87,12 @@ export default function App() {
   };
 
   return (
-    <View style={[StyleSheet.absoluteFill, {backgroundColor: '#000000'}]}>
+    <View style={[StyleSheet.absoluteFill, { backgroundColor: '#000000' }]}>
       <View style={PLAYER_CONTAINER_STYLE}>
         <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}>
           {player !== undefined && chromeless && (
             <UiContainer
-              theme={{...DEFAULT_THEOPLAYER_THEME}}
+              theme={{ ...DEFAULT_THEOPLAYER_THEME }}
               player={player}
               behind={<CenteredDelayedActivityIndicator size={50} />}
               top={
@@ -110,13 +105,7 @@ export default function App() {
                   </SettingsMenuButton>
                 </ControlBar>
               }
-              center={
-                <CenteredControlBar
-                  left={<SkipButton skip={-10} />}
-                  middle={<PlayButton />}
-                  right={<SkipButton skip={30} />}
-                />
-              }
+              center={<CenteredControlBar left={<SkipButton skip={-10} />} middle={<PlayButton />} right={<SkipButton skip={30} />} />}
               bottom={
                 <>
                   <ControlBar>
@@ -139,7 +128,7 @@ export default function App() {
               adCenter={<CenteredControlBar middle={<PlayButton />} />}
               adBottom={
                 <>
-                  <ControlBar style={{justifyContent: 'flex-start'}}>
+                  <ControlBar style={{ justifyContent: 'flex-start' }}>
                     <AdDisplay />
                     <AdCountdown />
                     <Spacer />
