@@ -22,10 +22,10 @@ import {
 } from '@theoplayer/react-native-ui';
 import { PlayerConfiguration, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 
-import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
-import { AdDisplay } from '../src/ui/components/ads/AdDisplay';
-import { AdCountdown } from '../src/ui/components/ads/AdCountdown';
-import { AdSkipButton } from '../src/ui/components/ads/AdSkipButton';
+import { Platform, SafeAreaView, StyleSheet, View, ViewStyle } from 'react-native';
+import { AdDisplay } from '@theoplayer/react-native-ui';
+import { AdCountdown } from '@theoplayer/react-native-ui';
+import { AdSkipButton } from '@theoplayer/react-native-ui';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
