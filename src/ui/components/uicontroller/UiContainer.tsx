@@ -1,11 +1,12 @@
 import React, { PureComponent, ReactNode } from 'react';
-import { Animated, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Animated, AppState, Platform, StyleProp, TouchableOpacity, View, ViewStyle, NativeEventSubscription } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import type { AdEvent, PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
 import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
+import type { AppStateStatus } from 'react-native/Libraries/AppState/AppState';
 
 export interface UiContainerProps {
   /**
@@ -178,6 +179,7 @@ export interface UiContainerState {
   casting: boolean;
   pip: boolean;
   adInProgress: boolean;
+  adTapped: boolean;
 }
 
 /**
@@ -188,7 +190,7 @@ export interface UiContainerState {
  */
 export class UiContainer extends PureComponent<React.PropsWithChildren<UiContainerProps>, UiContainerState> implements UiControls {
   private _currentFadeOutTimeout: number | undefined = undefined;
-
+  private _appStateSubscription: NativeEventSubscription | undefined = undefined;
   private _menus: MenuConstructor[] = [];
 
   static initialState: UiContainerState = {
@@ -202,6 +204,7 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     casting: false,
     pip: false,
     adInProgress: false,
+    adTapped: false,
   };
 
   constructor(props: UiContainerProps) {
@@ -226,6 +229,9 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
       this.onPlay();
     }
     this.setState({ pip: player.presentationMode === 'picture-in-picture' });
+
+    // Listen for app state changes (https://reactnative.dev/docs/appstate#app-states)
+    this._appStateSubscription = AppState.addEventListener('change', this.onAppStateChange);
   }
 
   componentWillUnmount() {
@@ -242,7 +248,16 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
     player.removeEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
     player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
     clearTimeout(this._currentFadeOutTimeout);
+    this._appStateSubscription?.remove();
   }
+
+  private onAppStateChange = (state: AppStateStatus) => {
+    // Auto-resume ad play-out when the app is foregrounded after tapping or clicking an ad.
+    if (state === 'active' && this.state.adInProgress && this.state.adTapped) {
+      this.props.player.play();
+      this.setState({ adTapped: false });
+    }
+  };
 
   private onPlay = () => {
     this.setState({ firstPlay: true, paused: false });
@@ -291,9 +306,11 @@ export class UiContainer extends PureComponent<React.PropsWithChildren<UiContain
   private onAdEvent = (event: AdEvent) => {
     const type = event.subType;
     if (type === AdEventType.AD_BREAK_BEGIN) {
-      this.setState({ adInProgress: true });
+      this.setState({ adInProgress: true, adTapped: false });
     } else if (type === AdEventType.AD_BREAK_END) {
-      this.setState({ adInProgress: false });
+      this.setState({ adInProgress: false, adTapped: false });
+    } else if (type === AdEventType.AD_CLICKED || type === AdEventType.AD_TAPPED) {
+      this.setState({ adTapped: true });
     }
   };
 

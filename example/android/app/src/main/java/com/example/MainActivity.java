@@ -2,8 +2,6 @@ package com.example;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.AudioManager;
-import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
