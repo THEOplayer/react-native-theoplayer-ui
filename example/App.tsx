@@ -22,7 +22,7 @@ import {
 } from '@theoplayer/react-native-ui';
 import { PlayerConfiguration, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 
-import { Platform, SafeAreaView, StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import { AdDisplay } from '@theoplayer/react-native-ui';
 import { AdCountdown } from '@theoplayer/react-native-ui';
 import { AdSkipButton } from '@theoplayer/react-native-ui';
