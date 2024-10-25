@@ -10,6 +10,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 0.9.0 (2024-10-25)
+
+### Changed
+
+- Ad play-out is resumed when the app is foregrounded again after tapping the ad `clickthrough`. This feature requires `react-native-theoplayer` v8.6.0.
+
 ## 0.8.0 (2024-09-11)
 
 ### Added

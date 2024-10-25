@@ -64,7 +64,6 @@ export const ActionButton = (props: ActionButtonProps) => {
       {(context: UiContext) => (
         <TouchableOpacity
           style={[DEFAULT_ACTION_BUTTON_STYLE, style]}
-          tvParallaxProperties={{ enabled: false }}
           onPress={onTouch}
           onFocus={() => {
             context.ui.onUserAction_();
