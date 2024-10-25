@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Ad play-out is resumed when the app is foregrounded again after tapping the ad `clickthrough`.
+- Ad play-out is resumed when the app is foregrounded again after tapping the ad `clickthrough`. This feature requires `react-native-theoplayer` v8.6.0.
 
 ## 0.8.0 (2024-09-11)
 
