@@ -73,3 +73,4 @@ ios/custom/Frameworks/tvos/*.xcframework
 
 # TypeDoc
 api/
+example/Gemfile.lock
