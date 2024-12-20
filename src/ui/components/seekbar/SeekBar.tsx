@@ -22,9 +22,8 @@ const DEBOUNCE_SEEK_DELAY = 250;
 
 export const SeekBar = ({ style }: SeekBarProps) => {
   const player = useContext(PlayerContext).player;
-  const [isSeeking, setIsSeeking] = useState(false);
+  const [isScrubbing, setIsScrubbing] = useState(false);
   const [sliderTime, setSliderTime] = useState(0);
-  const [pausedDueToScrubbing, setPausedDueToScrubbing] = useState(false);
   const [width, setWidth] = useState(0);
 
   const duration = useDuration();
@@ -33,7 +32,9 @@ export const SeekBar = ({ style }: SeekBarProps) => {
 
   useEffect(() => {
     // Set sliderTime based on currentTime changes
-    setSliderTime(currentTime);
+    if (!isScrubbing) {
+      setSliderTime(currentTime);
+    }
   }, [currentTime]);
 
   // Do not continuously seek while dragging the slider
@@ -43,30 +44,21 @@ export const SeekBar = ({ style }: SeekBarProps) => {
 
   const onSlidingStart = (value: number) => {
     setSliderTime(value);
-    setIsSeeking(true);
-    if (!player.paused) {
-      debounceSeek(value);
-      player.pause();
-      setPausedDueToScrubbing(true);
-    }
+    setIsScrubbing(true);
+    debounceSeek(value);
   };
 
-  const onValueChange = (value: number) => {
-    setSliderTime(value);
-    if (isSeeking) {
+  const onSlidingValueChange = (value: number) => {
+    if (isScrubbing) {
+      setSliderTime(value);
       debounceSeek(value);
     }
   };
 
   const onSlidingComplete = (value: number) => {
     setSliderTime(value);
+    setIsScrubbing(false);
     debounceSeek(value, true);
-    const isEnded = player.currentTime === player.duration;
-    if (pausedDueToScrubbing && !isEnded) {
-      player.play();
-      setPausedDueToScrubbing(false);
-    }
-    setIsSeeking(false);
   };
 
   const normalizedDuration = isNaN(duration) || !isFinite(duration) ? 0 : duration;
@@ -81,7 +73,9 @@ export const SeekBar = ({ style }: SeekBarProps) => {
           onLayout={(event: LayoutChangeEvent) => {
             setWidth(event.nativeEvent.layout.width);
           }}>
-          {isSeeking && <SingleThumbnailView seekableStart={seekableStart} seekableEnd={seekableEnd} currentTime={sliderTime} seekBarWidth={width} />}
+          {isScrubbing && (
+            <SingleThumbnailView seekableStart={seekableStart} seekableEnd={seekableEnd} currentTime={sliderTime} seekBarWidth={width} />
+          )}
           <Slider
             disabled={(!(duration > 0) && seekable.length > 0) || context.adInProgress}
             style={[StyleSheet.absoluteFill, style]}
@@ -89,7 +83,7 @@ export const SeekBar = ({ style }: SeekBarProps) => {
             maximumValue={seekableEnd}
             step={1000}
             onSlidingStart={onSlidingStart}
-            onValueChange={onValueChange}
+            onValueChange={onSlidingValueChange}
             onSlidingComplete={onSlidingComplete}
             value={sliderTime}
             focusable={true}
