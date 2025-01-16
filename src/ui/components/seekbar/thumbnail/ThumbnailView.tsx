@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { ImageErrorEventData, NativeSyntheticEvent, StyleProp, ViewStyle } from 'react-native';
 import { Image, View } from 'react-native';
 import type { TextTrackCue } from 'react-native-theoplayer';
@@ -10,13 +10,6 @@ import { URL as URLPolyfill } from './Urlpolyfill';
 
 const SPRITE_REGEX = /^([^#]*)#xywh=(\d+),(\d+),(\d+),(\d+)\s*$/;
 const TAG = 'ThumbnailView';
-
-interface ThumbnailViewState {
-  imageWidth: number;
-  imageHeight: number;
-  renderWidth: number;
-  renderHeight: number;
-}
 
 export interface ThumbnailViewProps {
   /**
@@ -38,8 +31,10 @@ export interface ThumbnailViewProps {
 
   /**
    * Whether to show a time label.
+   *
+   * @default false.
    */
-  showTimeLabel: boolean;
+  showTimeLabel?: boolean;
 
   /**
    * Used to set the width of the rendered thumbnail. The height will be calculated according to the image's aspect ratio.
@@ -68,133 +63,126 @@ export interface ThumbnailStyle {
   thumbnail: ViewStyle;
 }
 
-export class ThumbnailView extends PureComponent<ThumbnailViewProps, ThumbnailViewState> {
-  static defaultProps = {
-    showTimeLabel: true,
-  };
-  private _ismounted = false;
-
-  constructor(props: ThumbnailViewProps) {
-    super(props);
-    const { size } = props;
-    this.state = { imageWidth: size, imageHeight: size, renderWidth: size, renderHeight: 1 };
+function getCueIndexAtTime(thumbnailTrack: TextTrack, time: number): number | undefined {
+  // Ignore if it's an invalid track or not a thumbnail track.
+  if (!isThumbnailTrack(thumbnailTrack)) {
+    console.warn(TAG, 'Invalid thumbnail track');
+    return undefined;
   }
 
-  componentDidMount() {
-    this._ismounted = true;
+  // Ignore if the track does not have cues
+  if (thumbnailTrack.cues == null || thumbnailTrack.cues.length == 0) {
+    return undefined;
   }
 
-  componentWillUnmount() {
-    this._ismounted = false;
-  }
-
-  private getCueIndexAtTime(time: number): number | undefined {
-    const { thumbnailTrack } = this.props;
-
-    // Ignore if it's an invalid track or not a thumbnail track.
-    if (!isThumbnailTrack(thumbnailTrack)) {
-      console.warn(TAG, 'Invalid thumbnail track');
-      return undefined;
-    }
-
-    // Ignore if the track does not have cues
-    if (thumbnailTrack.cues == null || thumbnailTrack.cues.length == 0) {
-      return undefined;
-    }
-
-    const cues = thumbnailTrack.cues;
-    let cueIndex = 0;
-    for (const [index, cue] of cues.entries()) {
-      if (cue.startTime <= time) {
-        cueIndex = index;
-      } else if (time >= cue.endTime) {
-        return cueIndex;
-      }
-    }
-    return cueIndex;
-  }
-
-  private resolveThumbnailUrl(thumbnail: string): string {
-    const { thumbnailTrack } = this.props;
-    // NOTE: TextTrack.src is supported in Android SDK as of 3.5+
-    if (thumbnailTrack && thumbnailTrack.src) {
-      return new URLPolyfill(thumbnail, thumbnailTrack.src).href;
-    } else {
-      return thumbnail;
+  const cues = thumbnailTrack.cues;
+  let cueIndex = 0;
+  for (const [index, cue] of cues.entries()) {
+    if (cue.startTime <= time) {
+      cueIndex = index;
+    } else if (time >= cue.endTime) {
+      return cueIndex;
     }
   }
+  return cueIndex;
+}
 
-  private getThumbnailImageForCue(cue: TextTrackCue): Thumbnail | null {
-    const thumbnailContent = cue && cue.content;
-    if (!thumbnailContent) {
-      // Cue does not contain any thumbnail info.
-      return null;
-    }
-    const spriteMatch = thumbnailContent.match(SPRITE_REGEX);
-    if (spriteMatch) {
-      // The thumbnail is part of a tile.
-      const [, url, x, y, w, h] = spriteMatch;
-      return {
-        tileX: +x,
-        tileY: +y,
-        tileWidth: +w,
-        tileHeight: +h,
-        url: this.resolveThumbnailUrl(url),
-      };
-    } else {
-      // The thumbnail is a separate image.
-      return {
-        url: this.resolveThumbnailUrl(thumbnailContent),
-      };
-    }
+function resolveThumbnailUrl(thumbnailTrack: TextTrack, thumbnail: string): string {
+  if (thumbnailTrack && thumbnailTrack.src) {
+    return new URLPolyfill(thumbnail, thumbnailTrack.src).href;
+  } else {
+    return thumbnail;
   }
+}
 
-  private onTileImageLoad = (thumbnail: Thumbnail) => () => {
-    if (!this._ismounted) {
+function getThumbnailImageForCue(thumbnailTrack: TextTrack, cue: TextTrackCue): Thumbnail | null {
+  const thumbnailContent = cue && cue.content;
+  if (!thumbnailContent) {
+    // Cue does not contain any thumbnail info.
+    return null;
+  }
+  const spriteMatch = thumbnailContent.match(SPRITE_REGEX);
+  if (spriteMatch) {
+    // The thumbnail is part of a tile.
+    const [, url, x, y, w, h] = spriteMatch;
+    return {
+      tileX: +x,
+      tileY: +y,
+      tileWidth: +w,
+      tileHeight: +h,
+      url: resolveThumbnailUrl(thumbnailTrack, url),
+    };
+  } else {
+    // The thumbnail is a separate image.
+    return {
+      url: resolveThumbnailUrl(thumbnailTrack, thumbnailContent),
+    };
+  }
+}
+
+export const ThumbnailView = (props: ThumbnailViewProps) => {
+  const [mounted, setMounted] = useState<boolean>(false);
+  const [imageWidth, setImageWidth] = useState<number>(props.size);
+  const [imageHeight, setImageHeight] = useState<number>(props.size);
+  const [renderWidth, setRenderWidth] = useState<number>(1);
+  const [renderHeight, setRenderHeight] = useState<number>(1);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => {
+      setMounted(false);
+    };
+  }, []);
+
+  const onTileImageLoad = (thumbnail: Thumbnail) => () => {
+    if (!mounted) {
       return;
     }
-    const { size } = this.props;
+    const { size } = props;
     const { tileWidth, tileHeight } = thumbnail;
     if (tileWidth && tileHeight) {
       Image.getSize(thumbnail.url, (width: number, height: number) => {
-        this.setState({
-          imageWidth: width,
-          imageHeight: height,
-          renderWidth: size,
-          renderHeight: (tileHeight * size) / tileWidth,
-        });
+        setImageWidth(width);
+        setImageHeight(height);
+        setRenderWidth(size);
+        setRenderHeight((tileHeight * size) / tileWidth);
       });
     }
   };
 
-  private onImageLoadError = (event: NativeSyntheticEvent<ImageErrorEventData>) => {
+  const onImageLoadError = (event: NativeSyntheticEvent<ImageErrorEventData>) => {
     console.error(TAG, 'Failed to load thumbnail url:', event.nativeEvent.error);
   };
 
-  private onImageLoad = (thumbnail: Thumbnail) => () => {
-    if (!this._ismounted) {
+  const onImageLoad = (thumbnail: Thumbnail) => () => {
+    if (!mounted) {
       return;
     }
-    const { size } = this.props;
+    const { size } = props;
     Image.getSize(thumbnail.url, (width: number, height: number) => {
-      this.setState({
-        imageWidth: width,
-        imageHeight: height,
-        renderWidth: size,
-        renderHeight: (height * size) / width,
-      });
+      setImageWidth(width);
+      setImageHeight(height);
+      setRenderWidth(size);
+      setRenderHeight((height * size) / width);
     });
   };
 
-  private renderThumbnail = (thumbnail: Thumbnail, index: number) => {
-    const { imageWidth, imageHeight, renderWidth, renderHeight } = this.state;
-    const { size } = this.props;
+  const renderThumbnail = (thumbnail: Thumbnail, index: number) => {
+    const { size } = props;
     const scale = 1.0;
 
     if (isTileMapThumbnail(thumbnail)) {
       const ratio = thumbnail.tileWidth == 0 ? 0 : (scale * size) / thumbnail.tileWidth;
       return (
-        <View key={index} style={[DEFAULT_THUMBNAIL_VIEW_STYLE.thumbnail, { width: scale * renderWidth, height: scale * renderHeight }]}>
+        <View
+          key={index}
+          style={[
+            DEFAULT_THUMBNAIL_VIEW_STYLE.thumbnail,
+            {
+              width: scale * renderWidth,
+              height: scale * renderHeight,
+            },
+          ]}>
           <Image
             resizeMode={'cover'}
             style={{
@@ -205,64 +193,69 @@ export class ThumbnailView extends PureComponent<ThumbnailViewProps, ThumbnailVi
               height: ratio * imageHeight,
             }}
             source={{ uri: thumbnail.url }}
-            onError={this.onImageLoadError}
-            onLoad={this.onTileImageLoad(thumbnail)}
+            onError={onImageLoadError}
+            onLoad={onTileImageLoad(thumbnail)}
           />
         </View>
       );
     } else {
       return (
-        <View key={index} style={[DEFAULT_THUMBNAIL_VIEW_STYLE.thumbnail, { width: scale * renderWidth, height: scale * renderHeight }]}>
+        <View
+          key={index}
+          style={[
+            DEFAULT_THUMBNAIL_VIEW_STYLE.thumbnail,
+            {
+              width: scale * renderWidth,
+              height: scale * renderHeight,
+            },
+          ]}>
           <Image
             resizeMode={'contain'}
             style={{ width: scale * size, height: scale * renderHeight }}
             source={{ uri: thumbnail.url }}
-            onError={this.onImageLoadError}
-            onLoad={this.onImageLoad(thumbnail)}
+            onError={onImageLoadError}
+            onLoad={onImageLoad(thumbnail)}
           />
         </View>
       );
     }
   };
 
-  render() {
-    const { time, duration, thumbnailTrack, showTimeLabel, timeLabelStyle } = this.props;
-    if (!thumbnailTrack || !thumbnailTrack.cues || thumbnailTrack.cues.length === 0) {
-      // No thumbnails to render.
-      return <></>;
-    }
-
-    const nowCueIndex = this.getCueIndexAtTime(time);
-    if (nowCueIndex === undefined) {
-      // No thumbnail for current time
-      return <></>;
-    }
-
-    const current = this.getThumbnailImageForCue(thumbnailTrack.cues[nowCueIndex]);
-    if (current === null) {
-      // No thumbnail for current time
-      return <></>;
-    }
-    const { renderHeight } = this.state;
-    return (
-      <View style={{ flexDirection: 'column' }}>
-        {showTimeLabel && (
-          <StaticTimeLabel
-            style={[
-              {
-                marginLeft: 20,
-                height: 20,
-                alignSelf: 'center',
-              },
-              timeLabelStyle,
-            ]}
-            time={time}
-            duration={duration}
-            showDuration={false}
-          />
-        )}
-        <View style={[DEFAULT_THUMBNAIL_VIEW_STYLE.containerThumbnail, { height: renderHeight }]}>{this.renderThumbnail(current, 0)}</View>
-      </View>
-    );
+  const { time, duration, thumbnailTrack, showTimeLabel, timeLabelStyle } = props;
+  if (!thumbnailTrack || !thumbnailTrack.cues || thumbnailTrack.cues.length === 0) {
+    // No thumbnails to render.
+    return <></>;
   }
-}
+
+  const nowCueIndex = getCueIndexAtTime(thumbnailTrack, time);
+  if (nowCueIndex === undefined) {
+    // No thumbnail for current time
+    return <></>;
+  }
+
+  const current = getThumbnailImageForCue(thumbnailTrack, thumbnailTrack.cues[nowCueIndex]);
+  if (current === null) {
+    // No thumbnail for current time
+    return <></>;
+  }
+  return (
+    <View style={{ flexDirection: 'column' }}>
+      {showTimeLabel && (
+        <StaticTimeLabel
+          style={[
+            {
+              marginLeft: 20,
+              height: 20,
+              alignSelf: 'center',
+            },
+            timeLabelStyle,
+          ]}
+          time={time}
+          duration={duration}
+          showDuration={false}
+        />
+      )}
+      <View style={[DEFAULT_THUMBNAIL_VIEW_STYLE.containerThumbnail, { height: renderHeight }]}>{renderThumbnail(current, 0)}</View>
+    </View>
+  );
+};

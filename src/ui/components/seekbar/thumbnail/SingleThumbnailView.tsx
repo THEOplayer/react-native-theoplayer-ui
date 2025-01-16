@@ -1,8 +1,8 @@
 import { Dimensions, View } from 'react-native';
-import { filterThumbnailTracks } from 'react-native-theoplayer';
 import { PlayerContext } from '../../util/PlayerContext';
 import { ThumbnailView } from './ThumbnailView';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
+import { useThumbnailTrack } from '../../hooks/useThumbnailTrack';
 
 export interface ThumbnailViewProps {
   seekableStart: number;
@@ -13,12 +13,15 @@ export interface ThumbnailViewProps {
 
 export function SingleThumbnailView(props: ThumbnailViewProps) {
   const player = useContext(PlayerContext).player;
-  const thumbnailTrack = filterThumbnailTracks(player.textTracks);
+  const thumbnailTrack = useThumbnailTrack();
+
   if (!thumbnailTrack) {
     return <></>;
   }
-  const window = Dimensions.get('window');
-  const thumbnailSize = 0.35 * Math.min(window.height, window.width);
+  const thumbnailSize = useMemo(() => {
+    const window = Dimensions.get('window');
+    return 0.35 * Math.min(window.height, window.width);
+  }, []);
 
   const { seekableStart, seekableEnd, currentTime, seekBarWidth } = props;
   const percentageOffset = (currentTime - seekableStart) / (seekableEnd - seekableStart);

@@ -1,18 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { type LayoutChangeEvent, StyleProp, View, ViewStyle } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
-import Slider from '@react-native-community/slider';
-import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
+import { Slider } from '@miblanchard/react-native-slider';
 import { useDuration } from '../hooks/useDuration';
 import { useSeekable } from '../hooks/useSeekable';
 import { useCurrentTime } from '../hooks/useCurrentTime';
 import { useDebounce } from '../hooks/useDebounce';
+import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 
 export interface SeekBarProps {
   /**
    * Optional style applied to the SeekBar.
    */
   style?: StyleProp<ViewStyle>;
+
+  sliderContainerStyle?: ViewStyle;
+
+  sliderMaximumTrackStyle?: ViewStyle;
 }
 
 /**
@@ -20,12 +24,11 @@ export interface SeekBarProps {
  */
 const DEBOUNCE_SEEK_DELAY = 250;
 
-export const SeekBar = ({ style }: SeekBarProps) => {
+export const SeekBar = (props: SeekBarProps) => {
   const player = useContext(PlayerContext).player;
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [sliderTime, setSliderTime] = useState(0);
   const [width, setWidth] = useState(0);
-
   const duration = useDuration();
   const seekable = useSeekable();
   const currentTime = useCurrentTime();
@@ -42,23 +45,23 @@ export const SeekBar = ({ style }: SeekBarProps) => {
     player.currentTime = value;
   }, DEBOUNCE_SEEK_DELAY);
 
-  const onSlidingStart = (value: number) => {
-    setSliderTime(value);
+  const onSlidingStart = (value: number[]) => {
+    setSliderTime(value[0]);
     setIsScrubbing(true);
-    debounceSeek(value);
+    debounceSeek(value[0]);
   };
 
-  const onSlidingValueChange = (value: number) => {
+  const onSlidingValueChange = (value: number[]) => {
     if (isScrubbing) {
-      setSliderTime(value);
-      debounceSeek(value);
+      setSliderTime(value[0]);
+      debounceSeek(value[0]);
     }
   };
 
-  const onSlidingComplete = (value: number) => {
-    setSliderTime(value);
+  const onSlidingComplete = (value: number[]) => {
+    setSliderTime(value[0]);
     setIsScrubbing(false);
-    debounceSeek(value, true);
+    debounceSeek(value[0], true);
   };
 
   const normalizedDuration = isNaN(duration) || !isFinite(duration) ? 0 : duration;
@@ -69,7 +72,7 @@ export const SeekBar = ({ style }: SeekBarProps) => {
     <PlayerContext.Consumer>
       {(context: UiContext) => (
         <View
-          style={[style ?? { flex: 1 }]}
+          style={[props.style ?? { flex: 1 }]}
           onLayout={(event: LayoutChangeEvent) => {
             setWidth(event.nativeEvent.layout.width);
           }}>
@@ -78,15 +81,15 @@ export const SeekBar = ({ style }: SeekBarProps) => {
           )}
           <Slider
             disabled={(!(duration > 0) && seekable.length > 0) || context.adInProgress}
-            style={[StyleSheet.absoluteFill, style]}
             minimumValue={seekableStart}
             maximumValue={seekableEnd}
+            containerStyle={props.sliderContainerStyle ?? {}}
+            maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
             step={1000}
             onSlidingStart={onSlidingStart}
             onValueChange={onSlidingValueChange}
             onSlidingComplete={onSlidingComplete}
             value={sliderTime}
-            focusable={true}
             minimumTrackTintColor={context.style.colors.seekBarMinimum}
             maximumTrackTintColor={context.style.colors.seekBarMaximum}
             thumbTintColor={context.style.colors.seekBarDot}
