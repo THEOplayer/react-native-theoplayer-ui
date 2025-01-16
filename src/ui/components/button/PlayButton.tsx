@@ -61,18 +61,10 @@ export class PlayButton extends PureComponent<PlayButtonProps, PlayButtonState> 
   }
 
   private onPlay = () => {
-    const player = (this.context as UiContext).player;
-    if (player.seeking) {
-      return;
-    }
     this.setState({ paused: false, ended: false });
   };
 
   private onPause = () => {
-    const player = (this.context as UiContext).player;
-    if (player.seeking) {
-      return;
-    }
     this.setState({ paused: true });
   };
 
