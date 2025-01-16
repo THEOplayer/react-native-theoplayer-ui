@@ -64,7 +64,7 @@ export const SeekBar = (props: SeekBarProps) => {
     debounceSeek(value[0], true);
   };
 
-  const normalizedDuration = isNaN(duration) || !isFinite(duration) ? 0 : duration;
+  const normalizedDuration = isNaN(duration) || !isFinite(duration) ? 0 : Math.max(0, duration);
   const seekableStart = seekable.length > 0 ? seekable[0].start : 0;
   const seekableEnd = seekable.length > 0 ? seekable[0].end : normalizedDuration;
 
@@ -76,16 +76,20 @@ export const SeekBar = (props: SeekBarProps) => {
           onLayout={(event: LayoutChangeEvent) => {
             setWidth(event.nativeEvent.layout.width);
           }}>
-          {isScrubbing && (
-            <SingleThumbnailView seekableStart={seekableStart} seekableEnd={seekableEnd} currentTime={sliderTime} seekBarWidth={width} />
-          )}
           <Slider
             disabled={(!(duration > 0) && seekable.length > 0) || context.adInProgress}
             minimumValue={seekableStart}
             maximumValue={seekableEnd}
-            containerStyle={props.sliderContainerStyle ?? {}}
+            containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
             maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
             step={1000}
+            renderAboveThumbComponent={(_index: number, value: number) => {
+              return (
+                isScrubbing && (
+                  <SingleThumbnailView seekableStart={seekableStart} seekableEnd={seekableEnd} currentTime={value} seekBarWidth={width} />
+                )
+              );
+            }}
             onSlidingStart={onSlidingStart}
             onValueChange={onSlidingValueChange}
             onSlidingComplete={onSlidingComplete}
