@@ -4,9 +4,9 @@ import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
 import { useDuration } from '../hooks/useDuration';
 import { useSeekable } from '../hooks/useSeekable';
-import { useCurrentTime } from '../hooks/useCurrentTime';
 import { useDebounce } from '../hooks/useDebounce';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
+import { useSliderTime } from './useSliderTime';
 
 export interface SeekBarProps {
   /**
@@ -31,7 +31,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const [width, setWidth] = useState(0);
   const duration = useDuration();
   const seekable = useSeekable();
-  const currentTime = useCurrentTime();
+  const currentTime = useSliderTime();
 
   useEffect(() => {
     // Set sliderTime based on currentTime changes
