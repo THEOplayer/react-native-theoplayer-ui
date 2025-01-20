@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { type LayoutChangeEvent, StyleProp, View, ViewStyle } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
@@ -27,18 +27,11 @@ const DEBOUNCE_SEEK_DELAY = 250;
 export const SeekBar = (props: SeekBarProps) => {
   const player = useContext(PlayerContext).player;
   const [isScrubbing, setIsScrubbing] = useState(false);
-  const [sliderTime, setSliderTime] = useState(0);
+  const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
   const [width, setWidth] = useState(0);
   const duration = useDuration();
   const seekable = useSeekable();
-  const currentTime = useSliderTime();
-
-  useEffect(() => {
-    // Set sliderTime based on currentTime changes
-    if (!isScrubbing) {
-      setSliderTime(currentTime);
-    }
-  }, [currentTime]);
+  const sliderTime = useSliderTime();
 
   // Do not continuously seek while dragging the slider
   const debounceSeek = useDebounce((value: number) => {
@@ -46,20 +39,19 @@ export const SeekBar = (props: SeekBarProps) => {
   }, DEBOUNCE_SEEK_DELAY);
 
   const onSlidingStart = (value: number[]) => {
-    setSliderTime(value[0]);
     setIsScrubbing(true);
     debounceSeek(value[0]);
   };
 
   const onSlidingValueChange = (value: number[]) => {
     if (isScrubbing) {
-      setSliderTime(value[0]);
+      setScrubberTime(value[0]);
       debounceSeek(value[0]);
     }
   };
 
   const onSlidingComplete = (value: number[]) => {
-    setSliderTime(value[0]);
+    setScrubberTime(undefined);
     setIsScrubbing(false);
     debounceSeek(value[0], true);
   };
@@ -85,7 +77,8 @@ export const SeekBar = (props: SeekBarProps) => {
             step={1000}
             renderAboveThumbComponent={(_index: number, value: number) => {
               return (
-                isScrubbing && (
+                isScrubbing &&
+                scrubberTime !== undefined && (
                   <SingleThumbnailView seekableStart={seekableStart} seekableEnd={seekableEnd} currentTime={value} seekBarWidth={width} />
                 )
               );
