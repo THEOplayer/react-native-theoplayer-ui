@@ -86,7 +86,7 @@ export const SeekBar = (props: SeekBarProps) => {
             onSlidingStart={onSlidingStart}
             onValueChange={onSlidingValueChange}
             onSlidingComplete={onSlidingComplete}
-            value={sliderTime}
+            value={isScrubbing && scrubberTime !== undefined ? scrubberTime : sliderTime}
             minimumTrackTintColor={context.style.colors.seekBarMinimum}
             maximumTrackTintColor={context.style.colors.seekBarMaximum}
             thumbTintColor={context.style.colors.seekBarDot}
