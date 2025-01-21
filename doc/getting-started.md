@@ -39,8 +39,7 @@ The UI components also have a few non-transitive dependencies that are required 
 npm install \
   @theoplayer/react-native-ui \
   react-native-theoplayer \
-  react-native-svg \
-  @react-native-community/slider
+  react-native-svg
 ```
 
 The package contains a number of transitive dependencies that contain native iOS and Android platform code
@@ -54,7 +53,6 @@ module.exports = {
   dependencies: {
     'react-native-google-cast': {},
     'react-native-svg': {},
-    '@react-native-community/slider': {},
   },
 };
 ```

@@ -1,8 +1,8 @@
 import { Dimensions, View } from 'react-native';
-import { filterThumbnailTracks } from 'react-native-theoplayer';
 import { PlayerContext } from '../../util/PlayerContext';
 import { ThumbnailView } from './ThumbnailView';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
+import { useThumbnailTrack } from '../../hooks/useThumbnailTrack';
 
 export interface ThumbnailViewProps {
   seekableStart: number;
@@ -13,25 +13,31 @@ export interface ThumbnailViewProps {
 
 export function SingleThumbnailView(props: ThumbnailViewProps) {
   const player = useContext(PlayerContext).player;
-  const thumbnailTrack = filterThumbnailTracks(player.textTracks);
+  const thumbnailTrack = useThumbnailTrack();
+
   if (!thumbnailTrack) {
     return <></>;
   }
-  const window = Dimensions.get('window');
-  const thumbnailSize = 0.35 * Math.min(window.height, window.width);
+  const thumbnailSize = useMemo(() => {
+    const window = Dimensions.get('window');
+    return 0.35 * Math.min(window.height, window.width);
+  }, []);
 
   const { seekableStart, seekableEnd, currentTime, seekBarWidth } = props;
-  const percentageOffset = (currentTime - seekableStart) / (seekableEnd - seekableStart);
-  const marginHorizontal = 10;
+  const marginHorizontal = 8;
+
+  // Do not let the thumbnail pass left & right borders.
+  const seekableRange = seekableEnd - seekableStart;
+  const offset = seekableRange ? (seekBarWidth * (currentTime - seekableStart)) / seekableRange : 0;
+  let left = -0.5 * thumbnailSize;
+  if (offset + marginHorizontal < 0.5 * thumbnailSize) {
+    left = -offset - marginHorizontal;
+  } else if (offset - marginHorizontal > seekBarWidth - 0.5 * thumbnailSize) {
+    left = -offset + marginHorizontal + seekBarWidth - thumbnailSize;
+  }
 
   return (
-    <View
-      style={{
-        position: 'absolute',
-        top: -(thumbnailSize * 0.6),
-        left: Math.max(0, Math.min(seekBarWidth - thumbnailSize - marginHorizontal, percentageOffset * seekBarWidth - 0.5 * thumbnailSize)),
-        marginHorizontal,
-      }}>
+    <View style={{ left, marginHorizontal }}>
       <ThumbnailView thumbnailTrack={thumbnailTrack} duration={player.duration} time={currentTime} size={thumbnailSize} showTimeLabel={false} />
     </View>
   );
