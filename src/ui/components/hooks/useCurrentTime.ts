@@ -15,7 +15,7 @@ const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKING
  * @group Hooks
  */
 export const useCurrentTime = () => {
-  const player = useContext(PlayerContext).player;
+  const { player } = useContext(PlayerContext);
   const subscribe = useCallback(
     (callback: () => void) => {
       TIME_CHANGE_EVENTS.forEach((event) => player?.addEventListener(event, callback));

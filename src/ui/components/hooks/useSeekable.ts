@@ -11,7 +11,7 @@ import { PlayerEventType, type TimeRange, ProgressEvent } from 'react-native-the
  * @group Hooks
  */
 export const useSeekable = () => {
-  const player = useContext(PlayerContext).player;
+  const { player } = useContext(PlayerContext);
   const [seekable, setSeekable] = useState<TimeRange[]>([]);
   useEffect(() => {
     const onUpdateSeekable = (event: ProgressEvent) => {

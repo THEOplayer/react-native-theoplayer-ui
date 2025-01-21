@@ -13,7 +13,7 @@ const DURATION_CHANGE_EVENTS = [PlayerEventType.LOADED_DATA, PlayerEventType.DUR
  * @group Hooks
  */
 export const useDuration = () => {
-  const player = useContext(PlayerContext).player;
+  const { player } = useContext(PlayerContext);
   const subscribe = useCallback(
     (callback: () => void) => {
       DURATION_CHANGE_EVENTS.forEach((event) => player?.addEventListener(event, callback));
