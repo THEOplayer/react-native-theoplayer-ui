@@ -2,15 +2,16 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
-const projectDirectory = path.resolve(__dirname, '..');
+const projectDirectory = path.resolve(__dirname, '../..');
+
+const appDirectory = path.resolve(__dirname, '..');
 
 // A folder for any stub components we need in case there is no counterpart for it on react-native-web.
-const stubDirectory = path.resolve(projectDirectory, './web/stub/');
+const stubDirectory = path.resolve(appDirectory, './web/stub/');
 
 const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
-  template: path.resolve(projectDirectory, './web/public/index.html'),
+  template: path.resolve(appDirectory, './web/public/index.html'),
   filename: 'index.html',
   inject: 'body',
 });
@@ -26,12 +27,18 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin({
     {
       // Copy transmuxer worker files.
       // THEOplayer will find them by setting `libraryLocation` in the playerConfiguration.
-      from: path.resolve(projectDirectory, './node_modules/theoplayer/THEOplayer.transmux.*').replace(/\\/g, '/'),
+      from: path.resolve(appDirectory, './node_modules/theoplayer/THEOplayer.transmux.*').replace(/\\/g, '/'),
+      to: `${libraryLocation}/[name][ext]`,
+    },
+    {
+      // Copy service worker
+      // THEOplayer will find them by setting `libraryLocation` in the playerConfiguration.
+      from: path.resolve(appDirectory, './node_modules/theoplayer/theoplayer.sw.js').replace(/\\/g, '/'),
       to: `${libraryLocation}/[name][ext]`,
     },
     {
       // Copy CSS files
-      from: path.resolve(projectDirectory, './web/public/*.css').replace(/\\/g, '/'),
+      from: path.resolve(appDirectory, './web/public/*.css').replace(/\\/g, '/'),
       to: `[name][ext]`,
     },
   ],
@@ -42,15 +49,18 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin({
 // published. If you depend on uncompiled packages they may cause webpack build
 // errors. To fix this webpack can be configured to compile to the necessary
 // `node_module`.
+//
+// /\.tsx?$/                : process all tsx files.
+// /.*@theoplayer\/.*\.js$/ : process all js files from @theoplayer packages to apply the root import alias. This is only needed for this example.
 const babelLoaderConfiguration = {
-  test: /\.tsx?$/,
+  test: [/\.tsx?$/, /.*@theoplayer\/.*\.js$/],
   exclude: ['/**/*.d.ts', '/**/node_modules/'],
   use: {
     loader: 'babel-loader',
     options: {
       cacheDirectory: true,
       // The 'metro-react-native-babel-preset' preset is recommended to match React Native's packager
-      presets: ['module:metro-react-native-babel-preset'],
+      presets: ['module:@react-native/babel-preset'],
       // Re-write paths to import only the modules needed by the app
       plugins: ['react-native-web'],
     },
@@ -68,15 +78,15 @@ const imageLoaderConfiguration = {
 module.exports = {
   entry: [
     // load any web API polyfills
-    // path.resolve(projectDirectory, 'polyfills-web.js'),
+    // path.resolve(appDirectory, 'polyfills-web.js'),
     // your web-specific entry file
-    path.resolve(projectDirectory, 'index.web.tsx'),
+    path.resolve(appDirectory, 'index.web.tsx'),
   ],
 
   // configures where the build ends up
   output: {
     filename: 'bundle.web.js',
-    path: path.resolve(projectDirectory, outputLocation),
+    path: path.resolve(appDirectory, outputLocation),
   },
 
   module: {
@@ -88,22 +98,23 @@ module.exports = {
       'react-native$': 'react-native-web',
       'react-native-url-polyfill': 'url-polyfill',
       'react-native-google-cast': path.resolve(stubDirectory, 'CastButtonStub'),
-      'react-native-web': path.resolve(projectDirectory, 'node_modules/react-native-web'),
-      'react-native-svg': path.resolve(projectDirectory, 'node_modules/react-native-svg-web'),
+      'react-native-web': path.resolve(appDirectory, 'node_modules/react-native-web'),
+      'react-native-svg': path.resolve(appDirectory, 'node_modules/react-native-svg-web'),
+      theoplayer: path.resolve(appDirectory, 'node_modules/theoplayer'),
 
       // Avoid duplicate react env.
-      react: path.resolve(projectDirectory, 'node_modules/react'),
-      'react-dom': path.resolve(projectDirectory, 'node_modules/react-dom'),
+      react: path.resolve(appDirectory, 'node_modules/react'),
+      'react-dom': path.resolve(appDirectory, 'node_modules/react-dom'),
     },
   },
-  plugins: [HTMLWebpackPluginConfig, CopyWebpackPluginConfig, new NodePolyfillPlugin()],
+  plugins: [HTMLWebpackPluginConfig, CopyWebpackPluginConfig],
   devServer: {
     // Tells dev-server to open the browser after server had been started.
     open: true,
     historyApiFallback: true,
     static: [
       {
-        directory: path.join(projectDirectory, 'web/public'),
+        directory: path.join(appDirectory, 'web/public'),
       },
     ],
     // Hot reload on source changes

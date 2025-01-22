@@ -1,182 +1,98 @@
-import React, { PureComponent } from 'react';
-import { LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { DurationChangeEvent, LoadedMetadataEvent, PlayerEventType, ProgressEvent, TimeRange, TimeUpdateEvent } from 'react-native-theoplayer';
+import React, { useContext, useState } from 'react';
+import { type LayoutChangeEvent, StyleProp, View, ViewStyle } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
-import Slider from '@react-native-community/slider';
+import { Slider } from '@miblanchard/react-native-slider';
+import { useDuration } from '../hooks/useDuration';
+import { useSeekable } from '../hooks/useSeekable';
+import { useDebounce } from '../hooks/useDebounce';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
+import { useSliderTime } from './useSliderTime';
 
 export interface SeekBarProps {
   /**
    * Optional style applied to the SeekBar.
    */
   style?: StyleProp<ViewStyle>;
-}
 
-interface SeekBarState {
-  ignoreTimeupdate: boolean;
-  isSeeking: boolean;
-  pausedDueToScrubbing: boolean;
-  seekable: TimeRange[];
-  duration: number;
-  sliderTime: number;
-  width: number;
+  sliderContainerStyle?: ViewStyle;
+
+  sliderMaximumTrackStyle?: ViewStyle;
 }
 
 /**
- * The default seek bar component for the `react-native-theoplayer` UI.
+ * The delay in milliseconds before an actual seek is executed while scrubbing the SeekBar.
  */
-export class SeekBar extends PureComponent<SeekBarProps, SeekBarState> {
-  private static initialState: SeekBarState = {
-    ignoreTimeupdate: false,
-    isSeeking: false,
-    sliderTime: 0,
-    duration: 0,
-    seekable: [],
-    pausedDueToScrubbing: false,
-    width: 0,
+const DEBOUNCE_SEEK_DELAY = 250;
+
+export const SeekBar = (props: SeekBarProps) => {
+  const player = useContext(PlayerContext).player;
+  const [isScrubbing, setIsScrubbing] = useState(false);
+  const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
+  const [width, setWidth] = useState(0);
+  const duration = useDuration();
+  const seekable = useSeekable();
+  const sliderTime = useSliderTime();
+
+  // Do not continuously seek while dragging the slider
+  const debounceSeek = useDebounce((value: number) => {
+    player.currentTime = value;
+  }, DEBOUNCE_SEEK_DELAY);
+
+  const onSlidingStart = (value: number[]) => {
+    setIsScrubbing(true);
+    debounceSeek(value[0]);
   };
 
-  private _seekBlockingTimeout: NodeJS.Timeout | undefined;
-  private _clearIsScrubbingTimout: NodeJS.Timeout | undefined;
-
-  constructor(props: SeekBarProps) {
-    super(props);
-    this.state = SeekBar.initialState;
-  }
-
-  componentDidMount() {
-    const player = (this.context as UiContext).player;
-    player.addEventListener(PlayerEventType.LOADED_METADATA, this._onLoadedMetadata);
-    player.addEventListener(PlayerEventType.DURATION_CHANGE, this._onDurationChange);
-    player.addEventListener(PlayerEventType.TIME_UPDATE, this._onTimeUpdate);
-    player.addEventListener(PlayerEventType.PROGRESS, this._onProgress);
-    this.setState({
-      ...SeekBar.initialState,
-      sliderTime: player.currentTime,
-      duration: player.duration,
-      seekable: player.seekable,
-    });
-  }
-
-  componentWillUnmount() {
-    const player = (this.context as UiContext).player;
-    player.removeEventListener(PlayerEventType.LOADED_METADATA, this._onLoadedMetadata);
-    player.removeEventListener(PlayerEventType.DURATION_CHANGE, this._onDurationChange);
-    player.removeEventListener(PlayerEventType.TIME_UPDATE, this._onTimeUpdate);
-    player.removeEventListener(PlayerEventType.PROGRESS, this._onProgress);
-    clearTimeout(this._seekBlockingTimeout);
-    clearTimeout(this._clearIsScrubbingTimout);
-  }
-
-  private _onTimeUpdate = (event: TimeUpdateEvent) => {
-    if (!this.state.ignoreTimeupdate) {
-      this.setState({ sliderTime: event.currentTime });
-    }
-  };
-  private _onLoadedMetadata = (event: LoadedMetadataEvent) => this.setState({ duration: event.duration });
-  private _onDurationChange = (event: DurationChangeEvent) => {
-    const player = (this.context as UiContext).player;
-    this.setState({ duration: event.duration, seekable: player.seekable });
-  };
-  private _onProgress = (event: ProgressEvent) => this.setState({ seekable: event.seekable });
-
-  private _onSlidingStart = (value: number) => {
-    this.setState({ sliderTime: value });
-    this._prepareSeekStart();
-    const player = (this.context as UiContext).player;
-    if (!player.paused) {
-      this.debounceSeek(value);
-      player.pause();
-      this.setState({ pausedDueToScrubbing: true });
+  const onSlidingValueChange = (value: number[]) => {
+    if (isScrubbing) {
+      setScrubberTime(value[0]);
+      debounceSeek(value[0]);
     }
   };
 
-  private _onValueChange = (value: number) => {
-    this.setState({ sliderTime: value });
-    if (this.state.ignoreTimeupdate) {
-      this.debounceSeek(value);
-    }
+  const onSlidingComplete = (value: number[]) => {
+    setScrubberTime(undefined);
+    setIsScrubbing(false);
+    debounceSeek(value[0], true);
   };
 
-  private _onSlidingComplete = (value: number) => {
-    this.setState({ sliderTime: value });
-    this.debounceSeek(value, true);
-    const player = (this.context as UiContext).player;
-    const isEnded = player.currentTime === player.duration;
-    if (this.state.pausedDueToScrubbing && !isEnded) {
-      player.play();
-      this.setState({ pausedDueToScrubbing: false });
-    }
-    this._finishSeek();
-  };
+  const normalizedDuration = isNaN(duration) || !isFinite(duration) ? 0 : Math.max(0, duration);
+  const seekableStart = seekable.length > 0 ? seekable[0].start : 0;
+  const seekableEnd = seekable.length > 0 ? seekable[0].end : normalizedDuration;
 
-  private readonly _prepareSeekStart = () => {
-    this.setState({ isSeeking: true, ignoreTimeupdate: true });
-    clearTimeout(this._clearIsScrubbingTimout);
-  };
-
-  private readonly _finishSeek = () => {
-    this.setState({ isSeeking: false });
-    // Wait for timeupdate events to settle after seeking, so the Slider does not jump back and forth.
-    this._clearIsScrubbingTimout = setTimeout(() => {
-      this.setState({ ignoreTimeupdate: false });
-    }, 1000);
-  };
-
-  private debounceSeek = (value: number, force = false) => {
-    // Don't bombard the player with seeks when seeking. Allow only one seek ever X milliseconds:
-    const MAX_SEEK_INTERVAL = 200;
-    if (force || this._seekBlockingTimeout === undefined) {
-      if (force) {
-        clearTimeout(this._seekBlockingTimeout);
-        this._seekBlockingTimeout = undefined;
-      }
-      this._seekBlockingTimeout = setTimeout(() => {
-        this._seekBlockingTimeout = undefined;
-      }, MAX_SEEK_INTERVAL);
-      // Do seek
-      const player = (this.context as UiContext).player;
-      player.currentTime = value;
-    }
-  };
-
-  render() {
-    const { seekable, sliderTime, duration, isSeeking, width } = this.state;
-    const { style } = this.props;
-    const normalizedDuration = isNaN(duration) ? 0 : duration;
-    const seekableStart = seekable.length > 0 ? seekable[0].start : 0;
-    const seekableEnd = seekable.length > 0 ? seekable[0].end : normalizedDuration;
-    return (
-      <PlayerContext.Consumer>
-        {(context: UiContext) => (
-          <View
-            style={[style ?? { flex: 1 }]}
-            onLayout={(event: LayoutChangeEvent) => {
-              this.setState({ width: event.nativeEvent.layout.width });
-            }}>
-            {isSeeking && (
-              <SingleThumbnailView seekableStart={seekableStart} seekableEnd={seekableEnd} currentTime={sliderTime} seekBarWidth={width} />
-            )}
-            <Slider
-              disabled={(!(duration > 0) && seekable.length > 0) || context.adInProgress}
-              style={[StyleSheet.absoluteFill, style]}
-              minimumValue={seekableStart}
-              maximumValue={seekableEnd}
-              step={1000}
-              onSlidingStart={this._onSlidingStart}
-              onValueChange={this._onValueChange}
-              onSlidingComplete={this._onSlidingComplete}
-              value={sliderTime}
-              focusable={true}
-              minimumTrackTintColor={context.style.colors.seekBarMinimum}
-              maximumTrackTintColor={context.style.colors.seekBarMaximum}
-              thumbTintColor={context.style.colors.seekBarDot}
-            />
-          </View>
-        )}
-      </PlayerContext.Consumer>
-    );
-  }
-}
-
-SeekBar.contextType = PlayerContext;
+  return (
+    <PlayerContext.Consumer>
+      {(context: UiContext) => (
+        <View
+          style={[props.style ?? { flex: 1 }]}
+          onLayout={(event: LayoutChangeEvent) => {
+            setWidth(event.nativeEvent.layout.width);
+          }}>
+          <Slider
+            disabled={(!(duration > 0) && seekable.length > 0) || context.adInProgress}
+            minimumValue={seekableStart}
+            maximumValue={seekableEnd}
+            containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
+            maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
+            step={1000}
+            renderAboveThumbComponent={(_index: number, value: number) => {
+              return (
+                isScrubbing &&
+                scrubberTime !== undefined && (
+                  <SingleThumbnailView seekableStart={seekableStart} seekableEnd={seekableEnd} currentTime={value} seekBarWidth={width} />
+                )
+              );
+            }}
+            onSlidingStart={onSlidingStart}
+            onValueChange={onSlidingValueChange}
+            onSlidingComplete={onSlidingComplete}
+            value={isScrubbing && scrubberTime !== undefined ? scrubberTime : sliderTime}
+            minimumTrackTintColor={context.style.colors.seekBarMinimum}
+            maximumTrackTintColor={context.style.colors.seekBarMaximum}
+            thumbTintColor={context.style.colors.seekBarDot}
+          />
+        </View>
+      )}
+    </PlayerContext.Consumer>
+  );
+};

@@ -60,9 +60,20 @@ export default function App() {
     player.addEventListener(PlayerEventType.SEEKED, console.log);
     player.addEventListener(PlayerEventType.ENDED, console.log);
     player.source = {
-      sources: {
-        src: 'https://cdn.theoplayer.com/video/adultswim/clip.m3u8',
-        type: 'application/x-mpegurl',
+      sources: [
+        {
+          src: 'https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd',
+          type: 'application/dash+xml',
+        },
+      ],
+      poster: 'https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg',
+      metadata: {
+        title: 'Big Buck Bunny',
+        subtitle: 'DASH - Thumbnails in manifest',
+        album: 'React-Native THEOplayer demos',
+        mediaUri: 'https://theoplayer.com',
+        displayIconUri: 'https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg',
+        artist: 'THEOplayer',
       },
     };
 
