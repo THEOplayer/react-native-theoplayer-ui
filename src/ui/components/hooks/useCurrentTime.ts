@@ -1,4 +1,4 @@
-import { useCallback, useContext, useSyncExternalStore } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { PlayerContext } from '@theoplayer/react-native-ui';
 import { type PlayerEventMap, PlayerEventType } from 'react-native-theoplayer';
 
@@ -16,12 +16,19 @@ const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKING
  */
 export const useCurrentTime = () => {
   const { player } = useContext(PlayerContext);
-  const subscribe = useCallback(
-    (callback: () => void) => {
-      TIME_CHANGE_EVENTS.forEach((event) => player?.addEventListener(event, callback));
-      return () => TIME_CHANGE_EVENTS.forEach((event) => player?.removeEventListener(event, callback));
-    },
-    [player],
-  );
-  return useSyncExternalStore(subscribe, () => (player ? player.currentTime : 0));
+  const [currentTime, setCurrentTime] = useState(player?.currentTime ?? 0);
+  const onTimeUpdate = useCallback(() => {
+    if (player) {
+      setCurrentTime(player.currentTime);
+    }
+  }, [player]);
+  useEffect(() => {
+    if (!player) return;
+    TIME_CHANGE_EVENTS.forEach((event) => player.addEventListener(event, onTimeUpdate));
+    return () => {
+      TIME_CHANGE_EVENTS.forEach((event) => player.removeEventListener(event, onTimeUpdate));
+    };
+  }, [player, onTimeUpdate]);
+
+  return currentTime;
 };
