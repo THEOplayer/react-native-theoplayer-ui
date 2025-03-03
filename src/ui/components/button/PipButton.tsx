@@ -1,15 +1,11 @@
-import React, { PureComponent, type ReactNode } from 'react';
-import type { PresentationModeChangeEvent } from 'react-native-theoplayer';
-import { PlayerEventType, PresentationMode } from 'react-native-theoplayer';
+import React, { type ReactNode, useCallback, useContext } from 'react';
+import { PresentationMode } from 'react-native-theoplayer';
 import { Platform } from 'react-native';
 import { ActionButton } from './actionbutton/ActionButton';
-import { PlayerContext, UiContext } from '../util/PlayerContext';
+import { PlayerContext } from '../util/PlayerContext';
 import { PipExitSvg } from './svg/PipExitSvg';
 import { PipEnterSvg } from './svg/PipEnterSvg';
-
-interface PipButtonState {
-  presentationMode: PresentationMode;
-}
+import { usePresentationMode } from '../hooks/usePresentationMode';
 
 export interface PipButtonProps {
   /**
@@ -21,51 +17,26 @@ export interface PipButtonProps {
 /**
  * The default button to enable picture-in-picture for the `react-native-theoplayer` UI.
  */
-export class PipButton extends PureComponent<PipButtonProps, PipButtonState> {
-  constructor(props: PipButtonProps) {
-    super(props);
-    this.state = { presentationMode: PresentationMode.inline };
-  }
-
-  componentDidMount() {
-    const player = (this.context as UiContext).player;
-    player.addEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
-    this.setState({ presentationMode: player.presentationMode });
-  }
-
-  componentWillUnmount() {
-    const player = (this.context as UiContext).player;
-    player.removeEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
-  }
-
-  private readonly onPresentationModeChange = (event: PresentationModeChangeEvent) => {
-    this.setState({ presentationMode: event.presentationMode });
-  };
-
-  private togglePip = () => {
-    const context = this.context as UiContext;
-    const player = context.player;
+export function PipButton(props: PipButtonProps) {
+  const { icon } = props;
+  const { player, ui } = useContext(PlayerContext);
+  const presentationMode = usePresentationMode();
+  const togglePip = useCallback(() => {
     switch (player.presentationMode) {
       case 'inline':
       case 'fullscreen':
-        context.ui.enterPip_();
+        ui.enterPip_();
         break;
       case 'picture-in-picture':
         player.presentationMode = PresentationMode.inline;
         break;
     }
-  };
+  }, [player]);
 
-  render() {
-    const { icon } = this.props;
-    if (Platform.isTV) {
-      return <></>;
-    }
-    const { presentationMode } = this.state;
-    const enterSvg: ReactNode = icon?.enter ?? <PipEnterSvg />;
-    const exitSvg: ReactNode = icon?.exit ?? <PipExitSvg />;
-    return <ActionButton svg={presentationMode === 'picture-in-picture' ? exitSvg : enterSvg} onPress={this.togglePip} />;
+  const enterSvg: ReactNode = icon?.enter ?? <PipEnterSvg />;
+  const exitSvg: ReactNode = icon?.exit ?? <PipExitSvg />;
+  if (Platform.isTV) {
+    return <></>;
   }
+  return <ActionButton svg={presentationMode === 'picture-in-picture' ? exitSvg : enterSvg} onPress={togglePip} />;
 }
-
-PipButton.contextType = PlayerContext;
