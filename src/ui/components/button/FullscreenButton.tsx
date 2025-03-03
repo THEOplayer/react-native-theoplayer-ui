@@ -6,8 +6,10 @@ import { PlayerContext } from '../util/PlayerContext';
 import { FullscreenExitSvg } from './svg/FullscreenExitSvg';
 import { FullscreenEnterSvg } from './svg/FullscreenEnterSvg';
 import { usePresentationMode } from '../hooks/usePresentationMode';
+import type { ButtonBaseProps } from './ButtonBaseProps';
+import { TestIDs } from '../../utils/TestIDs';
 
-export interface FullscreenProps {
+export interface FullscreenProps extends ButtonBaseProps {
   /**
    * The icon components used in the button.
    */
@@ -38,5 +40,12 @@ export function FullscreenButton(props: FullscreenProps) {
   if (Platform.isTV) {
     return <></>;
   }
-  return <ActionButton svg={presentationMode === 'fullscreen' ? exitSvg : enterSvg} onPress={toggleFullScreen} />;
+  return (
+    <ActionButton
+      style={props.style}
+      testID={props.testID ?? TestIDs.FULLSCREEN_BUTTON}
+      svg={presentationMode === 'fullscreen' ? exitSvg : enterSvg}
+      onPress={toggleFullScreen}
+    />
+  );
 }

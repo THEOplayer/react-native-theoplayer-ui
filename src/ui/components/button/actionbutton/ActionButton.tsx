@@ -1,9 +1,10 @@
-import { Image, ImageSourcePropType, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Image, ImageSourcePropType, Platform, TouchableOpacity, View, ViewStyle } from 'react-native';
 import React, { ReactNode, useContext, useState } from 'react';
 import { SvgContext } from '../svg/SvgUtils';
 import { PlayerContext, UiContext } from '../../util/PlayerContext';
+import type { ButtonBaseProps } from '../ButtonBaseProps';
 
-export interface ActionButtonProps {
+export interface ActionButtonProps extends ButtonBaseProps {
   /**
    * The image to put in the button.
    */
@@ -21,17 +22,9 @@ export interface ActionButtonProps {
    */
   onPress?: () => void;
   /**
-   * The styling overrides.
-   */
-  style?: StyleProp<ViewStyle>;
-  /**
    * Whether the button should be highlighted with `ColorTheme.iconSelected` color.
    */
   highlighted?: boolean;
-  /**
-   * An id used to locate this view in end-to-end tests.
-   */
-  testID?: string;
 }
 
 /**

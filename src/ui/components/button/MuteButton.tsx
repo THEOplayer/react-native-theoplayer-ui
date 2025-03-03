@@ -5,8 +5,10 @@ import { Platform } from 'react-native';
 import { VolumeOffSvg } from './svg/VolumeOffSvg';
 import { VolumeUpSvg } from './svg/VolumeUpSvg';
 import { useMuted } from '../hooks/useMuted';
+import type { ButtonBaseProps } from './ButtonBaseProps';
+import { TestIDs } from '../../utils/TestIDs';
 
-export interface MuteButtonProps {
+export interface MuteButtonProps extends ButtonBaseProps {
   /**
    * The icon components used in the button.
    */
@@ -26,5 +28,13 @@ export function MuteButton(props: MuteButtonProps) {
   if (Platform.isTV) {
     return <></>;
   }
-  return <ActionButton svg={muted ? volumeOffSvg : volumeUpSvg} onPress={toggleMuted} touchable={true} />;
+  return (
+    <ActionButton
+      style={props.style}
+      testID={props.testID ?? TestIDs.MUTE_BUTTON}
+      svg={muted ? volumeOffSvg : volumeUpSvg}
+      onPress={toggleMuted}
+      touchable={true}
+    />
+  );
 }

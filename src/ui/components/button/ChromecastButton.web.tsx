@@ -5,8 +5,10 @@ import { PlayerContext } from '../util/PlayerContext';
 import { ChromecastSvg } from './svg/ChromecastSvg';
 import { Platform } from 'react-native';
 import { useChromecast } from '../hooks/useChromecast';
+import type { ButtonBaseProps } from './ButtonBaseProps';
+import { TestIDs } from '../../utils/TestIDs';
 
-export interface CastButtonProps {
+export interface CastButtonProps extends ButtonBaseProps {
   /**
    * The icon component used in the button. Only overrideable for web.
    */
@@ -37,5 +39,14 @@ export function ChromecastButton(props: CastButtonProps) {
     return <></>;
   }
 
-  return <ActionButton svg={icon ?? <ChromecastSvg />} touchable={true} onPress={onPress} highlighted={isConnected(castState)} />;
+  return (
+    <ActionButton
+      style={props.style}
+      testID={props.testID ?? TestIDs.CHROMECAST_BUTTON}
+      svg={icon ?? <ChromecastSvg />}
+      touchable={true}
+      onPress={onPress}
+      highlighted={isConnected(castState)}
+    />
+  );
 }

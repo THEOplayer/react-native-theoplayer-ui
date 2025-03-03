@@ -2,16 +2,13 @@ import { ActionButton } from './actionbutton/ActionButton';
 import React, { type ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { ForwardSvg } from './svg/ForwardSvg';
-import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import type { StyleProp, TextStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BackwardSvg } from './svg/BackwardSvg';
 import { PlayerEventType } from 'react-native-theoplayer';
+import type { ButtonBaseProps } from './ButtonBaseProps';
 
-export interface SkipButtonProps {
-  /**
-   * The style overrides for the skip button.
-   */
-  style?: StyleProp<ViewStyle>;
+export interface SkipButtonProps extends ButtonBaseProps {
   /**
    * The style overrides for the text in the skip button.
    */
@@ -93,6 +90,7 @@ export function SkipButton(props: SkipButtonProps) {
           <TouchableOpacity
             activeOpacity={rotate === true ? 1 : 0.2}
             style={[{ height: '100%', aspectRatio: 1, justifyContent: 'center' }, style]}
+            testID={props.testID}
             onPress={onPress}>
             <ActionButton touchable={false} svg={skip < 0 ? backwardSvg : forwardSvg} />
             <View style={[StyleSheet.absoluteFill, { justifyContent: 'center' }]}>

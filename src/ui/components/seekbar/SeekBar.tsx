@@ -7,16 +7,31 @@ import { useSeekable } from '../hooks/useSeekable';
 import { useDebounce } from '../hooks/useDebounce';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSliderTime } from './useSliderTime';
+import { TestIDs } from '../../utils/TestIDs';
 
 export interface SeekBarProps {
   /**
    * Optional style applied to the SeekBar.
    */
   style?: StyleProp<ViewStyle>;
-
+  /**
+   * Optional style applied to the SeekBar container.
+   */
   sliderContainerStyle?: ViewStyle;
-
+  /**
+   * Optional style applied to the track left of the thumb.
+   */
+  sliderMinimumTrackStyle?: ViewStyle;
+  /**
+   * Optional style applied to the track right of the thumb.
+   */
   sliderMaximumTrackStyle?: ViewStyle;
+  /**
+   * An id used to locate this view in end-to-end tests.
+   *
+   * @default 'seek-bar'
+   */
+  testID?: string;
 }
 
 /**
@@ -65,6 +80,7 @@ export const SeekBar = (props: SeekBarProps) => {
       {(context: UiContext) => (
         <View
           style={[props.style ?? { flex: 1 }]}
+          testID={props.testID ?? TestIDs.SEEK_BAR}
           onLayout={(event: LayoutChangeEvent) => {
             setWidth(event.nativeEvent.layout.width);
           }}>
@@ -73,6 +89,7 @@ export const SeekBar = (props: SeekBarProps) => {
             minimumValue={seekableStart}
             maximumValue={seekableEnd}
             containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
+            minimumTrackStyle={props.sliderMinimumTrackStyle ?? {}}
             maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
             step={1000}
             renderAboveThumbComponent={(_index: number, value: number) => {

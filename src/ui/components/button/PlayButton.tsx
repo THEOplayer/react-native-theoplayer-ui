@@ -1,5 +1,4 @@
 import { ActionButton } from './actionbutton/ActionButton';
-import type { StyleProp, ViewStyle } from 'react-native';
 import React, { type ReactNode, useCallback, useContext } from 'react';
 import { PlayerContext } from '../util/PlayerContext';
 import { PlaySvg } from './svg/PlaySvg';
@@ -7,13 +6,10 @@ import { PauseSvg } from './svg/PauseSvg';
 import { ReplaySvg } from './svg/ReplaySvg';
 import { usePaused } from '../hooks/usePaused';
 import { useEnded } from '../hooks/useEnded';
+import type { ButtonBaseProps } from './ButtonBaseProps';
+import { TestIDs } from '../../utils/TestIDs';
 
-export interface PlayButtonProps {
-  /**
-   * The style overrides for the play/pause button.
-   */
-  style?: StyleProp<ViewStyle>;
-
+export interface PlayButtonProps extends ButtonBaseProps {
   /**
    * The icon components used in the button.
    */
@@ -40,5 +36,13 @@ export function PlayButton(props: PlayButtonProps) {
     }
   }, [player]);
 
-  return <ActionButton style={style} touchable={true} svg={ended ? replaySvg : paused ? playSvg : pauseSvg} onPress={togglePlayPause} />;
+  return (
+    <ActionButton
+      style={style}
+      testID={props.testID ?? TestIDs.PLAY_BUTTON}
+      touchable={true}
+      svg={ended ? replaySvg : paused ? playSvg : pauseSvg}
+      onPress={togglePlayPause}
+    />
+  );
 }

@@ -6,8 +6,10 @@ import { ActionButton } from './actionbutton/ActionButton';
 import { AirplaySvg } from './svg/AirplaySvg';
 import { CastState } from 'react-native-theoplayer';
 import { useAirplay } from '../hooks/useAirplay';
+import type { ButtonBaseProps } from './ButtonBaseProps';
+import { TestIDs } from '../../utils/TestIDs';
 
-export interface AirplayButtonProps {
+export interface AirplayButtonProps extends ButtonBaseProps {
   /**
    * The icon component used in the button.
    */
@@ -34,5 +36,14 @@ export function AirplayButton(props: AirplayButtonProps) {
   if (castState === CastState.unavailable || Platform.isTV) {
     return <></>;
   }
-  return <ActionButton svg={icon ?? <AirplaySvg />} touchable={true} onPress={onUIAirplayToggled} highlighted={isConnected(castState)} />;
+  return (
+    <ActionButton
+      style={props.style}
+      testID={props.testID ?? TestIDs.AIRPLAY_BUTTON}
+      svg={icon ?? <AirplaySvg />}
+      touchable={true}
+      onPress={onUIAirplayToggled}
+      highlighted={isConnected(castState)}
+    />
+  );
 }

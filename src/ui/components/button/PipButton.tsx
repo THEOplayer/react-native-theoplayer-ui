@@ -6,8 +6,10 @@ import { PlayerContext } from '../util/PlayerContext';
 import { PipExitSvg } from './svg/PipExitSvg';
 import { PipEnterSvg } from './svg/PipEnterSvg';
 import { usePresentationMode } from '../hooks/usePresentationMode';
+import type { ButtonBaseProps } from './ButtonBaseProps';
+import { TestIDs } from '../../utils/TestIDs';
 
-export interface PipButtonProps {
+export interface PipButtonProps extends ButtonBaseProps {
   /**
    * The icon components used in the button.
    */
@@ -38,5 +40,12 @@ export function PipButton(props: PipButtonProps) {
   if (Platform.isTV) {
     return <></>;
   }
-  return <ActionButton svg={presentationMode === 'picture-in-picture' ? exitSvg : enterSvg} onPress={togglePip} />;
+  return (
+    <ActionButton
+      style={props.style}
+      testID={props.testID ?? TestIDs.PIP_BUTTON}
+      svg={presentationMode === 'picture-in-picture' ? exitSvg : enterSvg}
+      onPress={togglePip}
+    />
+  );
 }
