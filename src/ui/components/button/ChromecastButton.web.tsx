@@ -4,7 +4,7 @@ import React, { type ReactNode, useCallback, useContext } from 'react';
 import { PlayerContext } from '../util/PlayerContext';
 import { ChromecastSvg } from './svg/ChromecastSvg';
 import { Platform } from 'react-native';
-import { useChromecast } from '../hooks/useChromecast';
+import { useChromecast } from '../../hooks/useChromecast';
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import { TestIDs } from '../../utils/TestIDs';
 

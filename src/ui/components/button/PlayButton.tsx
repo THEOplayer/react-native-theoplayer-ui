@@ -4,8 +4,8 @@ import { PlayerContext } from '../util/PlayerContext';
 import { PlaySvg } from './svg/PlaySvg';
 import { PauseSvg } from './svg/PauseSvg';
 import { ReplaySvg } from './svg/ReplaySvg';
-import { usePaused } from '../hooks/usePaused';
-import { useEnded } from '../hooks/useEnded';
+import { usePaused } from '../../hooks/usePaused';
+import { useEnded } from '../../hooks/useEnded';
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import { TestIDs } from '../../utils/TestIDs';
 

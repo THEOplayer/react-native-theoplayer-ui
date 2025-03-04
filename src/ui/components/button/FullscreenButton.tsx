@@ -5,7 +5,7 @@ import { ActionButton } from './actionbutton/ActionButton';
 import { PlayerContext } from '../util/PlayerContext';
 import { FullscreenExitSvg } from './svg/FullscreenExitSvg';
 import { FullscreenEnterSvg } from './svg/FullscreenEnterSvg';
-import { usePresentationMode } from '../hooks/usePresentationMode';
+import { usePresentationMode } from '../../hooks/usePresentationMode';
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import { TestIDs } from '../../utils/TestIDs';
 

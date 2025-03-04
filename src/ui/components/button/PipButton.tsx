@@ -5,7 +5,7 @@ import { ActionButton } from './actionbutton/ActionButton';
 import { PlayerContext } from '../util/PlayerContext';
 import { PipExitSvg } from './svg/PipExitSvg';
 import { PipEnterSvg } from './svg/PipEnterSvg';
-import { usePresentationMode } from '../hooks/usePresentationMode';
+import { usePresentationMode } from '../../hooks/usePresentationMode';
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import { TestIDs } from '../../utils/TestIDs';
 

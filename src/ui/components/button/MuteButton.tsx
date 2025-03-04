@@ -4,7 +4,7 @@ import { PlayerContext } from '../util/PlayerContext';
 import { Platform } from 'react-native';
 import { VolumeOffSvg } from './svg/VolumeOffSvg';
 import { VolumeUpSvg } from './svg/VolumeUpSvg';
-import { useMuted } from '../hooks/useMuted';
+import { useMuted } from '../../hooks/useMuted';
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import { TestIDs } from '../../utils/TestIDs';
 

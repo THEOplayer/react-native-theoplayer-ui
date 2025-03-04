@@ -5,7 +5,7 @@ import { isConnected } from './ChromecastButton';
 import { ActionButton } from './actionbutton/ActionButton';
 import { AirplaySvg } from './svg/AirplaySvg';
 import { CastState } from 'react-native-theoplayer';
-import { useAirplay } from '../hooks/useAirplay';
+import { useAirplay } from '../../hooks/useAirplay';
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import { TestIDs } from '../../utils/TestIDs';
 

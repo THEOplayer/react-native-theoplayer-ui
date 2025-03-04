@@ -1,4 +1,4 @@
-import { useCurrentTime } from '../hooks/useCurrentTime';
+import { useCurrentTime } from '../../hooks/useCurrentTime';
 
 export const useSliderTime = () => {
   const currentTime = useCurrentTime();

@@ -3,7 +3,7 @@ import { CastButton } from 'react-native-google-cast';
 import type { CastState } from 'react-native-theoplayer';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { DEFAULT_ACTION_BUTTON_STYLE } from './actionbutton/ActionButton';
-import { useChromecast } from '../hooks/useChromecast';
+import { useChromecast } from '../../hooks/useChromecast';
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import { TestIDs } from '../../utils/TestIDs';
 
