@@ -2,7 +2,7 @@ import { Dimensions, View } from 'react-native';
 import { PlayerContext } from '../../util/PlayerContext';
 import { ThumbnailView } from './ThumbnailView';
 import React, { useContext, useMemo } from 'react';
-import { useThumbnailTrack } from '../../hooks/useThumbnailTrack';
+import { useThumbnailTrack } from '../../../hooks/useThumbnailTrack';
 
 export interface ThumbnailViewProps {
   seekableStart: number;

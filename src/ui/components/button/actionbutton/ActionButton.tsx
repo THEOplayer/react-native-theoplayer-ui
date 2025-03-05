@@ -1,9 +1,10 @@
-import { Image, ImageSourcePropType, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Image, ImageSourcePropType, Platform, TouchableOpacity, View, ViewStyle } from 'react-native';
 import React, { ReactNode, useContext, useState } from 'react';
 import { SvgContext } from '../svg/SvgUtils';
 import { PlayerContext, UiContext } from '../../util/PlayerContext';
+import type { ButtonBaseProps } from '../ButtonBaseProps';
 
-export interface ActionButtonProps {
+export interface ActionButtonProps extends ButtonBaseProps {
   /**
    * The image to put in the button.
    */
@@ -20,10 +21,6 @@ export interface ActionButtonProps {
    * The callback when the button is pressed.
    */
   onPress?: () => void;
-  /**
-   * The styling overrides.
-   */
-  style?: StyleProp<ViewStyle>;
   /**
    * Whether the button should be highlighted with `ColorTheme.iconSelected` color.
    */
@@ -43,7 +40,7 @@ export const DEFAULT_ACTION_BUTTON_STYLE: ViewStyle = {
  * The default button component that renders an image/svg source for the `react-native-theoplayer` UI.
  */
 export const ActionButton = (props: ActionButtonProps) => {
-  const { icon, style, svg, onPress, highlighted } = props;
+  const { icon, style, svg, onPress, highlighted, testID } = props;
   const [focused, setFocused] = useState<boolean>(false);
   const context = useContext(PlayerContext);
   const shouldChangeTintColor = highlighted || (focused && Platform.isTV);
@@ -64,6 +61,7 @@ export const ActionButton = (props: ActionButtonProps) => {
       {(context: UiContext) => (
         <TouchableOpacity
           style={[DEFAULT_ACTION_BUTTON_STYLE, style]}
+          testID={testID}
           onPress={onTouch}
           onFocus={() => {
             context.ui.onUserAction_();

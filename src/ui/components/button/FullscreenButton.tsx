@@ -1,17 +1,15 @@
-import React, { PureComponent, type ReactNode } from 'react';
-import type { PresentationModeChangeEvent } from 'react-native-theoplayer';
-import { PlayerEventType, PresentationMode } from 'react-native-theoplayer';
+import React, { type ReactNode, useCallback, useContext } from 'react';
+import { PresentationMode } from 'react-native-theoplayer';
 import { Platform } from 'react-native';
 import { ActionButton } from './actionbutton/ActionButton';
-import { PlayerContext, UiContext } from '../util/PlayerContext';
+import { PlayerContext } from '../util/PlayerContext';
 import { FullscreenExitSvg } from './svg/FullscreenExitSvg';
 import { FullscreenEnterSvg } from './svg/FullscreenEnterSvg';
+import { usePresentationMode } from '../../hooks/usePresentationMode';
+import type { ButtonBaseProps } from './ButtonBaseProps';
+import { TestIDs } from '../../utils/TestIDs';
 
-interface FullscreenButtonState {
-  presentationMode: PresentationMode;
-}
-
-export interface FullscreenProps {
+export interface FullscreenProps extends ButtonBaseProps {
   /**
    * The icon components used in the button.
    */
@@ -21,29 +19,11 @@ export interface FullscreenProps {
 /**
  * The button to enable/disable fullscreen for the `react-native-theoplayer` UI.
  */
-export class FullscreenButton extends PureComponent<FullscreenProps, FullscreenButtonState> {
-  constructor(props: FullscreenProps) {
-    super(props);
-    this.state = { presentationMode: PresentationMode.inline };
-  }
-
-  componentDidMount() {
-    const player = (this.context as UiContext).player;
-    player.addEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
-    this.setState({ presentationMode: player.presentationMode });
-  }
-
-  componentWillUnmount() {
-    const player = (this.context as UiContext).player;
-    player.removeEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
-  }
-
-  private readonly onPresentationModeChange = (event: PresentationModeChangeEvent) => {
-    this.setState({ presentationMode: event.presentationMode });
-  };
-
-  private toggleFullScreen = () => {
-    const player = (this.context as UiContext).player;
+export function FullscreenButton(props: FullscreenProps) {
+  const { icon } = props;
+  const { player } = useContext(PlayerContext);
+  const presentationMode = usePresentationMode();
+  const toggleFullScreen = useCallback(() => {
     switch (player.presentationMode) {
       case 'picture-in-picture':
       case 'inline':
@@ -53,18 +33,19 @@ export class FullscreenButton extends PureComponent<FullscreenProps, FullscreenB
         player.presentationMode = PresentationMode.inline;
         break;
     }
-  };
+  }, [player]);
 
-  render() {
-    const { presentationMode } = this.state;
-    const { icon } = this.props;
-    if (Platform.isTV) {
-      return <></>;
-    }
-    const enterSvg: ReactNode = icon?.enter ?? <FullscreenEnterSvg />;
-    const exitSvg: ReactNode = icon?.exit ?? <FullscreenExitSvg />;
-    return <ActionButton svg={presentationMode === 'fullscreen' ? exitSvg : enterSvg} onPress={this.toggleFullScreen} />;
+  const enterSvg: ReactNode = icon?.enter ?? <FullscreenEnterSvg />;
+  const exitSvg: ReactNode = icon?.exit ?? <FullscreenExitSvg />;
+  if (Platform.isTV) {
+    return <></>;
   }
+  return (
+    <ActionButton
+      style={props.style}
+      testID={props.testID ?? TestIDs.FULLSCREEN_BUTTON}
+      svg={presentationMode === 'fullscreen' ? exitSvg : enterSvg}
+      onPress={toggleFullScreen}
+    />
+  );
 }
-
-FullscreenButton.contextType = PlayerContext;

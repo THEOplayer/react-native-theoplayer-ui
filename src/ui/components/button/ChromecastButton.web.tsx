@@ -1,15 +1,14 @@
-import { CastEvent, CastEventType, CastState, PlayerEventType } from 'react-native-theoplayer';
+import { CastState } from 'react-native-theoplayer';
 import { ActionButton } from '@theoplayer/react-native-ui';
-import React, { PureComponent, type ReactNode } from 'react';
-import { PlayerContext, UiContext } from '../util/PlayerContext';
+import React, { type ReactNode, useCallback, useContext } from 'react';
+import { PlayerContext } from '../util/PlayerContext';
 import { ChromecastSvg } from './svg/ChromecastSvg';
 import { Platform } from 'react-native';
+import { useChromecast } from '../../hooks/useChromecast';
+import type { ButtonBaseProps } from './ButtonBaseProps';
+import { TestIDs } from '../../utils/TestIDs';
 
-interface CastButtonState {
-  castState: CastState;
-}
-
-export interface CastButtonProps {
+export interface CastButtonProps extends ButtonBaseProps {
   /**
    * The icon component used in the button. Only overrideable for web.
    */
@@ -23,52 +22,31 @@ export function isConnected(state: CastState | undefined): boolean {
 /**
  * The button to enable Chromecast for web for the `react-native-theoplayer` UI
  */
-export class ChromecastButton extends PureComponent<CastButtonProps, CastButtonState> {
-  private static initialState: CastButtonState = {
-    castState: CastState.unavailable,
-  };
+export function ChromecastButton(props: CastButtonProps) {
+  const { player } = useContext(PlayerContext);
+  const castState = useChromecast();
+  const { icon } = props;
 
-  constructor(props: CastButtonProps) {
-    super(props);
-    this.state = ChromecastButton.initialState;
-  }
-
-  componentDidMount() {
-    const player = (this.context as UiContext).player;
-    player.addEventListener(PlayerEventType.CAST_EVENT, this.onCastStateChangeEvent);
-    this.setState({ castState: player.cast.chromecast?.state ?? CastState.unavailable });
-  }
-
-  componentWillUnmount() {
-    const player = (this.context as UiContext).player;
-    player.removeEventListener(PlayerEventType.CAST_EVENT, this.onCastStateChangeEvent);
-  }
-
-  private onCastStateChangeEvent = (event: CastEvent) => {
-    if (event.subType != CastEventType.CHROMECAST_STATE_CHANGE) {
-      return;
-    }
-    this.setState({ castState: event.state });
-  };
-
-  private onPress = () => {
-    const player = (this.context as UiContext).player;
-    if (isConnected(this.state.castState)) {
+  const onPress = useCallback(() => {
+    if (isConnected(castState)) {
       player.cast.chromecast?.stop();
     } else {
       player.cast.chromecast?.start();
     }
-  };
+  }, [player]);
 
-  render() {
-    const { castState } = this.state;
-    const { icon } = this.props;
-    // TODO: state is reported as unavailable by Android bridge when it is available.
-    if (Platform.OS === 'web' && castState === CastState.unavailable) {
-      return <></>;
-    }
-    return <ActionButton svg={icon ?? <ChromecastSvg />} touchable={true} onPress={this.onPress} highlighted={isConnected(castState)} />;
+  if (Platform.OS === 'web' && castState === CastState.unavailable) {
+    return <></>;
   }
-}
 
-ChromecastButton.contextType = PlayerContext;
+  return (
+    <ActionButton
+      style={props.style}
+      testID={props.testID ?? TestIDs.CHROMECAST_BUTTON}
+      svg={icon ?? <ChromecastSvg />}
+      touchable={true}
+      onPress={onPress}
+      highlighted={isConnected(castState)}
+    />
+  );
+}
