@@ -1,63 +1,40 @@
 import { ActionButton } from './actionbutton/ActionButton';
-import React, { PureComponent, type ReactNode } from 'react';
-import { PlayerContext, UiContext } from '../util/PlayerContext';
-import { PlayerEventType, VolumeChangeEvent } from 'react-native-theoplayer';
+import React, { type ReactNode, useCallback, useContext } from 'react';
+import { PlayerContext } from '../util/PlayerContext';
 import { Platform } from 'react-native';
 import { VolumeOffSvg } from './svg/VolumeOffSvg';
 import { VolumeUpSvg } from './svg/VolumeUpSvg';
+import { useMuted } from '../../hooks/useMuted';
+import type { ButtonBaseProps } from './ButtonBaseProps';
+import { TestIDs } from '../../utils/TestIDs';
 
-interface MuteButtonState {
-  muted: boolean;
-}
-
-export interface MuteButtonProps {
+export interface MuteButtonProps extends ButtonBaseProps {
   /**
    * The icon components used in the button.
    */
   icon?: { volumeUp: ReactNode; volumeOff: ReactNode };
 }
 
-/**
- * The default mute button for the `react-native-theoplayer` UI.
- */
-export class MuteButton extends PureComponent<MuteButtonProps, MuteButtonState> {
-  constructor(props: MuteButtonProps) {
-    super(props);
-    this.state = { muted: false };
-  }
-
-  componentDidMount() {
-    const player = (this.context as UiContext).player;
-    player.addEventListener(PlayerEventType.VOLUME_CHANGE, this.onVolumeChange);
-    this.setState({ muted: player.muted });
-  }
-
-  componentWillUnmount() {
-    const player = (this.context as UiContext).player;
-    player.removeEventListener(PlayerEventType.VOLUME_CHANGE, this.onVolumeChange);
-  }
-
-  private onVolumeChange = (_: VolumeChangeEvent) => {
-    const player = (this.context as UiContext).player;
-    this.setState({ muted: player.muted });
-  };
-
-  private toggleMuted = () => {
-    const player = (this.context as UiContext).player;
+export function MuteButton(props: MuteButtonProps) {
+  const { icon } = props;
+  const { player } = useContext(PlayerContext);
+  const muted = useMuted();
+  const toggleMuted = useCallback(() => {
     player.muted = !player.muted;
-    this.setState({ muted: player.muted });
-  };
+  }, [player]);
 
-  render() {
-    const { muted } = this.state;
-    const { icon } = this.props;
-    if (Platform.isTV) {
-      return <></>;
-    }
-    const volumeUpSvg: ReactNode = icon?.volumeUp ?? <VolumeUpSvg />;
-    const volumeOffSvg: ReactNode = icon?.volumeOff ?? <VolumeOffSvg />;
-    return <ActionButton svg={muted ? volumeOffSvg : volumeUpSvg} onPress={this.toggleMuted} touchable={true} />;
+  const volumeUpSvg: ReactNode = icon?.volumeUp ?? <VolumeUpSvg />;
+  const volumeOffSvg: ReactNode = icon?.volumeOff ?? <VolumeOffSvg />;
+  if (Platform.isTV) {
+    return <></>;
   }
+  return (
+    <ActionButton
+      style={props.style}
+      testID={props.testID ?? TestIDs.MUTE_BUTTON}
+      svg={muted ? volumeOffSvg : volumeUpSvg}
+      onPress={toggleMuted}
+      touchable={true}
+    />
+  );
 }
-
-MuteButton.contextType = PlayerContext;

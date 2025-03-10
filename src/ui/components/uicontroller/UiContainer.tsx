@@ -1,12 +1,11 @@
-import React, { PureComponent, ReactNode } from 'react';
-import { Animated, AppState, Platform, StyleProp, TouchableOpacity, View, ViewStyle, NativeEventSubscription } from 'react-native';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { Animated, AppState, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import type { AdEvent, PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
 import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
-import type { AppStateStatus } from 'react-native/Libraries/AppState/AppState';
 
 export interface UiContainerProps {
   /**
@@ -82,6 +81,8 @@ export interface UiContainerProps {
    * A slot to put components behind the UI background.
    */
   behind?: ReactNode;
+
+  children?: never;
 }
 
 /**
@@ -168,344 +169,283 @@ export const AD_UI_TOP_CONTAINER_STYLE: ViewStyle = TOP_UI_CONTAINER_STYLE;
 export const AD_UI_CENTER_CONTAINER_STYLE: ViewStyle = CENTER_UI_CONTAINER_STYLE;
 export const AD_UI_BOTTOM_CONTAINER_STYLE: ViewStyle = BOTTOM_UI_CONTAINER_STYLE;
 
-export interface UiContainerState {
-  fadeAnimation: Animated.Value;
-  currentMenu: ReactNode | undefined;
-  showing: boolean;
-  buttonsEnabled: boolean;
-  error: PlayerError | undefined;
-  firstPlay: boolean;
-  paused: boolean;
-  casting: boolean;
-  pip: boolean;
-  adInProgress: boolean;
-  adTapped: boolean;
-}
-
 /**
  * A component that does all the coordination between UI components.
  * - It provides all UI components with the PlayerContext, so they can access the styling and player.
  * - It provides slots for UI components to be places in the top/center/bottom positions.
  * - It uses animations to fade the UI in and out when applicable.
  */
-export class UiContainer extends PureComponent<React.PropsWithChildren<UiContainerProps>, UiContainerState> implements UiControls {
-  private _currentFadeOutTimeout: number | undefined = undefined;
-  private _appStateSubscription: NativeEventSubscription | undefined = undefined;
-  private _menus: MenuConstructor[] = [];
+export const UiContainer = (props: UiContainerProps) => {
+  const _currentFadeOutTimeout = useRef<number | undefined>(undefined);
+  const fadeAnimation = useRef(new Animated.Value(1)).current;
+  const [currentMenu, setCurrentMenu] = useState<React.ReactNode | undefined>(undefined);
+  const [showing, setShowing] = useState(true);
+  const [buttonsEnabled_, setButtonsEnabled] = useState(true);
+  const [error, setError] = useState<PlayerError | undefined>(undefined);
+  const [firstPlay, setFirstPlay] = useState(false);
+  const [paused, setPaused] = useState(true);
+  const [casting, setCasting] = useState(false);
+  const [pip, setPip] = useState(false);
+  const [adInProgress, setAdInProgress] = useState(false);
+  const [adTapped, setAdTapped] = useState(false);
+  const appStateSubscription = useRef<any>(null);
+  const _menus = useRef<MenuConstructor[]>([]).current;
+  const player = props.player;
 
-  static initialState: UiContainerState = {
-    fadeAnimation: new Animated.Value(1),
-    currentMenu: undefined,
-    showing: true,
-    buttonsEnabled: true,
-    error: undefined,
-    firstPlay: false,
-    paused: true,
-    casting: false,
-    pip: false,
-    adInProgress: false,
-    adTapped: false,
-  };
+  useEffect(() => {
+    const handlePlay = () => {
+      setFirstPlay(true);
+      setPaused(false);
+    };
 
-  constructor(props: UiContainerProps) {
-    super(props);
-    this.state = UiContainer.initialState;
-  }
+    const handlePause = () => {
+      setFirstPlay(true);
+      setPaused(true);
+    };
 
-  componentDidMount() {
-    const player = this.props.player;
-    player.addEventListener(PlayerEventType.LOAD_START, this.onLoadStart);
-    player.addEventListener(PlayerEventType.ERROR, this.onError);
-    player.addEventListener(PlayerEventType.CAST_EVENT, this.onCastEvent);
-    player.addEventListener(PlayerEventType.PLAY, this.onPlay);
-    player.addEventListener(PlayerEventType.PLAYING, this.onPlay);
-    player.addEventListener(PlayerEventType.PAUSE, this.onPause);
-    player.addEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
-    player.addEventListener(PlayerEventType.CAST_EVENT, this.onCastEvent);
-    player.addEventListener(PlayerEventType.ENDED, this.onEnded);
-    player.addEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
-    player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
+    const handleSourceChange = () => {
+      setPaused(player.paused);
+    };
+
+    const handleLoadStart = () => {
+      setError(undefined);
+    };
+
+    const handleError = (event: ErrorEvent) => {
+      setError(event.error);
+    };
+
+    const handleCastEvent = (event: CastEvent) => {
+      if (event.subType === CastEventType.CHROMECAST_STATE_CHANGE || event.subType === CastEventType.AIRPLAY_STATE_CHANGE) {
+        setCasting(event.state === 'connecting' || event.state === 'connected');
+      }
+    };
+
+    const handleEnded = () => {
+      setShowing(true);
+    };
+
+    const handlePresentationModeChange = (event: PresentationModeChangeEvent) => {
+      setPip(event.presentationMode === PresentationMode.pip);
+      if (event.presentationMode !== PresentationMode.pip) {
+        setShowing(true);
+      }
+    };
+
+    const handleAdEvent = (event: AdEvent) => {
+      if (event.subType === AdEventType.AD_BREAK_BEGIN) {
+        setAdInProgress(true);
+        setAdTapped(false);
+      } else if (event.subType === AdEventType.AD_BREAK_END) {
+        setAdInProgress(false);
+        setAdTapped(false);
+      } else if (event.subType === AdEventType.AD_CLICKED || event.subType === AdEventType.AD_TAPPED) {
+        setAdTapped(true);
+      }
+    };
+
+    player.addEventListener(PlayerEventType.LOAD_START, handleLoadStart);
+    player.addEventListener(PlayerEventType.ERROR, handleError);
+    player.addEventListener(PlayerEventType.CAST_EVENT, handleCastEvent);
+    player.addEventListener(PlayerEventType.PLAY, handlePlay);
+    player.addEventListener(PlayerEventType.PLAYING, handlePlay);
+    player.addEventListener(PlayerEventType.PAUSE, handlePause);
+    player.addEventListener(PlayerEventType.SOURCE_CHANGE, handleSourceChange);
+    player.addEventListener(PlayerEventType.ENDED, handleEnded);
+    player.addEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, handlePresentationModeChange);
+    player.addEventListener(PlayerEventType.AD_EVENT, handleAdEvent);
+
     if (player.source !== undefined && player.currentTime !== 0) {
-      this.onPlay();
+      handlePlay();
     }
-    this.setState({ pip: player.presentationMode === 'picture-in-picture' });
+    setPip(player.presentationMode === 'picture-in-picture');
 
-    // Listen for app state changes (https://reactnative.dev/docs/appstate#app-states)
-    this._appStateSubscription = AppState.addEventListener('change', this.onAppStateChange);
-  }
-
-  componentWillUnmount() {
-    const player = this.props.player;
-    player.removeEventListener(PlayerEventType.LOAD_START, this.onLoadStart);
-    player.removeEventListener(PlayerEventType.ERROR, this.onError);
-    player.removeEventListener(PlayerEventType.CAST_EVENT, this.onCastEvent);
-    player.removeEventListener(PlayerEventType.PLAY, this.onPlay);
-    player.removeEventListener(PlayerEventType.PLAYING, this.onPlay);
-    player.removeEventListener(PlayerEventType.PAUSE, this.onPause);
-    player.removeEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
-    player.removeEventListener(PlayerEventType.CAST_EVENT, this.onCastEvent);
-    player.removeEventListener(PlayerEventType.ENDED, this.onEnded);
-    player.removeEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, this.onPresentationModeChange);
-    player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
-    clearTimeout(this._currentFadeOutTimeout);
-    this._appStateSubscription?.remove();
-  }
-
-  private onAppStateChange = (state: AppStateStatus) => {
-    // Auto-resume ad play-out when the app is foregrounded after tapping or clicking an ad.
-    if (state === 'active' && this.state.adInProgress && this.state.adTapped) {
-      this.props.player.play();
-      this.setState({ adTapped: false });
-    }
-  };
-
-  private onPlay = () => {
-    this.setState({ firstPlay: true, paused: false });
-    this.resumeAnimationsIfPossible_();
-  };
-
-  private onPause = () => {
-    this.setState({ firstPlay: true, paused: true });
-    this.stopAnimationsAndShowUi_();
-  };
-
-  private onSourceChange = () => {
-    this.setState({ paused: this.props.player.paused });
-  };
-
-  private onLoadStart = () => {
-    this.setState({ error: undefined });
-  };
-
-  private onError = (event: ErrorEvent) => {
-    const { error } = event;
-    this.setState({ error });
-  };
-
-  private onCastEvent = (event: CastEvent) => {
-    if (event.subType === CastEventType.CHROMECAST_STATE_CHANGE || event.subType === CastEventType.AIRPLAY_STATE_CHANGE) {
-      this.setState({ casting: event.state === 'connecting' || event.state === 'connected' });
-      this.resumeAnimationsIfPossible_();
-    }
-  };
-
-  private onEnded = () => {
-    this.stopAnimationsAndShowUi_();
-  };
-
-  private onPresentationModeChange = (event: PresentationModeChangeEvent) => {
-    this.setState({ pip: event.presentationMode === PresentationMode.pip }, () => {
-      if (!this.state.pip) {
-        // Show UI when exiting PIP
-        this.stopAnimationsAndShowUi_();
-        this.resumeAnimationsIfPossible_();
+    appStateSubscription.current = AppState.addEventListener('change', (state) => {
+      if (state === 'active' && adInProgress && adTapped) {
+        player.play();
+        setAdTapped(false);
       }
     });
+
+    return () => {
+      player.removeEventListener(PlayerEventType.LOAD_START, handleLoadStart);
+      player.removeEventListener(PlayerEventType.ERROR, handleError);
+      player.removeEventListener(PlayerEventType.CAST_EVENT, handleCastEvent);
+      player.removeEventListener(PlayerEventType.PLAY, handlePlay);
+      player.removeEventListener(PlayerEventType.PLAYING, handlePlay);
+      player.removeEventListener(PlayerEventType.PAUSE, handlePause);
+      player.removeEventListener(PlayerEventType.SOURCE_CHANGE, handleSourceChange);
+      player.removeEventListener(PlayerEventType.ENDED, handleEnded);
+      player.removeEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, handlePresentationModeChange);
+      player.removeEventListener(PlayerEventType.AD_EVENT, handleAdEvent);
+      appStateSubscription.current?.remove();
+    };
+  }, [player, adInProgress, adTapped]);
+
+  const animationsBlocked_ = () => {
+    return !firstPlay || currentMenu !== undefined || casting || pip;
   };
 
-  private onAdEvent = (event: AdEvent) => {
-    const type = event.subType;
-    if (type === AdEventType.AD_BREAK_BEGIN) {
-      this.setState({ adInProgress: true, adTapped: false });
-    } else if (type === AdEventType.AD_BREAK_END) {
-      this.setState({ adInProgress: false, adTapped: false });
-    } else if (type === AdEventType.AD_CLICKED || type === AdEventType.AD_TAPPED) {
-      this.setState({ adTapped: true });
+  const playPause_ = () => {
+    if (paused) {
+      player.play();
+    } else {
+      player.pause();
     }
   };
 
-  get buttonsEnabled_(): boolean {
-    return this.state.buttonsEnabled;
-  }
-
-  /**
-   * Request to show the UI due to user input.
-   */
-  public onUserAction_ = () => {
-    if (!this.state.firstPlay) {
-      return;
-    }
-    this.stopAnimationsAndShowUi_();
-    this.resumeAnimationsIfPossible_();
+  const openMenu_ = (menuConstructor: () => ReactNode) => {
+    _menus.push(menuConstructor);
+    setCurrentMenu(menuConstructor());
+    stopAnimationsAndShowUi_();
   };
 
-  public openMenu_ = (menuConstructor: () => ReactNode) => {
-    this._menus.push(menuConstructor);
-    this.setState({ currentMenu: menuConstructor() });
-    this.stopAnimationsAndShowUi_();
+  const closeCurrentMenu_ = () => {
+    _menus.pop();
+    const nextMenu = _menus.length > 0 ? _menus[_menus.length - 1] : undefined;
+    setCurrentMenu(nextMenu?.());
+    resumeAnimationsIfPossible_();
   };
 
-  public closeCurrentMenu_ = () => {
-    this._menus.pop();
-    const nextMenu = this._menus.length > 0 ? this._menus[this._menus.length - 1] : undefined;
-    this.setState({ currentMenu: nextMenu?.() }, () => {
-      this.resumeAnimationsIfPossible_();
-    });
-  };
-
-  public enterPip_ = () => {
+  const enterPip_ = () => {
     // Make sure the UI is disabled first before entering PIP
-    clearTimeout(this._currentFadeOutTimeout);
-    const { fadeAnimation } = this.state;
-    this.setState({ buttonsEnabled: false });
+    clearTimeout(_currentFadeOutTimeout.current);
+    setButtonsEnabled(false);
     Animated.timing(fadeAnimation, {
       useNativeDriver: true,
       toValue: 0,
       duration: 0,
     }).start(() => {
-      this.setState({ showing: false }, () => {
-        this.props.player.presentationMode = PresentationMode.pip;
-      });
+      setShowing(false);
+      player.presentationMode = PresentationMode.pip;
     });
   };
 
-  private stopAnimationsAndShowUi_() {
-    clearTimeout(this._currentFadeOutTimeout);
-    this._currentFadeOutTimeout = undefined;
-    if (!this.state.showing) {
-      this.doFadeIn_();
+  const stopAnimationsAndShowUi_ = () => {
+    clearTimeout(_currentFadeOutTimeout.current);
+    _currentFadeOutTimeout.current = undefined;
+    if (!showing) {
+      doFadeIn_();
     }
-  }
+  };
 
-  private resumeAnimationsIfPossible_() {
-    clearTimeout(this._currentFadeOutTimeout);
-    if (this.animationsBlocked_) {
+  const resumeAnimationsIfPossible_ = () => {
+    clearTimeout(_currentFadeOutTimeout.current);
+    if (animationsBlocked_()) {
       return;
     }
     // Only resume animation when paused except for web.
     // This is because mobile users can tap away the UI when paused, but desktop users can't.
-    if (Platform.OS === 'web' || !this.state.paused) {
+    if (Platform.OS === 'web' || !paused) {
       // @ts-ignore
-      this._currentFadeOutTimeout = setTimeout(this.doFadeOut_, this.props.theme.fadeAnimationTimoutMs);
+      _currentFadeOutTimeout.current = setTimeout(doFadeOut_, props.theme.fadeAnimationTimoutMs);
     }
-  }
+  };
 
-  private doFadeIn_ = () => {
-    const { fadeAnimation } = this.state;
-    this.setState({ showing: true });
+  const doFadeIn_ = () => {
+    setShowing(true);
     Animated.timing(fadeAnimation, {
       useNativeDriver: true,
       toValue: 1,
       duration: 200,
     }).start(() => {
-      this.setState({ buttonsEnabled: true });
+      setButtonsEnabled(true);
     });
   };
 
-  private doFadeOut_ = () => {
-    if (this.animationsBlocked_) {
+  const doFadeOut_ = () => {
+    if (animationsBlocked_()) {
       return;
     }
-    clearTimeout(this._currentFadeOutTimeout);
-    const { fadeAnimation } = this.state;
-    this.setState({ buttonsEnabled: false });
+    clearTimeout(_currentFadeOutTimeout.current);
+    setButtonsEnabled(false);
     Animated.timing(fadeAnimation, {
       useNativeDriver: true,
       toValue: 0,
       duration: 200,
     }).start(() => {
-      this.setState({ showing: false });
+      setShowing(false);
     });
   };
 
-  private get animationsBlocked_(): boolean {
-    const { firstPlay, currentMenu, casting, pip } = this.state;
-    return !firstPlay || currentMenu !== undefined || casting || pip;
-  }
-
-  private playPause_ = () => {
-    if (this.state.paused) {
-      this.props.player.play();
-    } else {
-      this.props.player.pause();
+  /**
+   * Request to show the UI due to user input.
+   */
+  const onUserAction_ = () => {
+    if (!firstPlay) {
+      return;
     }
+    stopAnimationsAndShowUi_();
+    resumeAnimationsIfPossible_();
   };
 
-  render() {
-    const {
-      player,
-      theme,
-      top,
-      center,
-      bottom,
-      adTop,
-      adCenter,
-      adBottom,
-      children,
-      style,
-      topStyle,
-      centerStyle,
-      bottomStyle,
-      adTopStyle,
-      adCenterStyle,
-      adBottomStyle,
-      behind,
-    } = this.props;
-    const { fadeAnimation, currentMenu, error, firstPlay, pip, showing, adInProgress } = this.state;
+  const combinedUiContainerStyle = [UI_CONTAINER_STYLE, props.style];
+  const combinedAdContainerStyle = [AD_CONTAINER_STYLE, props.style];
+  const showMobileAdLayout = adInProgress && Platform.OS != 'web';
 
-    if (error !== undefined) {
-      return <ErrorDisplay error={error} />;
-    }
-
-    if (Platform.OS !== 'web' && pip) {
-      return <></>;
-    }
-
-    const combinedUiContainerStyle = [UI_CONTAINER_STYLE, style];
-    const combinedAdContainerStyle = [AD_CONTAINER_STYLE, style];
-
-    const showMobileAdLayout = adInProgress && Platform.OS != 'web';
-
-    return (
-      <PlayerContext.Provider value={{ player, style: theme, ui: this, adInProgress }}>
-        {/* The View behind the UI, that is always visible.*/}
-        <View style={FULLSCREEN_CENTER_STYLE} pointerEvents={'none'}>
-          {behind}
-        </View>
-        {/* The Animated.View is for showing and hiding the UI*/}
-        {!showMobileAdLayout && (
-          <Animated.View
-            style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
-            onTouchStart={this.onUserAction_}
-            pointerEvents={showing ? 'auto' : 'box-only'}
-            {...(Platform.OS === 'web' ? { onMouseMove: this.onUserAction_, onMouseLeave: this.doFadeOut_ } : {})}>
-            <>
-              {/* The UI background */}
-              <View style={[combinedUiContainerStyle, { backgroundColor: theme.colors.uiBackground }]} onTouchStart={this.doFadeOut_} />
-
-              {/* The Settings Menu */}
-              {currentMenu !== undefined && <View style={[combinedUiContainerStyle]}>{currentMenu}</View>}
-
-              {/* The UI control bars*/}
-              {currentMenu === undefined && !adInProgress && (
-                <>
-                  {firstPlay && <View style={[TOP_UI_CONTAINER_STYLE, topStyle]}>{top}</View>}
-                  <View style={[CENTER_UI_CONTAINER_STYLE, centerStyle]}>{center}</View>
-                  {firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, bottomStyle]}>{bottom}</View>}
-                  {children}
-                </>
-              )}
-
-              {/* The Ad UI */}
-              {currentMenu === undefined && adInProgress && (
-                <>
-                  <View style={[AD_UI_TOP_CONTAINER_STYLE, adTopStyle]}>{adTop}</View>
-                  <View style={[AD_UI_CENTER_CONTAINER_STYLE, adCenterStyle]}>{adCenter}</View>
-                  <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, adBottomStyle]}>{adBottom}</View>
-                </>
-              )}
-            </>
-          </Animated.View>
-        )}
-        {/* Simplistic ad view to allow play pause during an ad on mobile. */}
-        {showMobileAdLayout && (
-          <View style={[combinedAdContainerStyle]}>
-            <TouchableOpacity style={[FULLSCREEN_CENTER_STYLE]} onPress={this.playPause_}></TouchableOpacity>
-          </View>
-        )}
-      </PlayerContext.Provider>
-    );
+  if (error !== undefined) {
+    return <ErrorDisplay error={error} />;
   }
-}
 
-UiContainer.contextType = PlayerContext;
+  if (Platform.OS !== 'web' && pip) {
+    return <></>;
+  }
+
+  const ui: UiControls = {
+    buttonsEnabled_,
+    onUserAction_,
+    openMenu_,
+    closeCurrentMenu_,
+    enterPip_,
+  };
+
+  return (
+    <PlayerContext.Provider value={{ player, style: props.theme, ui, adInProgress }}>
+      {/* The View behind the UI, that is always visible.*/}
+      <View style={FULLSCREEN_CENTER_STYLE} pointerEvents={'none'}>
+        {props.behind}
+      </View>
+      {/* The Animated.View is for showing and hiding the UI*/}
+      {!showMobileAdLayout && (
+        <Animated.View
+          style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
+          onTouchStart={onUserAction_}
+          pointerEvents={showing ? 'auto' : 'box-only'}
+          {...(Platform.OS === 'web' ? { onMouseMove: onUserAction_, onMouseLeave: doFadeOut_ } : {})}>
+          <>
+            {/* The UI background */}
+            <View style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]} onTouchStart={doFadeOut_} />
+
+            {/* The Settings Menu */}
+            {currentMenu !== undefined && <View style={[combinedUiContainerStyle]}>{currentMenu}</View>}
+
+            {/* The UI control bars*/}
+            {currentMenu === undefined && !adInProgress && (
+              <>
+                {firstPlay && <View style={[TOP_UI_CONTAINER_STYLE, props.topStyle]}>{props.top}</View>}
+                <View style={[CENTER_UI_CONTAINER_STYLE, props.centerStyle]}>{props.center}</View>
+                {firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, props.bottomStyle]}>{props.bottom}</View>}
+                {props.children}
+              </>
+            )}
+
+            {/* The Ad UI */}
+            {currentMenu === undefined && adInProgress && (
+              <>
+                <View style={[AD_UI_TOP_CONTAINER_STYLE, props.adTopStyle]}>{props.adTop}</View>
+                <View style={[AD_UI_CENTER_CONTAINER_STYLE, props.adCenterStyle]}>{props.adCenter}</View>
+                <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, props.adBottomStyle]}>{props.adBottom}</View>
+              </>
+            )}
+          </>
+        </Animated.View>
+      )}
+      {/* Simplistic ad view to allow play pause during an ad on mobile. */}
+      {showMobileAdLayout && (
+        <View style={[combinedAdContainerStyle]}>
+          <TouchableOpacity style={[FULLSCREEN_CENTER_STYLE]} onPress={playPause_}></TouchableOpacity>
+        </View>
+      )}
+    </PlayerContext.Provider>
+  );
+};
