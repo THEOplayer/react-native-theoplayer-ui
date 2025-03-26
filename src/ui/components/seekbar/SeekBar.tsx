@@ -8,6 +8,7 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSliderTime } from './useSliderTime';
 import { TestIDs } from '../../utils/TestIDs';
+import { useChaptersTrack } from '../../hooks/useChaptersTrack';
 
 export interface SeekBarProps {
   /**
@@ -39,6 +40,15 @@ export interface SeekBarProps {
  */
 const DEBOUNCE_SEEK_DELAY = 250;
 
+const Square = () => {
+  return <View style={{
+    width: 5,
+    height: 5,
+    backgroundColor: "yellow",
+  }} />;
+};
+
+
 export const SeekBar = (props: SeekBarProps) => {
   const player = useContext(PlayerContext).player;
   const [isScrubbing, setIsScrubbing] = useState(false);
@@ -47,7 +57,11 @@ export const SeekBar = (props: SeekBarProps) => {
   const duration = useDuration();
   const seekable = useSeekable();
   const sliderTime = useSliderTime();
-
+  const chapters = useChaptersTrack()
+  let chapterMarkerTimes: number[] = []
+  if (chapters && chapters?.cues) {
+    chapterMarkerTimes = chapters?.cues.map(cue => cue.endTime).slice(0,-1)
+  } 
   // Do not continuously seek while dragging the slider
   const debounceSeek = useDebounce((value: number) => {
     player.currentTime = value;
@@ -107,6 +121,8 @@ export const SeekBar = (props: SeekBarProps) => {
             minimumTrackTintColor={context.style.colors.seekBarMinimum}
             maximumTrackTintColor={context.style.colors.seekBarMaximum}
             thumbTintColor={context.style.colors.seekBarDot}
+            renderTrackMarkComponent={() => (<Square/>)}
+            trackMarks={chapterMarkerTimes}
           />
         </View>
       )}
