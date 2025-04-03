@@ -20,6 +20,7 @@ import { AdDisplay } from './components/ads/AdDisplay';
 import { AdCountdown } from './components/ads/AdCountdown';
 import { AdSkipButton } from './components/ads/AdSkipButton';
 import { AdClickThroughButton } from './components/ads/AdClickThroughButton';
+import { TestIDs } from './utils/TestIDs';
 
 export interface THEOplayerDefaultUiProps {
   /**
@@ -83,7 +84,13 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                 <LanguageMenuButton />
               </ControlBar>
             }
-            center={<CenteredControlBar left={<SkipButton skip={-10} />} middle={<PlayButton />} right={<SkipButton skip={30} />} />}
+            center={
+              <CenteredControlBar
+                left={<SkipButton skip={-10} testID={TestIDs.SKIP_BWD_BUTTON} />}
+                middle={<PlayButton />}
+                right={<SkipButton skip={30} testID={TestIDs.SKIP_FWD_BUTTON} />}
+              />
+            }
             bottom={
               <>
                 <ControlBar style={{ justifyContent: 'flex-start' }}>
