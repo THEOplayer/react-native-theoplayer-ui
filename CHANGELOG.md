@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Added `testID` properties on button and seekBar components to support automated testing.
+- Added support for THEOplayer 9.0.
 
 ## [0.10.1] (2025-02-26)
 
