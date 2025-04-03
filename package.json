@@ -74,7 +74,7 @@
     "react-native": "*",
     "react-native-google-cast": "*",
     "react-native-svg": "^13.8.0 || ^14 || ^15",
-    "react-native-theoplayer": "^2.7.0 || ^3 || ^7 || ^8"
+    "react-native-theoplayer": "^2.7.0 || ^3 || ^7 || ^8 || ^9"
   },
   "eslintIgnore": [
     "node_modules/",
