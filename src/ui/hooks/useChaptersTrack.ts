@@ -8,7 +8,6 @@ const TEXT_TRACK_CHANGE_EVENTS = [PlayerEventType.LOADED_DATA, PlayerEventType.T
  * Retain first chapters track encountered in the textTracks list.
  */
 export function filterChaptersTrack(textTracks: TextTrack[] | undefined): TextTrack | undefined {
-    console.log('textTracks ', textTracks)
     return textTracks && textTracks.find(isChaptersTrack);
   }
   
