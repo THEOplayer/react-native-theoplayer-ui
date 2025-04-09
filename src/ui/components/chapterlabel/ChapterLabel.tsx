@@ -8,10 +8,6 @@ import { usePlayerEvent } from '../../hooks/usePlayerEvent';
 
 export interface ChapterLabelProps {
   /**
-   * Whether to fade out after a seek.
-   */
-  fadeOut: boolean;
-  /**
    * The style overrides.
    */
   style?: StyleProp<TextStyle>;
