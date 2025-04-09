@@ -19,8 +19,9 @@ import {
   Spacer,
   TimeLabel,
   UiContainer,
+  ChapterLabel
 } from '@theoplayer/react-native-ui';
-import { PlayerConfiguration, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
+import { PlayerConfiguration, PlayerEventType, TextTrackKind, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 
 import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import { AdDisplay } from '@theoplayer/react-native-ui';
@@ -132,6 +133,7 @@ export default function App() {
                   <ControlBar>
                     <MuteButton />
                     <TimeLabel showDuration={true} />
+                    <ChapterLabel fadeOut={false} />
                     <Spacer />
                     <PipButton />
                     <FullscreenButton />
