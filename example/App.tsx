@@ -62,19 +62,26 @@ export default function App() {
     player.source = {
       sources: [
         {
-          src: 'https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd',
-          type: 'application/dash+xml',
+          src: 'https://cdn.theoplayer.com/video/sintel/nosubs.m3u8',
+          type: 'application/x-mpegurl',
         },
       ],
-      poster: 'https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg',
       metadata: {
-        title: 'Big Buck Bunny',
-        subtitle: 'DASH - Thumbnails in manifest',
+        title: 'Sintel',
+        subtitle: 'HLS - Sideloaded Chapters',
         album: 'React-Native THEOplayer demos',
         mediaUri: 'https://theoplayer.com',
-        displayIconUri: 'https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg',
+        displayIconUri: 'https://cdn.theoplayer.com/video/sintel_old/poster.jpg',
         artist: 'THEOplayer',
       },
+      textTracks: [{
+        kind: TextTrackKind.chapters,
+        src: 'https://cdn.theoplayer.com/video/sintel/chapters.vtt',
+        format: 'webvtt',
+        srclang: 'en',
+        label: 'Chapters',
+        default: true
+      }],
     };
 
     player.muted = true;
