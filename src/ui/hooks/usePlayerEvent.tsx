@@ -1,5 +1,5 @@
 import { DependencyList, useEffect } from "react";
-import { PlayerEventMap, THEOplayer } from "react-native-theoplayer";
+import type { PlayerEventMap, THEOplayer } from "react-native-theoplayer";
 
 export function usePlayerEvent<K extends keyof PlayerEventMap>(
   player: THEOplayer | undefined,
