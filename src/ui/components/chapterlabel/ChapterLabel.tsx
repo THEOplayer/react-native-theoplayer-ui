@@ -1,6 +1,6 @@
 import type { StyleProp, TextStyle } from 'react-native';
 import { Text } from 'react-native'
-import React, { PureComponent, useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { PlayerEventType, TimeUpdateEvent } from 'react-native-theoplayer';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { useChaptersTrack } from '../../hooks/useChaptersTrack';
