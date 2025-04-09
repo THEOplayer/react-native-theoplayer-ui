@@ -141,7 +141,7 @@ export default function App() {
                   <ControlBar>
                     <MuteButton />
                     <TimeLabel showDuration={true} />
-                    <ChapterLabel fadeOut={false} />
+                    <ChapterLabel />
                     <Spacer />
                     <PipButton />
                     <FullscreenButton />
