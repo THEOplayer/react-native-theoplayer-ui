@@ -1,7 +1,6 @@
 import { useCallback, useContext, useSyncExternalStore } from 'react';
 import { PlayerContext } from '@theoplayer/react-native-ui';
-import { PlayerEventType, type PlayerEventMap } from 'react-native-theoplayer';
-import { TextTrack } from 'react-native-theoplayer'
+import { PlayerEventType, type PlayerEventMap, TextTrack } from 'react-native-theoplayer';
 
 const TEXT_TRACK_CHANGE_EVENTS = [PlayerEventType.LOADED_DATA, PlayerEventType.TEXT_TRACK_LIST] satisfies ReadonlyArray<keyof PlayerEventMap>;
 
