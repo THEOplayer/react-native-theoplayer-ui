@@ -40,14 +40,6 @@ export interface SeekBarProps {
  */
 const DEBOUNCE_SEEK_DELAY = 250;
 
-const Square = () => {
-  return <View style={{
-    width: 5,
-    height: 5,
-    backgroundColor: "yellow",
-  }} />;
-};
-
 
 export const SeekBar = (props: SeekBarProps) => {
   const player = useContext(PlayerContext).player;
