@@ -136,7 +136,7 @@ export default function App() {
               bottom={
                 <>
                   <ControlBar>
-                    <SeekBar />
+                    <SeekBar chapterMarkers={() => (<SquareMarker/>)} />
                   </ControlBar>
                   <ControlBar>
                     <MuteButton />
