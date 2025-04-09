@@ -27,6 +27,10 @@ export interface SeekBarProps {
    * Optional style applied to the track right of the thumb.
    */
   sliderMaximumTrackStyle?: ViewStyle;
+  /** 
+  * Optional 
+  */
+  chapterMarkers?: (index?: number) => React.ReactNode
   /**
    * An id used to locate this view in end-to-end tests.
    *
@@ -113,7 +117,7 @@ export const SeekBar = (props: SeekBarProps) => {
             minimumTrackTintColor={context.style.colors.seekBarMinimum}
             maximumTrackTintColor={context.style.colors.seekBarMaximum}
             thumbTintColor={context.style.colors.seekBarDot}
-            renderTrackMarkComponent={() => (<Square/>)}
+            renderTrackMarkComponent={props.chapterMarkers}
             trackMarks={chapterMarkerTimes}
           />
         </View>
