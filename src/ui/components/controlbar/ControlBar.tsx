@@ -58,7 +58,7 @@ export const CenteredControlBar = (props: CenteredControlBarProps) => {
   return (
     <PlayerContext.Consumer>
       {(context: UiContext) => (
-        <ControlBar style={[{ height: context.style.dimensions.centerControlBarHeight, width: '100%', justifyContent: 'space-between' }, style]}>
+        <ControlBar style={[{ height: context.style.dimensions.centerControlBarHeight, width: '60%', justifyContent: 'space-between' }, style]}>
           <View style={{ height: context.style.dimensions.centerControlBarHeight }}>{left}</View>
           {middle}
           <View style={{ height: context.style.dimensions.centerControlBarHeight }}>{right}</View>
