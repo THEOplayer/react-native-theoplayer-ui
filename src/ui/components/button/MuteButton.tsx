@@ -1,7 +1,6 @@
 import { ActionButton } from './actionbutton/ActionButton';
 import React, { type ReactNode, useCallback, useContext } from 'react';
 import { PlayerContext } from '../util/PlayerContext';
-import { Platform } from 'react-native';
 import { VolumeOffSvg } from './svg/VolumeOffSvg';
 import { VolumeUpSvg } from './svg/VolumeUpSvg';
 import { useMuted } from '../../hooks/useMuted';
@@ -25,9 +24,6 @@ export function MuteButton(props: MuteButtonProps) {
 
   const volumeUpSvg: ReactNode = icon?.volumeUp ?? <VolumeUpSvg />;
   const volumeOffSvg: ReactNode = icon?.volumeOff ?? <VolumeOffSvg />;
-  if (Platform.isTV) {
-    return <></>;
-  }
   return (
     <ActionButton
       style={props.style}

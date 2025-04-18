@@ -1,6 +1,5 @@
 import React, { type ReactNode, useCallback, useContext } from 'react';
 import { PresentationMode } from 'react-native-theoplayer';
-import { Platform } from 'react-native';
 import { ActionButton } from './actionbutton/ActionButton';
 import { PlayerContext } from '../util/PlayerContext';
 import { FullscreenExitSvg } from './svg/FullscreenExitSvg';
@@ -37,9 +36,7 @@ export function FullscreenButton(props: FullscreenProps) {
 
   const enterSvg: ReactNode = icon?.enter ?? <FullscreenEnterSvg />;
   const exitSvg: ReactNode = icon?.exit ?? <FullscreenExitSvg />;
-  if (Platform.isTV) {
-    return <></>;
-  }
+
   return (
     <ActionButton
       style={props.style}

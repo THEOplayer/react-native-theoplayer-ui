@@ -1,6 +1,5 @@
 import React, { type ReactNode, useCallback, useContext } from 'react';
 import { PresentationMode } from 'react-native-theoplayer';
-import { Platform } from 'react-native';
 import { ActionButton } from './actionbutton/ActionButton';
 import { PlayerContext } from '../util/PlayerContext';
 import { PipExitSvg } from './svg/PipExitSvg';
@@ -37,9 +36,7 @@ export function PipButton(props: PipButtonProps) {
 
   const enterSvg: ReactNode = icon?.enter ?? <PipEnterSvg />;
   const exitSvg: ReactNode = icon?.exit ?? <PipExitSvg />;
-  if (Platform.isTV) {
-    return <></>;
-  }
+
   return (
     <ActionButton
       style={props.style}
