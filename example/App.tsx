@@ -19,6 +19,7 @@ import {
   Spacer,
   TimeLabel,
   UiContainer,
+  AutoFocusGuide,
   ChapterLabel,
   type Locale,
 } from '@theoplayer/react-native-ui';
@@ -139,25 +140,29 @@ export default function App() {
               locale={myCustomLocale}
               behind={<CenteredDelayedActivityIndicator size={50} />}
               top={
-                <ControlBar>
-                  <LanguageMenuButton />
-                  <SettingsMenuButton>
-                    {/*Note: quality selection is not available on iOS */}
-                    <QualitySubMenu />
-                    <PlaybackRateSubMenu />
-                  </SettingsMenuButton>
-                </ControlBar>
+                <AutoFocusGuide>
+                  <ControlBar>
+                    <LanguageMenuButton />
+                    <SettingsMenuButton>
+                      {/*Note: quality selection is not available on iOS */}
+                      <QualitySubMenu />
+                      <PlaybackRateSubMenu />
+                    </SettingsMenuButton>
+                  </ControlBar>
+                </AutoFocusGuide>
               }
               center={
-                <CenteredControlBar
-                  style={{ width: '50%' }}
-                  left={<SkipButton skip={-10} />}
-                  middle={<PlayButton />}
-                  right={<SkipButton skip={30} />}
-                />
+                <AutoFocusGuide>
+                  <CenteredControlBar
+                    style={{ width: '50%' }}
+                    left={<SkipButton skip={-10} />}
+                    middle={<PlayButton />}
+                    right={<SkipButton skip={30} />}
+                  />
+                </AutoFocusGuide>
               }
               bottom={
-                <>
+                <AutoFocusGuide>
                   <ControlBar>
                     <Spacer />
                     <ChapterLabel />
@@ -173,7 +178,7 @@ export default function App() {
                     <PipButton />
                     <FullscreenButton />
                   </ControlBar>
-                </>
+                </AutoFocusGuide>
               }
               adTop={
                 <ControlBar>
