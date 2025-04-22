@@ -148,7 +148,14 @@ export default function App() {
                   </SettingsMenuButton>
                 </ControlBar>
               }
-              center={<CenteredControlBar left={<SkipButton skip={-10} />} middle={<PlayButton />} right={<SkipButton skip={30} />} />}
+              center={
+                <CenteredControlBar
+                  style={{ width: '50%' }}
+                  left={<SkipButton skip={-10} />}
+                  middle={<PlayButton />}
+                  right={<SkipButton skip={30} />}
+                />
+              }
               bottom={
                 <>
                   <ControlBar>
