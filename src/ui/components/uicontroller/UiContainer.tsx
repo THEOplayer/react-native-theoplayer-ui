@@ -150,6 +150,8 @@ export const TOP_UI_CONTAINER_STYLE: ViewStyle = {
  */
 export const CENTER_UI_CONTAINER_STYLE: ViewStyle = {
   alignSelf: 'center',
+  justifyContent: 'center',
+  flexDirection: 'row',
   width: '100%',
 };
 
