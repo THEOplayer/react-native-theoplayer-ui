@@ -13,7 +13,6 @@
 		427D16432DB8E762002D645F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D16422DB8E762002D645F /* AppDelegate.swift */; };
 		427D16442DB8E762002D645F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D16422DB8E762002D645F /* AppDelegate.swift */; };
 		7A66B13F56E91F43A75A0D89 /* libPods-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F335D4D3D88FDE340D72BA77 /* libPods-example.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		CA7AF1074D45DC8BBDBACB05 /* libPods-example-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C05F907C905CD53E529E42A5 /* libPods-example-tvOS.a */; };
 /* End PBXBuildFile section */
 
@@ -47,9 +46,22 @@
 		F335D4D3D88FDE340D72BA77 /* libPods-example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		4250E8B22DB92F0E0060F371 /* Exceptions for "example-tvOS" folder in "example-tvOS" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Main.storyboard",
+			);
+			target = 427D16242DB8E052002D645F /* example-tvOS */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		427D16262DB8E052002D645F /* example-tvOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				4250E8B22DB92F0E0060F371 /* Exceptions for "example-tvOS" folder in "example-tvOS" target */,
+			);
 			path = "example-tvOS";
 			sourceTree = "<group>";
 		};
@@ -199,6 +211,7 @@
 				427D16212DB8E052002D645F /* Sources */,
 				427D16222DB8E052002D645F /* Frameworks */,
 				427D16232DB8E052002D645F /* Resources */,
+				4250E8B12DB92EC00060F371 /* Budle React Native Code And Images */,
 				D6257132927497B1BCE384CD /* [CP] Embed Pods Frameworks */,
 				2E95918B59E5D498B98883BC /* [CP] Copy Pods Resources */,
 			);
@@ -267,7 +280,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				412D854398A7ABFC8A702DFF /* PrivacyInfo.xcprivacy in Resources */,
 			);
@@ -290,15 +302,13 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/.xcode.env",
 			);
 			name = "Bundle React Native code and images";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		1DA81C8F11762E2942DB0A8A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -372,6 +382,24 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-example/Pods-example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		4250E8B12DB92EC00060F371 /* Budle React Native Code And Images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Budle React Native Code And Images";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		566639930BABFB8EE2243FA9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
