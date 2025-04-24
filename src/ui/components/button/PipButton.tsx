@@ -32,7 +32,7 @@ export function PipButton(props: PipButtonProps) {
         player.presentationMode = PresentationMode.inline;
         break;
     }
-  }, [player]);
+  }, [player, ui]);
 
   const enterSvg: ReactNode = icon?.enter ?? <PipEnterSvg />;
   const exitSvg: ReactNode = icon?.exit ?? <PipExitSvg />;
