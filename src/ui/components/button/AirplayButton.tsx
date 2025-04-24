@@ -31,7 +31,7 @@ export function AirplayButton(props: AirplayButtonProps) {
         player.cast.airplay?.start();
       }
     }
-  }, [player]);
+  }, [player, castState]);
 
   if (castState === CastState.unavailable || Platform.isTV) {
     return <></>;
