@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Animated, AppState, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
+import { useTVEventHandler } from '../util/TVUtils';
 import type { AdEvent, PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
 import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
@@ -195,29 +196,16 @@ export const UiContainer = (props: UiContainerProps) => {
   const [pip, setPip] = useState(false);
   const [adInProgress, setAdInProgress] = useState(false);
   const [adTapped, setAdTapped] = useState(false);
-  const [tvEventHandlerAvailable, setTvEventHandlerAvailable] = useState(true);
   const appStateSubscription = useRef<any>(null);
   const _menus = useRef<MenuConstructor[]>([]).current;
   const { player, locale } = props;
 
   const combinedLocale: Locale = { ...defaultLocale, ...locale };
 
-  if (Platform.OS === 'ios' && Platform.isTV) {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const useTVEventHandler = require('react-native').useTVEventHandler;
-      const myTVEventHandler = () => {
-        stopAnimationsAndShowUi_();
-        resumeAnimationsIfPossible_();
-      };
-      useTVEventHandler(myTVEventHandler);
-    } catch (e) {
-      if (tvEventHandlerAvailable) {
-        console.warn('useTVEventHandler not supported, a dependency on react-native-tvos is required.');
-        setTvEventHandlerAvailable(false);
-      }
-    }
-  }
+  useTVEventHandler(() => {
+    stopAnimationsAndShowUi_();
+    resumeAnimationsIfPossible_();
+  });
 
   useEffect(() => {
     const handlePlay = () => {
