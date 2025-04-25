@@ -55,6 +55,8 @@ export const SeekBar = (props: SeekBarProps) => {
   const sliderTime = useSliderTime();
   const chapters = useChaptersTrack()
   const chapterMarkerTimes: number[] = chapters?.cues?.map(cue => cue.endTime).slice(0,-1) ?? [];
+  console.log('chapters',chapters)
+  console.log('chapterMarkerTimes', chapterMarkerTimes)
   // Do not continuously seek while dragging the slider
   const debounceSeek = useDebounce((value: number) => {
     player.currentTime = value;
@@ -114,7 +116,7 @@ export const SeekBar = (props: SeekBarProps) => {
             minimumTrackTintColor={context.style.colors.seekBarMinimum}
             maximumTrackTintColor={context.style.colors.seekBarMaximum}
             thumbTintColor={context.style.colors.seekBarDot}
-            renderTrackMarkComponent={props.chapterMarkers}
+            renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
             trackMarks={chapterMarkerTimes}
           />
         </View>
