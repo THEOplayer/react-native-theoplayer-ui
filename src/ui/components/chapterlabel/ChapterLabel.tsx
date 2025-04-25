@@ -1,10 +1,9 @@
 import type { StyleProp, TextStyle } from 'react-native';
 import { Text } from 'react-native'
-import React, { useCallback, useContext, useState } from 'react';
-import { PlayerEventType, TimeUpdateEvent } from 'react-native-theoplayer';
+import React from 'react';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { useChaptersTrack } from '../../hooks/useChaptersTrack';
-import { usePlayerEvent } from '../../hooks/usePlayerEvent';
+import { useCurrentTime } from '../../hooks/useCurrentTime';
 
 export interface ChapterLabelProps {
   /**
@@ -33,18 +32,8 @@ export const DEFAULT_CHAPTER_LABEL_STYLE: TextStyle = {
 
 
 export const ChapterLabel = (props: ChapterLabelProps) => {
-    const player = useContext(PlayerContext).player;
-    const [currentTime, setCurrentTime] = useState(0);
+    const currentTime = useCurrentTime();
     const chapters = useChaptersTrack()
-    const onTimeUpdate = useCallback(
-        (event?: TimeUpdateEvent) => {
-            if (!event) return;
-            const { currentTime } = event
-            setCurrentTime(currentTime);
-        },
-        [],
-    );  
-    usePlayerEvent(player, PlayerEventType.TIME_UPDATE, onTimeUpdate, [onTimeUpdate]);  
     const currentChapter = chapters?.cues?.find(cue => (cue.startTime <= currentTime && cue.endTime > currentTime))
     const label = currentChapter?.content
     const { style } = props;
