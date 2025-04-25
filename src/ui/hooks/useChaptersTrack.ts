@@ -14,8 +14,8 @@ const TEXT_TRACK_CHANGE_EVENTS = [PlayerEventType.LOADED_DATA, PlayerEventType.T
   /**
    * Query whether a track is a valid chapters track.
    */
-  function isChaptersTrack(textTrack: TextTrack | undefined): boolean {
-    return !!textTrack && (textTrack.kind === 'chapters');
+  function isChaptersTrack(textTrack: TextTrack): boolean {
+    return textTrack.kind === 'chapters';
   }
 
 /**
