@@ -56,7 +56,6 @@ export interface THEOplayerDefaultUiProps {
 export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
   const { theme, config, topSlot, bottomSlot, style } = props;
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
-  const chromeless = config?.chromeless ?? true;
 
   const onPlayerReady = (player: THEOplayer) => {
     setPlayer(player);
@@ -67,7 +66,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
     <View style={style}>
       <View style={[FULLSCREEN_CENTER_STYLE, { backgroundColor: '#000000' }]} />
       <THEOplayerView config={config} onPlayerReady={onPlayerReady}>
-        {player !== undefined && chromeless && (
+        {player !== undefined && (
           <UiContainer
             theme={{ ...DEFAULT_THEOPLAYER_THEME, ...theme }}
             player={player}
