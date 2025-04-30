@@ -80,6 +80,7 @@ export class AdClickThroughButton extends PureComponent<AdClickThroughButtonProp
   render() {
     const { clickThrough, currentAd } = this.state;
     const { style } = this.props;
+    const { localization } = this.context as UiContext;
 
     if (clickThrough === undefined || (currentAd && currentAd.integration === 'google-ima')) {
       return <></>;
@@ -89,7 +90,7 @@ export class AdClickThroughButton extends PureComponent<AdClickThroughButtonProp
       <PlayerContext.Consumer>
         {(context: UiContext) => (
           <TouchableOpacity style={{ padding: 5 }} onPress={this.onPress}>
-            <Text style={[context.style.text, { color: context.style.colors.text }, style]}>Visit Advertiser</Text>
+            <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{localization.adClickThroughButton}</Text>
           </TouchableOpacity>
         )}
       </PlayerContext.Consumer>

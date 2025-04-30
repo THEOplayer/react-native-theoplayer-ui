@@ -3,7 +3,6 @@ import { findMediaTrackByUid, MediaTrack, PlayerEventType } from 'react-native-t
 import React, { PureComponent, useContext } from 'react';
 import { Platform, StyleProp, ViewStyle } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
-import { getVideoQualityLabel } from '../util/TrackUtils';
 import { MenuView } from './common/MenuView';
 import { ScrollableMenu } from './common/ScrollableMenu';
 import { MenuRadioButton } from './common/MenuRadioButton';
@@ -21,15 +20,16 @@ export interface QualitySubMenuProps {
  */
 export const QualitySubMenu = (props: QualitySubMenuProps) => {
   const { menuStyle } = props;
+  const { player, localization } = useContext(PlayerContext);
+
   if (Platform.OS === 'ios') {
     return <></>;
   }
   const createMenu = () => {
     return <QualitySelectionView style={menuStyle} />;
   };
-  const player = useContext(PlayerContext).player;
 
-  let selectedQualityLabel = 'auto';
+  let selectedQualityLabel = localization.qualityLabel({ quality: undefined });
   if (player.targetVideoQuality !== undefined) {
     let id: number | undefined;
     if (typeof player.targetVideoQuality === 'number') {
@@ -39,10 +39,10 @@ export const QualitySubMenu = (props: QualitySubMenuProps) => {
     }
     const selectedTrack = player.videoTracks.find((track) => track.uid === player.selectedVideoTrack);
     const selectedQuality = selectedTrack !== undefined ? selectedTrack.qualities.find((quality) => quality.uid === id) : undefined;
-    selectedQualityLabel = getVideoQualityLabel(selectedQuality as VideoQuality, false);
+    selectedQualityLabel = localization.qualityLabel({ quality: selectedQuality as VideoQuality });
   }
 
-  return <SubMenuWithButton menuConstructor={createMenu} label={'Quality'} preview={selectedQualityLabel} />;
+  return <SubMenuWithButton menuConstructor={createMenu} label={localization.qualityTitle} preview={selectedQualityLabel} />;
 };
 
 export interface QualitySelectionViewState {
@@ -111,6 +111,7 @@ export class QualitySelectionView extends PureComponent<QualitySelectionViewProp
 
   render() {
     const { style } = this.props;
+    const { localization } = this.context as UiContext;
     const { videoTracks, selectedVideoTrack, targetVideoTrackQuality } = this.state;
     const availableVideoQualities = findMediaTrackByUid(videoTracks, selectedVideoTrack)?.qualities || [];
     availableVideoQualities.sort((q1, q2) => q2.bandwidth - q1.bandwidth);
@@ -127,11 +128,11 @@ export class QualitySelectionView extends PureComponent<QualitySelectionViewProp
         style={style}
         menu={
           <ScrollableMenu
-            title={'Video quality'}
+            title={localization.qualityTitle}
             items={[undefined, ...availableVideoQualities].map((track, id) => (
               <MenuRadioButton
                 key={id}
-                label={getVideoQualityLabel(track as VideoQuality)}
+                label={localization.qualityLabelExtended({ quality: track as VideoQuality })}
                 uid={id}
                 onSelect={this.selectTargetVideoQuality}
                 selected={

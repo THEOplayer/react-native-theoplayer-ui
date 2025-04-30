@@ -140,6 +140,7 @@ export class LanguageMenuView extends PureComponent<LanguageMenuViewProps, Langu
   render() {
     const { style } = this.props;
     const { audioTracks, textTracks, selectedAudioTrack, selectedTextTrack } = this.state;
+    const { localization } = this.context as UiContext;
     // The sort is needed because tracks are returned in different order on the native SDKs.
     const selectableTextTracks = filterRenderableTracks(textTracks).sort((first, second) => first.uid - second.uid);
     const selectableAudioTracks = audioTracks.sort((first, second) => first.uid - second.uid);
@@ -150,7 +151,7 @@ export class LanguageMenuView extends PureComponent<LanguageMenuViewProps, Langu
           <>
             {selectableAudioTracks.length > 1 && (
               <ScrollableMenu
-                title={'Audio'}
+                title={localization.audioTitle}
                 items={selectableAudioTracks.map((track, id) => (
                   <MenuRadioButton
                     key={id}
@@ -163,7 +164,7 @@ export class LanguageMenuView extends PureComponent<LanguageMenuViewProps, Langu
             )}
             {selectableTextTracks.length > 0 && (
               <ScrollableMenu
-                title={'Subtitles'}
+                title={localization.subtitleTitle}
                 items={
                   <>
                     <MenuRadioButton

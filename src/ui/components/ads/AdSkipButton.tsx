@@ -90,16 +90,18 @@ export class AdSkipButton extends PureComponent<AdSkipButtonProps, AdSkipButtonS
   render() {
     const { currentAd, timeToSkip } = this.state;
     const { style, textStyle, icon } = this.props;
+    const { localization } = this.context as UiContext;
 
     if (timeToSkip === undefined || isNaN(timeToSkip) || (currentAd && currentAd.integration === 'google-ima')) {
       return <></>;
     }
 
     if (timeToSkip > 0) {
-      const label = `Skip in ${Math.ceil(timeToSkip)}s`;
       return (
         <PlayerContext.Consumer>
-          {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>}
+          {(context: UiContext) => (
+            <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{localization.adSkipLabel({ seconds: timeToSkip })}</Text>
+          )}
         </PlayerContext.Consumer>
       );
     }

@@ -19,6 +19,8 @@ export interface PlaybackRateValue {
 
 /**
  * The default playback rate values for the menu.
+ *
+ * @deprecated, use DEFAULT_NUMBER_PLAYBACK_RATE_MENU_VALUES instead.
  */
 export const DEFAULT_PLAYBACK_RATE_MENU_VALUES: PlaybackRateValue[] = [
   { value: 0.25, label: '0.25x' },
@@ -29,11 +31,18 @@ export const DEFAULT_PLAYBACK_RATE_MENU_VALUES: PlaybackRateValue[] = [
   { value: 2, label: '2x' },
 ];
 
+/**
+ * The default number playback rate values for the menu.
+ */
+export const DEFAULT_NUMBER_PLAYBACK_RATE_MENU_VALUES: PlaybackRateValues = [0.25, 0.5, 1, 1.25, 1.5, 2];
+
+export type PlaybackRateValues = PlaybackRateValue[] | number[];
+
 export interface PlaybackRateSubMenuProps {
   /**
    * Overrides for the default playbackRate values.
    */
-  values?: PlaybackRateValue[];
+  values?: PlaybackRateValues;
   /**
    * Overrides for the style of the menu.
    */
@@ -45,15 +54,23 @@ export interface PlaybackRateSubMenuProps {
  */
 export const PlaybackRateSubMenu = (props: PlaybackRateSubMenuProps) => {
   const { values, menuStyle } = props;
-  const selectedValues: PlaybackRateValue[] = values ?? DEFAULT_PLAYBACK_RATE_MENU_VALUES;
-  const player = useContext(PlayerContext).player;
+  const { player, localization } = useContext(PlayerContext);
+
+  const selectedValues: PlaybackRateValues = values ?? DEFAULT_NUMBER_PLAYBACK_RATE_MENU_VALUES;
+  const localizedValues: PlaybackRateValue[] = selectedValues.map((value) => {
+    if (typeof value === 'number') {
+      return { value: value, label: localization?.playbackRateValue({ rate: value }) } satisfies PlaybackRateValue;
+    }
+    return value;
+  });
 
   const createMenu = () => {
-    return <PlaybackSelectionView values={selectedValues} menuStyle={menuStyle} />;
+    return <PlaybackSelectionView values={localizedValues} menuStyle={menuStyle} />;
   };
-  const preview = selectedValues.find((value) => value.value === player.playbackRate)?.label ?? player.playbackRate.toString() + 'x';
+  const preview = localizedValues.find((value) => value.value === player.playbackRate)?.label ?? player.playbackRate.toString() + 'x';
 
-  return <SubMenuWithButton menuConstructor={createMenu} label={'Speed'} preview={preview} />;
+  const label = localization.playbackRateTitle;
+  return <SubMenuWithButton menuConstructor={createMenu} label={label} preview={preview} />;
 };
 
 export interface PlaybackSelectionViewProps {
@@ -63,7 +80,7 @@ export interface PlaybackSelectionViewProps {
 
 export const PlaybackSelectionView = (props: PlaybackSelectionViewProps) => {
   const { values, menuStyle } = props;
-  const player = useContext(PlayerContext).player;
+  const { player, localization } = useContext(PlayerContext);
   const [selectedPlaybackRate, setSelectedPlaybackRate] = useState(player.playbackRate);
   const onChangePlaybackRate = (playbackRate: number | undefined) => {
     if (playbackRate) {
@@ -77,7 +94,7 @@ export const PlaybackSelectionView = (props: PlaybackSelectionViewProps) => {
       style={menuStyle}
       menu={
         <ScrollableMenu
-          title={'Playback Rate'}
+          title={localization.playbackRateTitle}
           items={values.map((playbackRateValue, id) => (
             <MenuRadioButton
               key={id}
