@@ -21,6 +21,7 @@ import { AdCountdown } from './components/ads/AdCountdown';
 import { AdSkipButton } from './components/ads/AdSkipButton';
 import { AdClickThroughButton } from './components/ads/AdClickThroughButton';
 import { TestIDs } from './utils/TestIDs';
+import type { Localization } from './components/util/Localization';
 
 export interface THEOplayerDefaultUiProps {
   /**
@@ -31,6 +32,10 @@ export interface THEOplayerDefaultUiProps {
    * The theme for all components.
    */
   theme?: Partial<THEOplayerTheme>;
+  /**
+   * The localized strings used in the UI components.
+   */
+  localization?: Localization;
   /**
    * The player configuration with THEOplayer license.
    */
@@ -54,7 +59,7 @@ export interface THEOplayerDefaultUiProps {
  * A default UI layout which uses UI components from `react-native-theoplayer` to create a basic playback UI around a THEOplayerView.
  */
 export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
-  const { theme, config, topSlot, bottomSlot, style } = props;
+  const { theme, config, topSlot, bottomSlot, style, localization } = props;
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
 
   const onPlayerReady = (player: THEOplayer) => {
@@ -69,6 +74,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
         {player !== undefined && (
           <UiContainer
             theme={{ ...DEFAULT_THEOPLAYER_THEME, ...theme }}
+            localization={localization}
             player={player}
             behind={<CenteredDelayedActivityIndicator size={50} />}
             top={
