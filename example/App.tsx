@@ -134,12 +134,16 @@ export default function App() {
               bottom={
                 <>
                   <ControlBar>
+                    <Spacer />
+                    <ChapterLabel />
+                    <Spacer />
+                  </ControlBar>
+                  <ControlBar>
                     <SeekBar chapterMarkers={() => (<SquareMarker/>)} />
                   </ControlBar>
                   <ControlBar>
                     <MuteButton />
                     <TimeLabel showDuration={true} />
-                    <ChapterLabel />
                     <Spacer />
                     <PipButton />
                     <FullscreenButton />
