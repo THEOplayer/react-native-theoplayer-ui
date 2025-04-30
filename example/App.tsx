@@ -32,7 +32,6 @@ const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   // Without a license, only demo sources hosted on '*.theoplayer.com' domains can be played.
   license: undefined, // insert your license here
-  chromeless: true,
   libraryLocation: 'theoplayer',
   mediaControl: {
     mediaSessionEnabled: true,
@@ -54,7 +53,6 @@ const SquareMarker = () => {
  */
 export default function App() {
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
-  const chromeless = playerConfig?.chromeless ?? false;
   const onPlayerReady = (player: THEOplayer) => {
     setPlayer(player);
     // optional debug logs
@@ -117,7 +115,7 @@ export default function App() {
     <View style={[StyleSheet.absoluteFill, { backgroundColor: '#000000' }]}>
       <View style={PLAYER_CONTAINER_STYLE}>
         <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}>
-          {player !== undefined && chromeless && (
+          {player !== undefined && (
             <UiContainer
               theme={{ ...DEFAULT_THEOPLAYER_THEME }}
               player={player}
