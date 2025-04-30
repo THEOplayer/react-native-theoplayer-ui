@@ -19,8 +19,9 @@ import {
   Spacer,
   TimeLabel,
   UiContainer,
+  ChapterLabel
 } from '@theoplayer/react-native-ui';
-import { PlayerConfiguration, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
+import { PlayerConfiguration, PlayerEventType, TextTrackKind, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 
 import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import { AdDisplay } from '@theoplayer/react-native-ui';
@@ -37,6 +38,14 @@ const playerConfig: PlayerConfiguration = {
     mediaSessionEnabled: true,
   },
   mutedAutoplay: 'all',
+};
+
+const SquareMarker = () => {
+  return <View style={{
+    width: 5,
+    height: 4,
+    backgroundColor: "yellow",
+  }} />;
 };
 
 /**
@@ -62,19 +71,26 @@ export default function App() {
     player.source = {
       sources: [
         {
-          src: 'https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd',
-          type: 'application/dash+xml',
+          src: 'https://cdn.theoplayer.com/video/sintel/nosubs.m3u8',
+          type: 'application/x-mpegurl',
         },
       ],
-      poster: 'https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg',
       metadata: {
-        title: 'Big Buck Bunny',
-        subtitle: 'DASH - Thumbnails in manifest',
+        title: 'Sintel',
+        subtitle: 'HLS - Sideloaded Chapters',
         album: 'React-Native THEOplayer demos',
         mediaUri: 'https://theoplayer.com',
-        displayIconUri: 'https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg',
+        displayIconUri: 'https://cdn.theoplayer.com/video/sintel_old/poster.jpg',
         artist: 'THEOplayer',
       },
+      textTracks: [{
+        kind: TextTrackKind.chapters,
+        src: 'https://cdn.theoplayer.com/video/sintel/chapters.vtt',
+        format: 'webvtt',
+        srclang: 'en',
+        label: 'Chapters',
+        default: true
+      }],
     };
 
     player.muted = true;
@@ -120,11 +136,12 @@ export default function App() {
               bottom={
                 <>
                   <ControlBar>
-                    <SeekBar />
+                    <SeekBar chapterMarkers={() => (<SquareMarker/>)} />
                   </ControlBar>
                   <ControlBar>
                     <MuteButton />
                     <TimeLabel showDuration={true} />
+                    <ChapterLabel />
                     <Spacer />
                     <PipButton />
                     <FullscreenButton />
