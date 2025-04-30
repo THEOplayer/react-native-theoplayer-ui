@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Added localization support.
+- Added support for rendering chapter markers & label.
 
 ### Fixed
 
