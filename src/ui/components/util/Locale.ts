@@ -42,13 +42,13 @@ export interface Locale {
    * The label of the selectable playback speed.
    * @param rate The playback speed value
    */
-  playbackRateValue: ({ rate }: { rate: number }) => string;
+  playbackRateLabel: ({ rate }: { rate: number }) => string;
   /**
    * The label showing advertisement progress.
    * @param currentAd The ad counter
    * @param totalAds The amount of total ads
    */
-  adLabel: ({ currentAd, totalAds }: { currentAd: number; totalAds: number }) => string;
+  adProgress: ({ currentAd, totalAds }: { currentAd: number; totalAds: number }) => string;
   /**
    * The label during the countdown, when it can be skipped.
    * @param seconds The amount of remaining seconds
@@ -120,11 +120,11 @@ export const defaultLocale: Locale = {
     const isHD = quality.height ? quality.height >= 720 : false;
     return `${label} - ${bandwidth} ${isHD ? '(HD)' : ''}`;
   },
-  playbackRateValue: ({ rate }) => {
+  playbackRateLabel: ({ rate }) => {
     if (rate === 1) return 'Normal';
     return `${rate}x`;
   },
-  adLabel: ({ currentAd, totalAds }) => {
+  adProgress: ({ currentAd, totalAds }) => {
     return totalAds > 1 ? `Ad ${currentAd} of ${totalAds}` : 'Ad';
   },
   adSkipCounter: ({ seconds }) => {
