@@ -35,7 +35,7 @@ export interface THEOplayerDefaultUiProps {
   /**
    * The localized strings used in the UI components.
    */
-  localization?: Partial<Locale>;
+  locale?: Partial<Locale>;
   /**
    * The player configuration with THEOplayer license.
    */
@@ -59,7 +59,7 @@ export interface THEOplayerDefaultUiProps {
  * A default UI layout which uses UI components from `react-native-theoplayer` to create a basic playback UI around a THEOplayerView.
  */
 export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
-  const { theme, config, topSlot, bottomSlot, style, localization } = props;
+  const { theme, config, topSlot, bottomSlot, style, locale } = props;
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
 
   const onPlayerReady = (player: THEOplayer) => {
@@ -74,7 +74,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
         {player !== undefined && (
           <UiContainer
             theme={{ ...DEFAULT_THEOPLAYER_THEME, ...theme }}
-            locale={localization}
+            locale={locale}
             player={player}
             behind={<CenteredDelayedActivityIndicator size={50} />}
             top={

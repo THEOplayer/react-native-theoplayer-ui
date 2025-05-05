@@ -32,7 +32,7 @@ const App = () => {
     <THEOplayerDefaultUi
       style={StyleSheet.absoluteFill}
       config={playerConfig}
-      localization={myCustomLocale}
+      locale={myCustomLocale}
     />
   );
 };
