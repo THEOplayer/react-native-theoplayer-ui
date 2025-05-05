@@ -100,7 +100,7 @@ export class AdSkipButton extends PureComponent<AdSkipButtonProps, AdSkipButtonS
         <PlayerContext.Consumer>
           {(context: UiContext) => (
             <Text style={[context.style.text, { color: context.style.colors.text }, style]}>
-              {context.locale.adSkipLabel({ seconds: timeToSkip })}
+              {context.locale.adSkipCounter({ seconds: timeToSkip })}
             </Text>
           )}
         </PlayerContext.Consumer>
@@ -113,7 +113,7 @@ export class AdSkipButton extends PureComponent<AdSkipButtonProps, AdSkipButtonS
         {(context: UiContext) => (
           <View style={[{ flexDirection: 'row', backgroundColor: context.style.colors.adSkipBackground, padding: 5 }, style]}>
             <TouchableOpacity style={[{ flexDirection: 'row' }, style]} onPress={this.onPress}>
-              <Text style={[context.style.text, { color: context.style.colors.text }, textStyle]}>Skip Ad</Text>
+              <Text style={[context.style.text, { color: context.style.colors.text }, textStyle]}>{context.locale.adSkip}</Text>
               <ActionButton touchable={false} svg={skipSvg} />
             </TouchableOpacity>
           </View>

@@ -1,22 +1,90 @@
 import type { PlayerError, VideoQuality } from 'react-native-theoplayer';
 
+/**
+ * The localized strings used in the player's user interface.
+ */
 export interface Locale {
+  /**
+   * The text used in the back button, on all menus.
+   */
   backButton: string;
+  /**
+   * The title at the top of the settings menu.
+   */
   settingsTitle: string;
+  /**
+   * The title of the video quality selection menu.
+   */
   qualityTitle: string;
+  /**
+   * The label of a video quality.
+   * @param quality
+   */
   qualityLabel: ({ quality }: { quality: VideoQuality | undefined }) => string;
+  /**
+   * The extended label of a video quality.
+   * @param quality The video quality
+   */
   qualityLabelExtended: ({ quality }: { quality: VideoQuality | undefined }) => string;
+  /**
+   * The title of the audio track selection menu.
+   */
   audioTitle: string;
+  /**
+   * The title of the subtitle track selection menu.
+   */
   subtitleTitle: string;
+  /**
+   * The title of the playback speed menu.
+   */
   playbackRateTitle: string;
+  /**
+   * The label of the selectable playback speed.
+   * @param rate The playback speed value
+   */
   playbackRateValue: ({ rate }: { rate: number }) => string;
+  /**
+   * The label showing advertisement progress.
+   * @param currentAd The ad counter
+   * @param totalAds The amount of total ads
+   */
   adLabel: ({ currentAd, totalAds }: { currentAd: number; totalAds: number }) => string;
-  adSkipLabel: ({ seconds }: { seconds: number }) => string;
+  /**
+   * The label during the countdown, when it can be skipped.
+   * @param seconds The amount of remaining seconds
+   */
+  adSkipCounter: ({ seconds }: { seconds: number }) => string;
+  /**
+   * The text on the button to skip advertisements.
+   */
+  adSkip: string;
+  /**
+   * The countdown text shown during advertisements.
+   * @param remainingDuration The remaining duration in seconds
+   */
   adCountdown: ({ remainingDuration }: { remainingDuration: number }) => string;
+  /**
+   * The text on the click through button, potentially shown during advertisements.
+   */
   adClickThroughButton: string;
+  /**
+   * The text shown on the player while connecting to a cast target.
+   * @param target Chromecast or Airplay
+   */
   castConnecting: ({ target }: { target: 'Chromecast' | 'Airplay' }) => string;
+  /**
+   * The text shown on the player while connected to a cast target.
+   * @param target Chromecast or Airplay
+   */
   castConnected: ({ target }: { target: 'Chromecast' | 'Airplay' }) => string;
+  /**
+   * The error message shown on the player when the player has errored.
+   * @param error The error message object
+   */
   errorMessage: ({ error }: { error: PlayerError }) => string;
+  /**
+   * The label used to indicate the player is playing a live steam.
+   */
   liveLabel: string;
 }
 
@@ -59,9 +127,10 @@ export const defaultLocale: Locale = {
   adLabel: ({ currentAd, totalAds }) => {
     return totalAds > 1 ? `Ad ${currentAd} of ${totalAds}` : 'Ad';
   },
-  adSkipLabel: ({ seconds }) => {
+  adSkipCounter: ({ seconds }) => {
     return `Skip in ${Math.ceil(seconds)}s`;
   },
+  adSkip: 'Skip Ad',
   adCountdown: ({ remainingDuration }) => {
     return `Content will resume in ${Math.ceil(remainingDuration)}s`;
   },
