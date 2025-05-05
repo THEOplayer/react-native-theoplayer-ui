@@ -54,8 +54,6 @@ export const SeekBar = (props: SeekBarProps) => {
   const sliderTime = useSliderTime();
   const chapters = useChaptersTrack();
   const chapterMarkerTimes: number[] = chapters?.cues?.map((cue) => cue.endTime).slice(0, -1) ?? [];
-  console.log('chapters', chapters);
-  console.log('chapterMarkerTimes', chapterMarkerTimes);
   // Do not continuously seek while dragging the slider
   const debounceSeek = useDebounce((value: number) => {
     player.currentTime = value;
