@@ -36,8 +36,13 @@ export class CastMessage extends PureComponent<unknown, CastMessageState> {
   private _processCastState = (state: CastState, target: 'Chromecast' | 'Airplay') => {
     let message: string | undefined;
     const { locale } = this.context as UiContext;
-    if (state === CastState.connecting || state === CastState.connected) {
-      message = locale.castMessage({ state, target });
+    switch (state) {
+      case CastState.connecting:
+        message = locale.castConnecting({ target });
+        break;
+      case CastState.connected:
+        message = locale.castConnected({ target });
+        break;
     }
     this.setState({
       message,

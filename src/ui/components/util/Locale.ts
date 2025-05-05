@@ -14,7 +14,8 @@ export interface Locale {
   adSkipLabel: ({ seconds }: { seconds: number }) => string;
   adCountdown: ({ remainingDuration }: { remainingDuration: number }) => string;
   adClickThroughButton: string;
-  castMessage: ({ state, target }: { state: 'connecting' | 'connected'; target: 'Chromecast' | 'Airplay' }) => string;
+  castConnecting: ({ target }: { target: 'Chromecast' | 'Airplay' }) => string;
+  castConnected: ({ target }: { target: 'Chromecast' | 'Airplay' }) => string;
   errorMessage: ({ error }: { error: PlayerError }) => string;
   liveLabel: string;
 }
@@ -65,8 +66,10 @@ export const defaultLocale: Locale = {
     return `Content will resume in ${Math.ceil(remainingDuration)}s`;
   },
   adClickThroughButton: 'Visit Advertiser',
-  castMessage: ({ state, target }) => {
-    if (state === 'connecting') return `Connecting to ${target} ...`;
+  castConnecting: ({ target }) => {
+    return `Connecting to ${target} ...`;
+  },
+  castConnected: ({ target }) => {
     return `Playing on ${target}`;
   },
   errorMessage: ({ error }) => {
