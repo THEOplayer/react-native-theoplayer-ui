@@ -59,7 +59,7 @@ export const PlaybackRateSubMenu = (props: PlaybackRateSubMenuProps) => {
   const selectedValues: PlaybackRateValues = values ?? DEFAULT_NUMBER_PLAYBACK_RATE_MENU_VALUES;
   const localizedValues: PlaybackRateValue[] = selectedValues.map((value) => {
     if (typeof value === 'number') {
-      return { value: value, label: localization?.playbackRateValue({ rate: value }) } satisfies PlaybackRateValue;
+      return { value: value, label: localization.playbackRateValue({ rate: value }) } satisfies PlaybackRateValue;
     }
     return value;
   });
