@@ -25,7 +25,7 @@ export const SettingsMenuButton = (props: React.PropsWithChildren<SettingsMenuBu
   const { children, menuStyle, icon } = props;
   const context = useContext(PlayerContext);
   const createMenu = () => {
-    return <MenuView style={menuStyle} menu={<ScrollableMenu title={context.localization.settingsTitle} items={children} />} />;
+    return <MenuView style={menuStyle} menu={<ScrollableMenu title={context.locale.settingsTitle} items={children} />} />;
   };
 
   return <MenuButton svg={icon ?? <SettingsSvg />} menuConstructor={createMenu} />;

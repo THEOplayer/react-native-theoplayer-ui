@@ -152,7 +152,7 @@ export class LanguageMenuView extends PureComponent<LanguageMenuViewProps, Langu
               <>
                 {selectableAudioTracks.length > 1 && (
                   <ScrollableMenu
-                    title={context.localization.audioTitle}
+                    title={context.locale.audioTitle}
                     items={selectableAudioTracks.map((track, id) => (
                       <MenuRadioButton
                         key={id}
@@ -165,7 +165,7 @@ export class LanguageMenuView extends PureComponent<LanguageMenuViewProps, Langu
                 )}
                 {selectableTextTracks.length > 0 && (
                   <ScrollableMenu
-                    title={context.localization.subtitleTitle}
+                    title={context.locale.subtitleTitle}
                     items={
                       <>
                         <MenuRadioButton

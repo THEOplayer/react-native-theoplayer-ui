@@ -100,7 +100,7 @@ export class AdSkipButton extends PureComponent<AdSkipButtonProps, AdSkipButtonS
         <PlayerContext.Consumer>
           {(context: UiContext) => (
             <Text style={[context.style.text, { color: context.style.colors.text }, style]}>
-              {context.localization.adSkipLabel({ seconds: timeToSkip })}
+              {context.locale.adSkipLabel({ seconds: timeToSkip })}
             </Text>
           )}
         </PlayerContext.Consumer>

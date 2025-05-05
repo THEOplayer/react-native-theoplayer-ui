@@ -89,7 +89,7 @@ export class AdClickThroughButton extends PureComponent<AdClickThroughButtonProp
       <PlayerContext.Consumer>
         {(context: UiContext) => (
           <TouchableOpacity style={{ padding: 5 }} onPress={this.onPress}>
-            <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.localization.adClickThroughButton}</Text>
+            <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.adClickThroughButton}</Text>
           </TouchableOpacity>
         )}
       </PlayerContext.Consumer>

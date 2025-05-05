@@ -21,7 +21,7 @@ import { AdCountdown } from './components/ads/AdCountdown';
 import { AdSkipButton } from './components/ads/AdSkipButton';
 import { AdClickThroughButton } from './components/ads/AdClickThroughButton';
 import { TestIDs } from './utils/TestIDs';
-import type { Localization } from './components/util/Localization';
+import type { Locale } from './components/util/Localization';
 
 export interface THEOplayerDefaultUiProps {
   /**
@@ -35,7 +35,7 @@ export interface THEOplayerDefaultUiProps {
   /**
    * The localized strings used in the UI components.
    */
-  localization?: Localization;
+  localization?: Partial<Locale>;
   /**
    * The player configuration with THEOplayer license.
    */
@@ -74,7 +74,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
         {player !== undefined && (
           <UiContainer
             theme={{ ...DEFAULT_THEOPLAYER_THEME, ...theme }}
-            localization={localization}
+            locale={localization}
             player={player}
             behind={<CenteredDelayedActivityIndicator size={50} />}
             top={

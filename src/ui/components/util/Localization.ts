@@ -1,8 +1,6 @@
 import type { PlayerError, VideoQuality } from 'react-native-theoplayer';
 
-export type Localization = Partial<AllLocalization>;
-
-export interface AllLocalization {
+export interface Locale {
   backButton: string;
   settingsTitle: string;
   qualityTitle: string;
@@ -21,7 +19,7 @@ export interface AllLocalization {
   liveLabel: string;
 }
 
-export const defaultLocalization: AllLocalization = {
+export const defaultLocale: Locale = {
   backButton: 'Back',
   settingsTitle: 'Settings',
   qualityTitle: 'Video Quality',

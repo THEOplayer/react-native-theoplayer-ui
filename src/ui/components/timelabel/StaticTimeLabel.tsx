@@ -37,7 +37,7 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
     return (
       <PlayerContext.Consumer>
         {(context: UiContext) => (
-          <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.localization.liveLabel}</Text>
+          <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.liveLabel}</Text>
         )}
       </PlayerContext.Consumer>
     );

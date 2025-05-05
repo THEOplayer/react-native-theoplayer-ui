@@ -91,7 +91,7 @@ export class AdDisplay extends PureComponent<AdDisplayProps, AdDisplayState> {
               },
               style,
             ]}>
-            {context.localization.adLabel({ currentAd, totalAds })}
+            {context.locale.adLabel({ currentAd, totalAds })}
           </Text>
         )}
       </PlayerContext.Consumer>

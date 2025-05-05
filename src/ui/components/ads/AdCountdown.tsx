@@ -73,7 +73,7 @@ export class AdCountdown extends PureComponent<AdCountdownProps, AdCountdownStat
       <PlayerContext.Consumer>
         {(context: UiContext) => (
           <Text style={[context.style.text, { color: context.style.colors.text, padding: 10 }, style]}>
-            {context.localization.adCountdown({ remainingDuration: maxRemainingDuration })}
+            {context.locale.adCountdown({ remainingDuration: maxRemainingDuration })}
           </Text>
         )}
       </PlayerContext.Consumer>

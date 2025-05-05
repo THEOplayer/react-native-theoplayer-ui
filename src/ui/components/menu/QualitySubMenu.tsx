@@ -20,7 +20,7 @@ export interface QualitySubMenuProps {
  */
 export const QualitySubMenu = (props: QualitySubMenuProps) => {
   const { menuStyle } = props;
-  const { player, localization } = useContext(PlayerContext);
+  const { player, locale } = useContext(PlayerContext);
 
   if (Platform.OS === 'ios') {
     return <></>;
@@ -29,7 +29,7 @@ export const QualitySubMenu = (props: QualitySubMenuProps) => {
     return <QualitySelectionView style={menuStyle} />;
   };
 
-  let selectedQualityLabel = localization.qualityLabel({ quality: undefined });
+  let selectedQualityLabel = locale.qualityLabel({ quality: undefined });
   if (player.targetVideoQuality !== undefined) {
     let id: number | undefined;
     if (typeof player.targetVideoQuality === 'number') {
@@ -39,10 +39,10 @@ export const QualitySubMenu = (props: QualitySubMenuProps) => {
     }
     const selectedTrack = player.videoTracks.find((track) => track.uid === player.selectedVideoTrack);
     const selectedQuality = selectedTrack !== undefined ? selectedTrack.qualities.find((quality) => quality.uid === id) : undefined;
-    selectedQualityLabel = localization.qualityLabel({ quality: selectedQuality as VideoQuality });
+    selectedQualityLabel = locale.qualityLabel({ quality: selectedQuality as VideoQuality });
   }
 
-  return <SubMenuWithButton menuConstructor={createMenu} label={localization.qualityTitle} preview={selectedQualityLabel} />;
+  return <SubMenuWithButton menuConstructor={createMenu} label={locale.qualityTitle} preview={selectedQualityLabel} />;
 };
 
 export interface QualitySelectionViewState {
@@ -129,11 +129,11 @@ export class QualitySelectionView extends PureComponent<QualitySelectionViewProp
             style={style}
             menu={
               <ScrollableMenu
-                title={context.localization.qualityTitle}
+                title={context.locale.qualityTitle}
                 items={[undefined, ...availableVideoQualities].map((track, id) => (
                   <MenuRadioButton
                     key={id}
-                    label={context.localization.qualityLabelExtended({ quality: track as VideoQuality })}
+                    label={context.locale.qualityLabelExtended({ quality: track as VideoQuality })}
                     uid={id}
                     onSelect={this.selectTargetVideoQuality}
                     selected={

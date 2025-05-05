@@ -3,7 +3,7 @@ import type { THEOplayer } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import { DEFAULT_THEOPLAYER_THEME } from '../../THEOplayerTheme';
 import type { UiControls } from '../uicontroller/UiControls';
-import { type AllLocalization, defaultLocalization } from './Localization';
+import { type Locale, defaultLocale } from './Localization';
 
 export interface UiContext {
   /**
@@ -27,7 +27,7 @@ export interface UiContext {
   /**
    * The selected localization.
    */
-  readonly localization: AllLocalization;
+  readonly locale: Locale;
 }
 
 /**
@@ -38,5 +38,5 @@ export const PlayerContext = React.createContext<UiContext>({
   style: DEFAULT_THEOPLAYER_THEME,
   ui: undefined as unknown as UiControls,
   adInProgress: false,
-  localization: defaultLocalization,
+  locale: defaultLocale,
 });

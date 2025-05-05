@@ -35,7 +35,7 @@ export function ErrorDisplay(props: ErrorDisplayProps) {
             </SvgContext.Provider>
             <Text style={[context.style.text, { color: context.style.colors.text, alignSelf: 'center', paddingLeft: 5 }]}>Error:</Text>
           </View>
-          <Text style={[context.style.text, { color: context.style.colors.text }]}>{context.localization.errorMessage({ error })}</Text>
+          <Text style={[context.style.text, { color: context.style.colors.text }]}>{context.locale.errorMessage({ error })}</Text>
         </View>
       )}
     </PlayerContext.Consumer>

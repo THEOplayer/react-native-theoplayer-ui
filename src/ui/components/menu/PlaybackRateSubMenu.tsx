@@ -54,12 +54,12 @@ export interface PlaybackRateSubMenuProps {
  */
 export const PlaybackRateSubMenu = (props: PlaybackRateSubMenuProps) => {
   const { values, menuStyle } = props;
-  const { player, localization } = useContext(PlayerContext);
+  const { player, locale } = useContext(PlayerContext);
 
   const selectedValues: PlaybackRateValues = values ?? DEFAULT_NUMBER_PLAYBACK_RATE_MENU_VALUES;
   const localizedValues: PlaybackRateValue[] = selectedValues.map((value) => {
     if (typeof value === 'number') {
-      return { value: value, label: localization.playbackRateValue({ rate: value }) } satisfies PlaybackRateValue;
+      return { value: value, label: locale.playbackRateValue({ rate: value }) } satisfies PlaybackRateValue;
     }
     return value;
   });
@@ -70,8 +70,8 @@ export const PlaybackRateSubMenu = (props: PlaybackRateSubMenuProps) => {
   return (
     <SubMenuWithButton
       menuConstructor={createMenu}
-      label={localization.playbackRateTitle}
-      preview={localization.playbackRateValue({ rate: player.playbackRate })}
+      label={locale.playbackRateTitle}
+      preview={locale.playbackRateValue({ rate: player.playbackRate })}
     />
   );
 };
@@ -83,7 +83,7 @@ export interface PlaybackSelectionViewProps {
 
 export const PlaybackSelectionView = (props: PlaybackSelectionViewProps) => {
   const { values, menuStyle } = props;
-  const { player, localization } = useContext(PlayerContext);
+  const { player, locale } = useContext(PlayerContext);
   const [selectedPlaybackRate, setSelectedPlaybackRate] = useState(player.playbackRate);
   const onChangePlaybackRate = (playbackRate: number | undefined) => {
     if (playbackRate) {
@@ -97,7 +97,7 @@ export const PlaybackSelectionView = (props: PlaybackSelectionViewProps) => {
       style={menuStyle}
       menu={
         <ScrollableMenu
-          title={localization.playbackRateTitle}
+          title={locale.playbackRateTitle}
           items={values.map((playbackRateValue, id) => (
             <MenuRadioButton
               key={id}
