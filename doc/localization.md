@@ -21,7 +21,7 @@ const App = () => {
   const myCustomLocale: Localization = {
     backButton: 'Terug',
     settingsTitle: 'Instellingen',
-    qualityTitle: 'Video Kwaliteit',
+    qualityTitle: 'Videokwaliteit',
     audioTitle: 'Taal',
     subtitleTitle: 'Ondertitels',
     playbackRateTitle: 'Afspeelsnelheid',
