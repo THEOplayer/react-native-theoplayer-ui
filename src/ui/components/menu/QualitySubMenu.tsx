@@ -111,7 +111,6 @@ export class QualitySelectionView extends PureComponent<QualitySelectionViewProp
 
   render() {
     const { style } = this.props;
-    const { localization } = this.context as UiContext;
     const { videoTracks, selectedVideoTrack, targetVideoTrackQuality } = this.state;
     const availableVideoQualities = findMediaTrackByUid(videoTracks, selectedVideoTrack)?.qualities || [];
     availableVideoQualities.sort((q1, q2) => q2.bandwidth - q1.bandwidth);
@@ -124,24 +123,28 @@ export class QualitySelectionView extends PureComponent<QualitySelectionViewProp
     }
 
     return (
-      <MenuView
-        style={style}
-        menu={
-          <ScrollableMenu
-            title={localization.qualityTitle}
-            items={[undefined, ...availableVideoQualities].map((track, id) => (
-              <MenuRadioButton
-                key={id}
-                label={localization.qualityLabelExtended({ quality: track as VideoQuality })}
-                uid={id}
-                onSelect={this.selectTargetVideoQuality}
-                selected={
-                  (track === undefined && selectedTarget === undefined) || (track !== undefined && track.uid === selectedTarget)
-                }></MenuRadioButton>
-            ))}
+      <PlayerContext.Consumer>
+        {(context: UiContext) => (
+          <MenuView
+            style={style}
+            menu={
+              <ScrollableMenu
+                title={context.localization.qualityTitle}
+                items={[undefined, ...availableVideoQualities].map((track, id) => (
+                  <MenuRadioButton
+                    key={id}
+                    label={context.localization.qualityLabelExtended({ quality: track as VideoQuality })}
+                    uid={id}
+                    onSelect={this.selectTargetVideoQuality}
+                    selected={
+                      (track === undefined && selectedTarget === undefined) || (track !== undefined && track.uid === selectedTarget)
+                    }></MenuRadioButton>
+                ))}
+              />
+            }
           />
-        }
-      />
+        )}
+      </PlayerContext.Consumer>
     );
   }
 }

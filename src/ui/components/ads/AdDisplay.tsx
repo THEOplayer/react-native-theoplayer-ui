@@ -73,7 +73,6 @@ export class AdDisplay extends PureComponent<AdDisplayProps, AdDisplayState> {
   render() {
     const { adPlaying, currentAd, totalAds } = this.state;
     const { style } = this.props;
-    const { localization } = this.context as UiContext;
     if (!adPlaying || totalAds === undefined || currentAd === undefined) {
       return <></>;
     }
@@ -92,7 +91,7 @@ export class AdDisplay extends PureComponent<AdDisplayProps, AdDisplayState> {
               },
               style,
             ]}>
-            {localization.adLabel({ currentAd, totalAds })}
+            {context.localization.adLabel({ currentAd, totalAds })}
           </Text>
         )}
       </PlayerContext.Consumer>

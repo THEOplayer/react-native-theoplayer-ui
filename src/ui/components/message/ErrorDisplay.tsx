@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Text, View } from 'react-native';
 import type { PlayerError } from 'react-native-theoplayer';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
@@ -18,7 +18,6 @@ export interface ErrorDisplayProps {
  */
 export function ErrorDisplay(props: ErrorDisplayProps) {
   const { error } = props;
-  const { localization } = useContext(PlayerContext);
   return (
     <PlayerContext.Consumer>
       {(context: UiContext) => (
@@ -36,7 +35,7 @@ export function ErrorDisplay(props: ErrorDisplayProps) {
             </SvgContext.Provider>
             <Text style={[context.style.text, { color: context.style.colors.text, alignSelf: 'center', paddingLeft: 5 }]}>Error:</Text>
           </View>
-          <Text style={[context.style.text, { color: context.style.colors.text }]}>{localization.errorMessage({ error })}</Text>
+          <Text style={[context.style.text, { color: context.style.colors.text }]}>{context.localization.errorMessage({ error })}</Text>
         </View>
       )}
     </PlayerContext.Consumer>

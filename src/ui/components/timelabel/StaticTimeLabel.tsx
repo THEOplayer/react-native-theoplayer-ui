@@ -1,5 +1,5 @@
 import { StyleProp, Text, TextStyle } from 'react-native';
-import React, { useContext } from 'react';
+import React from 'react';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 
 export interface StaticTimeLabelProps {
@@ -26,7 +26,6 @@ export interface StaticTimeLabelProps {
  */
 export function StaticTimeLabel(props: StaticTimeLabelProps) {
   const { style, showDuration, time, duration } = props;
-  const { localization } = useContext(PlayerContext);
 
   // An unknown duration is reported as NaN.
   if (isNaN(duration)) {
@@ -37,7 +36,9 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
   if (!isFinite(duration)) {
     return (
       <PlayerContext.Consumer>
-        {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{localization.liveLabel}</Text>}
+        {(context: UiContext) => (
+          <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.localization.liveLabel}</Text>
+        )}
       </PlayerContext.Consumer>
     );
   }

@@ -65,7 +65,6 @@ export class AdCountdown extends PureComponent<AdCountdownProps, AdCountdownStat
   render() {
     const { maxRemainingDuration } = this.state;
     const { style } = this.props;
-    const { localization } = this.context as UiContext;
     if (maxRemainingDuration === undefined || isNaN(maxRemainingDuration) || maxRemainingDuration < 0) {
       return <></>;
     }
@@ -74,7 +73,7 @@ export class AdCountdown extends PureComponent<AdCountdownProps, AdCountdownStat
       <PlayerContext.Consumer>
         {(context: UiContext) => (
           <Text style={[context.style.text, { color: context.style.colors.text, padding: 10 }, style]}>
-            {localization.adCountdown({ remainingDuration: maxRemainingDuration })}
+            {context.localization.adCountdown({ remainingDuration: maxRemainingDuration })}
           </Text>
         )}
       </PlayerContext.Consumer>
