@@ -67,10 +67,13 @@ export const PlaybackRateSubMenu = (props: PlaybackRateSubMenuProps) => {
   const createMenu = () => {
     return <PlaybackSelectionView values={localizedValues} menuStyle={menuStyle} />;
   };
-  const preview = localizedValues.find((value) => value.value === player.playbackRate)?.label ?? player.playbackRate.toString() + 'x';
-
-  const label = localization.playbackRateTitle;
-  return <SubMenuWithButton menuConstructor={createMenu} label={label} preview={preview} />;
+  return (
+    <SubMenuWithButton
+      menuConstructor={createMenu}
+      label={localization.playbackRateTitle}
+      preview={localization.playbackRateValue({ rate: player.playbackRate })}
+    />
+  );
 };
 
 export interface PlaybackSelectionViewProps {
