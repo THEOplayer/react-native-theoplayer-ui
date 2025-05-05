@@ -1,5 +1,5 @@
 ---
-title: Getting started
+title: Localization
 description: Learn how to localize the THEOplayer UI!
 sidebar_position: 2
 sidebar_custom_props: { 'icon': '🌍' }
