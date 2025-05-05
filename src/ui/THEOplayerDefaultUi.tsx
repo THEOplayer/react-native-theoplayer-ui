@@ -21,7 +21,7 @@ import { AdCountdown } from './components/ads/AdCountdown';
 import { AdSkipButton } from './components/ads/AdSkipButton';
 import { AdClickThroughButton } from './components/ads/AdClickThroughButton';
 import { TestIDs } from './utils/TestIDs';
-import type { Locale } from './components/util/Localization';
+import type { Locale } from './components/util/Locale';
 
 export interface THEOplayerDefaultUiProps {
   /**

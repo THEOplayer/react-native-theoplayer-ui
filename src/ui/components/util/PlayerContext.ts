@@ -3,7 +3,7 @@ import type { THEOplayer } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import { DEFAULT_THEOPLAYER_THEME } from '../../THEOplayerTheme';
 import type { UiControls } from '../uicontroller/UiControls';
-import { type Locale, defaultLocale } from './Localization';
+import { type Locale, defaultLocale } from './Locale';
 
 export interface UiContext {
   /**

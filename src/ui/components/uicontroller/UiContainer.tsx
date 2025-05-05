@@ -6,7 +6,7 @@ import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerE
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
-import { type Locale, defaultLocale } from '../util/Localization';
+import { type Locale, defaultLocale } from '../util/Locale';
 
 export interface UiContainerProps {
   /**
