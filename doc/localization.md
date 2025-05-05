@@ -7,7 +7,7 @@ sidebar_custom_props: { 'icon': '🌍' }
 
 # Localization
 
-The [`@theoplayer/react-native-ui`](https://www.npmjs.com/package/@theoplayer/react-native-ui) package supports full localization, allowing you to customize UI text to match the language and tone of your application. You can override default labels—such as menu titles, button text, and indicators—by supplying your own translations using the `localization` prop.
+The React Native UI package supports full localization, allowing you to customize UI text to match the language and tone of your application. You can override default labels—such as menu titles, button text, and indicators—by supplying your own translations using the `localization` prop.
 
 This is especially useful for building internationalized apps or tailoring the viewing experience for a specific audience.
 
