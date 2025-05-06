@@ -24,26 +24,12 @@ export interface Locale {
    * The label of a video quality.
    * @param quality
    */
-  qualityLabel: ({ label, height, width }: { label: string; height: number; width: number }) => string;
+  qualityLabel: (params: QualityLabelLocaleParams) => string;
   /**
    * The extended label of a video quality.
    * @param quality The video quality
    */
-  qualityLabelExtended: ({
-    quality,
-    label,
-    height,
-    width,
-    bitrate,
-    unit,
-  }: {
-    quality: VideoQuality;
-    label: string;
-    height: number;
-    width: number;
-    bitrate: string;
-    unit: 'Mbps' | 'kbps';
-  }) => string;
+  qualityLabelExtended: (params: QualityLabelLocaleParams) => string;
   /**
    * The title of the audio track selection menu.
    */
@@ -106,6 +92,15 @@ export interface Locale {
   liveLabel: string;
 }
 
+export interface QualityLabelLocaleParams {
+  quality: VideoQuality;
+  label: string;
+  height: number;
+  width: number;
+  bitrate: string;
+  unit: 'Mbps' | 'kbps';
+}
+
 export const defaultLocale: Locale = {
   backButton: 'Back',
   settingsTitle: 'Settings',
@@ -115,14 +110,16 @@ export const defaultLocale: Locale = {
   playbackRateTitle: 'Playback Speed',
   liveLabel: 'LIVE',
   automaticQualitySelectionLabel: 'auto',
-  qualityLabel: ({ label, height }) => {
+  qualityLabel: ({ label, height, bitrate, unit }) => {
     if (label) return label;
-    return `${height}p`
+    if (height) return `${height}p`;
+    return `${bitrate}${unit}`;
   },
   qualityLabelExtended: ({ label, height, bitrate, unit }) => {
     if (label) return label;
     const isHD = height >= 720;
-    return `${height}p - ${bitrate}${unit} ${isHD ? '(HD)' : ''}`;
+    if (height) return `${height}p - ${bitrate}${unit} ${isHD ? '(HD)' : ''}`;
+    return `${bitrate}${unit} ${isHD ? '(HD)' : ''}`;
   },
   playbackRateLabel: ({ rate }) => {
     if (rate === 1) return 'Normal';

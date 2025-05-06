@@ -7,7 +7,7 @@ import { MenuView } from './common/MenuView';
 import { ScrollableMenu } from './common/ScrollableMenu';
 import { MenuRadioButton } from './common/MenuRadioButton';
 import { SubMenuWithButton } from './common/SubMenuWithButton';
-import { calculateBitrateParams } from '../util/TrackUtils';
+import { calculateQualityLabelParams } from '../util/TrackUtils';
 
 export interface QualitySubMenuProps {
   /**
@@ -41,7 +41,7 @@ export const QualitySubMenu = (props: QualitySubMenuProps) => {
     const selectedTrack = player.videoTracks.find((track) => track.uid === player.selectedVideoTrack);
     const selectedQuality = selectedTrack !== undefined ? (selectedTrack.qualities.find((quality) => quality.uid === id) as VideoQuality) : undefined;
     if (selectedQuality !== undefined) {
-      selectedQualityLabel = locale.qualityLabel({ label: selectedQuality.label, width: selectedQuality.width, height: selectedQuality.height });
+      selectedQualityLabel = locale.qualityLabel(calculateQualityLabelParams(selectedQuality));
     }
   }
 
@@ -139,13 +139,7 @@ export class QualitySelectionView extends PureComponent<QualitySelectionViewProp
                     label={
                       quality === undefined
                         ? context.locale.automaticQualitySelectionLabel
-                        : context.locale.qualityLabelExtended({
-                            quality: quality as VideoQuality,
-                            label: quality.label,
-                            width: (quality as VideoQuality).width,
-                            height: (quality as VideoQuality).height,
-                            ...calculateBitrateParams(quality as VideoQuality),
-                          })
+                        : context.locale.qualityLabelExtended(calculateQualityLabelParams(quality as VideoQuality))
                     }
                     uid={id}
                     onSelect={this.selectTargetVideoQuality}
