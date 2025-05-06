@@ -3,6 +3,7 @@ import type { THEOplayer } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import { DEFAULT_THEOPLAYER_THEME } from '../../THEOplayerTheme';
 import type { UiControls } from '../uicontroller/UiControls';
+import { type Locale, defaultLocale } from './Locale';
 
 export interface UiContext {
   /**
@@ -22,6 +23,11 @@ export interface UiContext {
    * Whether a linear ad is currently in progress.
    */
   readonly adInProgress: boolean;
+
+  /**
+   * The localized strings used in the UI components.
+   */
+  readonly locale: Locale;
 }
 
 /**
@@ -32,4 +38,5 @@ export const PlayerContext = React.createContext<UiContext>({
   style: DEFAULT_THEOPLAYER_THEME,
   ui: undefined as unknown as UiControls,
   adInProgress: false,
+  locale: defaultLocale,
 });

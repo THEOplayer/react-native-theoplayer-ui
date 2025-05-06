@@ -6,6 +6,7 @@ import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerE
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
+import { type Locale, defaultLocale } from '../util/Locale';
 
 export interface UiContainerProps {
   /**
@@ -16,6 +17,10 @@ export interface UiContainerProps {
    * The theme that is provided to all children using PlayerContext.
    */
   theme: THEOplayerTheme;
+  /**
+   * The localized strings used in the UI components.
+   */
+  locale?: Partial<Locale>;
   /**
    * The style of the container.
    */
@@ -190,7 +195,9 @@ export const UiContainer = (props: UiContainerProps) => {
   const [adTapped, setAdTapped] = useState(false);
   const appStateSubscription = useRef<any>(null);
   const _menus = useRef<MenuConstructor[]>([]).current;
-  const player = props.player;
+  const { player, locale } = props;
+
+  const combinedLocale: Locale = { ...defaultLocale, ...locale };
 
   useEffect(() => {
     const handlePlay = () => {
@@ -400,7 +407,7 @@ export const UiContainer = (props: UiContainerProps) => {
   };
 
   return (
-    <PlayerContext.Provider value={{ player, style: props.theme, ui, adInProgress }}>
+    <PlayerContext.Provider value={{ player, style: props.theme, ui, adInProgress, locale: combinedLocale }}>
       {/* The View behind the UI, that is always visible.*/}
       <View style={FULLSCREEN_CENTER_STYLE} pointerEvents={'none'}>
         {props.behind}

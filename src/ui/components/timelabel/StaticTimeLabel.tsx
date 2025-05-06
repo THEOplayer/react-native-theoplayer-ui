@@ -21,8 +21,6 @@ export interface StaticTimeLabelProps {
   duration: number;
 }
 
-const LIVE_LABEL = 'LIVE';
-
 /**
  * A static time label for the `react-native-theoplayer` UI.
  */
@@ -38,7 +36,9 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
   if (!isFinite(duration)) {
     return (
       <PlayerContext.Consumer>
-        {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{LIVE_LABEL}</Text>}
+        {(context: UiContext) => (
+          <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.liveLabel}</Text>
+        )}
       </PlayerContext.Consumer>
     );
   }

@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Added localization support.
+- Added support for rendering chapter markers & label.
+
 ### Fixed
 
 - Fixed an issue where the play button would stay in the paused state after starting the stream.

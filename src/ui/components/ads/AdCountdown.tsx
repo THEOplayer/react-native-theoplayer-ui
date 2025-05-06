@@ -69,11 +69,13 @@ export class AdCountdown extends PureComponent<AdCountdownProps, AdCountdownStat
       return <></>;
     }
 
-    const label = `Content will resume in ${Math.ceil(maxRemainingDuration)}s`;
-
     return (
       <PlayerContext.Consumer>
-        {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text, padding: 10 }, style]}>{label}</Text>}
+        {(context: UiContext) => (
+          <Text style={[context.style.text, { color: context.style.colors.text, padding: 10 }, style]}>
+            {context.locale.adCountdown({ remainingDuration: maxRemainingDuration })}
+          </Text>
+        )}
       </PlayerContext.Consumer>
     );
   }

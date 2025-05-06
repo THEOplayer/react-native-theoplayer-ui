@@ -144,51 +144,55 @@ export class LanguageMenuView extends PureComponent<LanguageMenuViewProps, Langu
     const selectableTextTracks = filterRenderableTracks(textTracks).sort((first, second) => first.uid - second.uid);
     const selectableAudioTracks = audioTracks.sort((first, second) => first.uid - second.uid);
     return (
-      <MenuView
-        style={style}
-        menu={
-          <>
-            {selectableAudioTracks.length > 1 && (
-              <ScrollableMenu
-                title={'Audio'}
-                items={selectableAudioTracks.map((track, id) => (
-                  <MenuRadioButton
-                    key={id}
-                    label={getTrackLabel(track)}
-                    uid={track.uid}
-                    onSelect={this.selectAudioTrack}
-                    selected={track.uid === selectedAudioTrack}></MenuRadioButton>
-                ))}
-              />
-            )}
-            {selectableTextTracks.length > 0 && (
-              <ScrollableMenu
-                title={'Subtitles'}
-                items={
-                  <>
-                    <MenuRadioButton
-                      key={0}
-                      label={'off'}
-                      uid={undefined}
-                      onSelect={this.onSelectTextTrack}
-                      selected={selectedTextTrack === undefined}
-                    />
-                    {selectableTextTracks.map((track, id) => (
+      <PlayerContext.Consumer>
+        {(context: UiContext) => (
+          <MenuView
+            style={style}
+            menu={
+              <>
+                {selectableAudioTracks.length > 1 && (
+                  <ScrollableMenu
+                    title={context.locale.audioTitle}
+                    items={selectableAudioTracks.map((track, id) => (
                       <MenuRadioButton
-                        key={id + 1}
+                        key={id}
                         label={getTrackLabel(track)}
                         uid={track.uid}
-                        onSelect={this.onSelectTextTrack}
-                        selected={track.uid === selectedTextTrack}
-                      />
+                        onSelect={this.selectAudioTrack}
+                        selected={track.uid === selectedAudioTrack}></MenuRadioButton>
                     ))}
-                  </>
-                }
-              />
-            )}
-          </>
-        }
-      />
+                  />
+                )}
+                {selectableTextTracks.length > 0 && (
+                  <ScrollableMenu
+                    title={context.locale.subtitleTitle}
+                    items={
+                      <>
+                        <MenuRadioButton
+                          key={0}
+                          label={'off'}
+                          uid={undefined}
+                          onSelect={this.onSelectTextTrack}
+                          selected={selectedTextTrack === undefined}
+                        />
+                        {selectableTextTracks.map((track, id) => (
+                          <MenuRadioButton
+                            key={id + 1}
+                            label={getTrackLabel(track)}
+                            uid={track.uid}
+                            onSelect={this.onSelectTextTrack}
+                            selected={track.uid === selectedTextTrack}
+                          />
+                        ))}
+                      </>
+                    }
+                  />
+                )}
+              </>
+            }
+          />
+        )}
+      </PlayerContext.Consumer>
     );
   }
 }

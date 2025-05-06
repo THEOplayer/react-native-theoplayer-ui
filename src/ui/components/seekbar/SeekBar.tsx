@@ -27,10 +27,10 @@ export interface SeekBarProps {
    * Optional style applied to the track right of the thumb.
    */
   sliderMaximumTrackStyle?: ViewStyle;
-  /** 
-  * Optional 
-  */
-  chapterMarkers?: (index?: number) => React.ReactNode
+  /**
+   * Optional
+   */
+  chapterMarkers?: (index?: number) => React.ReactNode;
   /**
    * An id used to locate this view in end-to-end tests.
    *
@@ -44,19 +44,16 @@ export interface SeekBarProps {
  */
 const DEBOUNCE_SEEK_DELAY = 250;
 
-
 export const SeekBar = (props: SeekBarProps) => {
-  const player = useContext(PlayerContext).player;
+  const { player } = useContext(PlayerContext);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
   const [width, setWidth] = useState(0);
   const duration = useDuration();
   const seekable = useSeekable();
   const sliderTime = useSliderTime();
-  const chapters = useChaptersTrack()
-  const chapterMarkerTimes: number[] = chapters?.cues?.map(cue => cue.endTime).slice(0,-1) ?? [];
-  console.log('chapters',chapters)
-  console.log('chapterMarkerTimes', chapterMarkerTimes)
+  const chapters = useChaptersTrack();
+  const chapterMarkerTimes: number[] = chapters?.cues?.map((cue) => cue.endTime).slice(0, -1) ?? [];
   // Do not continuously seek while dragging the slider
   const debounceSeek = useDebounce((value: number) => {
     player.currentTime = value;
