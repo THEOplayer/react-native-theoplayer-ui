@@ -72,6 +72,9 @@ export default function App() {
     player.addEventListener(PlayerEventType.SEEKING, console.log);
     player.addEventListener(PlayerEventType.SEEKED, console.log);
     player.addEventListener(PlayerEventType.ENDED, console.log);
+    player.muted = true;
+    player.autoplay = true;
+
     player.source = {
       sources: [
         {
@@ -98,9 +101,6 @@ export default function App() {
         },
       ],
     };
-
-    player.muted = true;
-    player.autoplay = true;
 
     player.backgroundAudioConfiguration = { enabled: true };
     player.pipConfiguration = { startsAutomatically: true };
