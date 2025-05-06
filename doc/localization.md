@@ -18,7 +18,7 @@ Here's a simple example that sets Dutch translations for several UI elements:
 
 ```tsx
 const App = () => {
-  const myCustomLocale: Localization = {
+  const myCustomLocale: Partial<Locale> = {
     backButton: 'Terug',
     settingsTitle: 'Instellingen',
     qualityTitle: 'Videokwaliteit',
