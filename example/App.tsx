@@ -19,7 +19,8 @@ import {
   Spacer,
   TimeLabel,
   UiContainer,
-  ChapterLabel
+  ChapterLabel,
+  type Locale,
 } from '@theoplayer/react-native-ui';
 import { PlayerConfiguration, PlayerEventType, TextTrackKind, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 
@@ -111,6 +112,16 @@ export default function App() {
     backgroundColor: '#000000',
   };
 
+  const myCustomLocale: Partial<Locale> = {
+    backButton: 'Terug',
+    settingsTitle: 'Instellingen',
+    qualityTitle: 'Videokwaliteit',
+    audioTitle: 'Taal',
+    subtitleTitle: 'Ondertitels',
+    playbackRateTitle: 'Afspeelsnelheid',
+    liveLabel: 'LIVE',
+  };
+
   return (
     <View style={[StyleSheet.absoluteFill, { backgroundColor: '#000000' }]}>
       <View style={PLAYER_CONTAINER_STYLE}>
@@ -119,6 +130,7 @@ export default function App() {
             <UiContainer
               theme={{ ...DEFAULT_THEOPLAYER_THEME }}
               player={player}
+              locale={myCustomLocale}
               behind={<CenteredDelayedActivityIndicator size={50} />}
               top={
                 <ControlBar>
