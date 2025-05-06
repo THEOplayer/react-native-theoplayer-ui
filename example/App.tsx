@@ -19,7 +19,6 @@ import {
   Spacer,
   TimeLabel,
   UiContainer,
-  AutoFocusGuide,
   ChapterLabel,
   type Locale,
 } from '@theoplayer/react-native-ui';
@@ -140,7 +139,7 @@ export default function App() {
               locale={myCustomLocale}
               behind={<CenteredDelayedActivityIndicator size={50} />}
               top={
-                <AutoFocusGuide>
+
                   <ControlBar>
                     <LanguageMenuButton />
                     <SettingsMenuButton>
@@ -149,20 +148,20 @@ export default function App() {
                       <PlaybackRateSubMenu />
                     </SettingsMenuButton>
                   </ControlBar>
-                </AutoFocusGuide>
+
               }
               center={
-                <AutoFocusGuide>
+
                   <CenteredControlBar
                     style={{ width: '50%' }}
                     left={<SkipButton skip={-10} />}
                     middle={<PlayButton />}
                     right={<SkipButton skip={30} />}
                   />
-                </AutoFocusGuide>
+
               }
               bottom={
-                <AutoFocusGuide>
+                <>
                   <ControlBar>
                     <Spacer />
                     <ChapterLabel />
@@ -178,7 +177,7 @@ export default function App() {
                     <PipButton />
                     <FullscreenButton />
                   </ControlBar>
-                </AutoFocusGuide>
+                </>
               }
               adTop={
                 <ControlBar>
