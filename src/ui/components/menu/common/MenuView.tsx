@@ -49,7 +49,7 @@ export const MenuView = (props: MenuViewProps) => {
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity style={{ flexDirection: 'row' }} onPress={onClose}>
                 <ActionButton touchable={false} svg={<BackSvg />} />
-                <Text style={{ color: context.style.colors.text, fontSize: 16, lineHeight: 30 }}>Back</Text>
+                <Text style={{ color: context.style.colors.text, fontSize: 16, lineHeight: 30 }}>{context.locale.backButton}</Text>
               </TouchableOpacity>
             </View>
             <View style={{ flexGrow: 1 }} />

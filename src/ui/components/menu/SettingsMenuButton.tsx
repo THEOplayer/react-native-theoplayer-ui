@@ -1,9 +1,10 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useContext } from 'react';
 import { MenuButton } from './common/MenuButton';
 import { SettingsSvg } from '../button/svg/SettingsSvg';
 import { MenuView } from './common/MenuView';
 import { ScrollableMenu } from './common/ScrollableMenu';
 import type { StyleProp, ViewStyle } from 'react-native';
+import { PlayerContext } from '../util/PlayerContext';
 
 export interface SettingsMenuButtonProps {
   /**
@@ -22,8 +23,9 @@ export interface SettingsMenuButtonProps {
  */
 export const SettingsMenuButton = (props: React.PropsWithChildren<SettingsMenuButtonProps>) => {
   const { children, menuStyle, icon } = props;
+  const context = useContext(PlayerContext);
   const createMenu = () => {
-    return <MenuView style={menuStyle} menu={<ScrollableMenu title={'Settings'} items={children} />} />;
+    return <MenuView style={menuStyle} menu={<ScrollableMenu title={context.locale.settingsTitle} items={children} />} />;
   };
 
   return <MenuButton svg={icon ?? <SettingsSvg />} menuConstructor={createMenu} />;

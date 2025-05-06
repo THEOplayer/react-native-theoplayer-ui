@@ -2,7 +2,7 @@ import { useCallback, useContext, useSyncExternalStore } from 'react';
 import { PlayerContext } from '@theoplayer/react-native-ui';
 import { type PlayerEventMap, PlayerEventType } from 'react-native-theoplayer';
 
-const PAUSED_CHANGE_EVENTS = [PlayerEventType.PLAY, PlayerEventType.PAUSE] satisfies ReadonlyArray<keyof PlayerEventMap>;
+const PAUSED_CHANGE_EVENTS = [PlayerEventType.PLAY, PlayerEventType.PLAYING, PlayerEventType.PAUSE] satisfies ReadonlyArray<keyof PlayerEventMap>;
 
 /**
  * Returns {@link react-native-theoplayer!THEOplayer.pause | the player's paused state}, automatically updating whenever it changes.

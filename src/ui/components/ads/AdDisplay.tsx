@@ -73,11 +73,9 @@ export class AdDisplay extends PureComponent<AdDisplayProps, AdDisplayState> {
   render() {
     const { adPlaying, currentAd, totalAds } = this.state;
     const { style } = this.props;
-    if (!adPlaying || totalAds === undefined) {
+    if (!adPlaying || totalAds === undefined || currentAd === undefined) {
       return <></>;
     }
-
-    const label = totalAds > 1 ? `Ad ${currentAd} of ${totalAds}` : 'Ad';
 
     return (
       <PlayerContext.Consumer>
@@ -93,7 +91,7 @@ export class AdDisplay extends PureComponent<AdDisplayProps, AdDisplayState> {
               },
               style,
             ]}>
-            {label}
+            {context.locale.adProgress({ currentAd, totalAds })}
           </Text>
         )}
       </PlayerContext.Consumer>

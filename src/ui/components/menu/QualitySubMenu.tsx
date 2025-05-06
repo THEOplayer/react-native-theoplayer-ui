@@ -3,11 +3,11 @@ import { findMediaTrackByUid, MediaTrack, PlayerEventType } from 'react-native-t
 import React, { PureComponent, useContext } from 'react';
 import { Platform, StyleProp, ViewStyle } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
-import { getVideoQualityLabel } from '../util/TrackUtils';
 import { MenuView } from './common/MenuView';
 import { ScrollableMenu } from './common/ScrollableMenu';
 import { MenuRadioButton } from './common/MenuRadioButton';
 import { SubMenuWithButton } from './common/SubMenuWithButton';
+import { calculateQualityLabelParams } from '../util/TrackUtils';
 
 export interface QualitySubMenuProps {
   /**
@@ -21,15 +21,16 @@ export interface QualitySubMenuProps {
  */
 export const QualitySubMenu = (props: QualitySubMenuProps) => {
   const { menuStyle } = props;
+  const { player, locale } = useContext(PlayerContext);
+
   if (Platform.OS === 'ios') {
     return <></>;
   }
   const createMenu = () => {
     return <QualitySelectionView style={menuStyle} />;
   };
-  const player = useContext(PlayerContext).player;
 
-  let selectedQualityLabel = 'auto';
+  let selectedQualityLabel = locale.automaticQualitySelectionLabel;
   if (player.targetVideoQuality !== undefined) {
     let id: number | undefined;
     if (typeof player.targetVideoQuality === 'number') {
@@ -38,11 +39,13 @@ export const QualitySubMenu = (props: QualitySubMenuProps) => {
       id = player.targetVideoQuality.length > 0 ? player.targetVideoQuality[0] : undefined;
     }
     const selectedTrack = player.videoTracks.find((track) => track.uid === player.selectedVideoTrack);
-    const selectedQuality = selectedTrack !== undefined ? selectedTrack.qualities.find((quality) => quality.uid === id) : undefined;
-    selectedQualityLabel = getVideoQualityLabel(selectedQuality as VideoQuality, false);
+    const selectedQuality = selectedTrack !== undefined ? (selectedTrack.qualities.find((quality) => quality.uid === id) as VideoQuality) : undefined;
+    if (selectedQuality !== undefined) {
+      selectedQualityLabel = locale.qualityLabel(calculateQualityLabelParams(selectedQuality));
+    }
   }
 
-  return <SubMenuWithButton menuConstructor={createMenu} label={'Quality'} preview={selectedQualityLabel} />;
+  return <SubMenuWithButton menuConstructor={createMenu} label={locale.qualityTitle} preview={selectedQualityLabel} />;
 };
 
 export interface QualitySelectionViewState {
@@ -123,24 +126,32 @@ export class QualitySelectionView extends PureComponent<QualitySelectionViewProp
     }
 
     return (
-      <MenuView
-        style={style}
-        menu={
-          <ScrollableMenu
-            title={'Video quality'}
-            items={[undefined, ...availableVideoQualities].map((track, id) => (
-              <MenuRadioButton
-                key={id}
-                label={getVideoQualityLabel(track as VideoQuality)}
-                uid={id}
-                onSelect={this.selectTargetVideoQuality}
-                selected={
-                  (track === undefined && selectedTarget === undefined) || (track !== undefined && track.uid === selectedTarget)
-                }></MenuRadioButton>
-            ))}
+      <PlayerContext.Consumer>
+        {(context: UiContext) => (
+          <MenuView
+            style={style}
+            menu={
+              <ScrollableMenu
+                title={context.locale.qualityTitle}
+                items={[undefined, ...availableVideoQualities].map((quality, id) => (
+                  <MenuRadioButton
+                    key={id}
+                    label={
+                      quality === undefined
+                        ? context.locale.automaticQualitySelectionLabel
+                        : context.locale.qualityLabelExtended(calculateQualityLabelParams(quality as VideoQuality))
+                    }
+                    uid={id}
+                    onSelect={this.selectTargetVideoQuality}
+                    selected={
+                      (quality === undefined && selectedTarget === undefined) || (quality !== undefined && quality.uid === selectedTarget)
+                    }></MenuRadioButton>
+                ))}
+              />
+            }
           />
-        }
-      />
+        )}
+      </PlayerContext.Consumer>
     );
   }
 }

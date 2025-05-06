@@ -1,6 +1,7 @@
-import type { MediaTrack, TextTrack } from 'react-native-theoplayer';
-import { TrackListEventType, VideoQuality } from 'react-native-theoplayer';
+import type { MediaTrack, TextTrack, VideoQuality } from 'react-native-theoplayer';
+import { TrackListEventType } from 'react-native-theoplayer';
 import { getISO639LanguageByCode } from '../../utils/language/Language';
+import type { QualityLabelLocaleParams } from './Locale';
 
 export function getTrackLabel(track: MediaTrack | TextTrack): string {
   if (track.label) {
@@ -35,28 +36,25 @@ export function filterRenderableTracks(textTracks: TextTrack[]): TextTrack[] {
   return textTracks.filter((textTrack) => textTrack.kind === 'subtitles' || textTrack.kind === 'captions');
 }
 
-export function getVideoQualityLabel(quality: VideoQuality | undefined, withBandWidth = true): string {
-  if (!quality) {
-    return 'auto';
-  }
-  if (quality.label && quality.label !== '') {
-    return quality.label;
-  }
-  let label = '';
-  if (quality.height) {
-    label = quality.height + 'p';
-  }
-  if (!withBandWidth || !quality.bandwidth) {
-    return label;
-  }
-  let bandwidth;
+export function calculateQualityLabelParams(quality: VideoQuality): QualityLabelLocaleParams {
+  let bitrate: string;
+  let unit: 'Mbps' | 'kbps';
   if (quality.bandwidth > 1e7) {
-    bandwidth = (quality.bandwidth / 1e6).toFixed(0) + 'Mbps';
+    bitrate = (quality.bandwidth / 1e6).toFixed(0);
+    unit = 'Mbps';
   } else if (quality.bandwidth > 1e6) {
-    bandwidth = (quality.bandwidth / 1e6).toFixed(1) + 'Mbps';
+    bitrate = (quality.bandwidth / 1e6).toFixed(1);
+    unit = 'Mbps';
   } else {
-    bandwidth = (quality.bandwidth / 1e3).toFixed(0) + 'kbps';
+    bitrate = (quality.bandwidth / 1e3).toFixed(0);
+    unit = 'kbps';
   }
-  const isHD = quality.height ? quality.height >= 720 : false;
-  return `${label} - ${bandwidth} ${isHD ? '(HD)' : ''}`;
+  return {
+    quality: quality,
+    label: quality.label,
+    width: quality.width,
+    height: quality.height,
+    bitrate,
+    unit,
+  };
 }
