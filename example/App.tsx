@@ -139,26 +139,22 @@ export default function App() {
               locale={myCustomLocale}
               behind={<CenteredDelayedActivityIndicator size={50} />}
               top={
-
-                  <ControlBar>
-                    <LanguageMenuButton />
-                    <SettingsMenuButton>
-                      {/*Note: quality selection is not available on iOS */}
-                      <QualitySubMenu />
-                      <PlaybackRateSubMenu />
-                    </SettingsMenuButton>
-                  </ControlBar>
-
+                <ControlBar>
+                  <LanguageMenuButton />
+                  <SettingsMenuButton>
+                    {/*Note: quality selection is not available on iOS */}
+                    <QualitySubMenu />
+                    <PlaybackRateSubMenu />
+                  </SettingsMenuButton>
+                </ControlBar>
               }
               center={
-
-                  <CenteredControlBar
-                    style={{ width: '50%' }}
-                    left={<SkipButton skip={-10} />}
-                    middle={<PlayButton />}
-                    right={<SkipButton skip={30} />}
-                  />
-
+                <CenteredControlBar
+                  style={{ width: '50%' }}
+                  left={<SkipButton skip={-10} />}
+                  middle={<PlayButton />}
+                  right={<SkipButton skip={30} />}
+                />
               }
               bottom={
                 <>
