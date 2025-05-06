@@ -1,4 +1,4 @@
-import type { MediaTrack, TextTrack } from 'react-native-theoplayer';
+import type { MediaTrack, TextTrack, VideoQuality } from 'react-native-theoplayer';
 import { TrackListEventType } from 'react-native-theoplayer';
 import { getISO639LanguageByCode } from '../../utils/language/Language';
 
@@ -33,4 +33,14 @@ export function stringFromTextTrackListEvent(type: TrackListEventType): string {
  */
 export function filterRenderableTracks(textTracks: TextTrack[]): TextTrack[] {
   return textTracks.filter((textTrack) => textTrack.kind === 'subtitles' || textTrack.kind === 'captions');
+}
+
+export function calculateBitrateParams(quality: VideoQuality): { bitrate: string; unit: 'Mbps' | 'kbps' } {
+  if (quality.bandwidth > 1e7) {
+    return { bitrate: (quality.bandwidth / 1e6).toFixed(0), unit: 'Mbps' };
+  } else if (quality.bandwidth > 1e6) {
+    return { bitrate: (quality.bandwidth / 1e6).toFixed(1), unit: 'Mbps' };
+  } else {
+    return { bitrate: (quality.bandwidth / 1e3).toFixed(0), unit: 'kbps' };
+  }
 }

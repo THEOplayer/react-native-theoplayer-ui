@@ -17,15 +17,33 @@ export interface Locale {
    */
   qualityTitle: string;
   /**
+   * The label shown when ABR is enabled.
+   */
+  automaticQualitySelectionLabel: string;
+  /**
    * The label of a video quality.
    * @param quality
    */
-  qualityLabel: ({ quality }: { quality: VideoQuality | undefined }) => string;
+  qualityLabel: ({ label, height, width }: { label: string; height: number; width: number }) => string;
   /**
    * The extended label of a video quality.
    * @param quality The video quality
    */
-  qualityLabelExtended: ({ quality }: { quality: VideoQuality | undefined }) => string;
+  qualityLabelExtended: ({
+    quality,
+    label,
+    height,
+    width,
+    bitrate,
+    unit,
+  }: {
+    quality: VideoQuality;
+    label: string;
+    height: number;
+    width: number;
+    bitrate: string;
+    unit: 'Mbps' | 'kbps';
+  }) => string;
   /**
    * The title of the audio track selection menu.
    */
@@ -96,29 +114,15 @@ export const defaultLocale: Locale = {
   subtitleTitle: 'Subtitles',
   playbackRateTitle: 'Playback Speed',
   liveLabel: 'LIVE',
-  qualityLabel: ({ quality }) => {
-    if (quality === undefined) return 'auto';
-    if (quality.label && quality.label !== '') return quality.label;
-    if (quality.height) return quality.height + 'p';
-    return '';
+  automaticQualitySelectionLabel: 'auto',
+  qualityLabel: ({ label, height }) => {
+    if (label) return label;
+    return `${height}p`
   },
-  qualityLabelExtended: ({ quality }) => {
-    if (quality === undefined) return 'auto';
-    if (quality.label && quality.label !== '') return quality.label;
-    let label = '';
-    if (quality.height) {
-      label = quality.height + 'p';
-    }
-    let bandwidth;
-    if (quality.bandwidth > 1e7) {
-      bandwidth = (quality.bandwidth / 1e6).toFixed(0) + 'Mbps';
-    } else if (quality.bandwidth > 1e6) {
-      bandwidth = (quality.bandwidth / 1e6).toFixed(1) + 'Mbps';
-    } else {
-      bandwidth = (quality.bandwidth / 1e3).toFixed(0) + 'kbps';
-    }
-    const isHD = quality.height ? quality.height >= 720 : false;
-    return `${label} - ${bandwidth} ${isHD ? '(HD)' : ''}`;
+  qualityLabelExtended: ({ label, height, bitrate, unit }) => {
+    if (label) return label;
+    const isHD = height >= 720;
+    return `${height}p - ${bitrate}${unit} ${isHD ? '(HD)' : ''}`;
   },
   playbackRateLabel: ({ rate }) => {
     if (rate === 1) return 'Normal';

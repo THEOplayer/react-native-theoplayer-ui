@@ -7,6 +7,7 @@ import { MenuView } from './common/MenuView';
 import { ScrollableMenu } from './common/ScrollableMenu';
 import { MenuRadioButton } from './common/MenuRadioButton';
 import { SubMenuWithButton } from './common/SubMenuWithButton';
+import { calculateBitrateParams } from '../util/TrackUtils';
 
 export interface QualitySubMenuProps {
   /**
@@ -29,7 +30,7 @@ export const QualitySubMenu = (props: QualitySubMenuProps) => {
     return <QualitySelectionView style={menuStyle} />;
   };
 
-  let selectedQualityLabel = locale.qualityLabel({ quality: undefined });
+  let selectedQualityLabel = locale.automaticQualitySelectionLabel;
   if (player.targetVideoQuality !== undefined) {
     let id: number | undefined;
     if (typeof player.targetVideoQuality === 'number') {
@@ -38,8 +39,10 @@ export const QualitySubMenu = (props: QualitySubMenuProps) => {
       id = player.targetVideoQuality.length > 0 ? player.targetVideoQuality[0] : undefined;
     }
     const selectedTrack = player.videoTracks.find((track) => track.uid === player.selectedVideoTrack);
-    const selectedQuality = selectedTrack !== undefined ? selectedTrack.qualities.find((quality) => quality.uid === id) : undefined;
-    selectedQualityLabel = locale.qualityLabel({ quality: selectedQuality as VideoQuality });
+    const selectedQuality = selectedTrack !== undefined ? (selectedTrack.qualities.find((quality) => quality.uid === id) as VideoQuality) : undefined;
+    if (selectedQuality !== undefined) {
+      selectedQualityLabel = locale.qualityLabel({ label: selectedQuality.label, width: selectedQuality.width, height: selectedQuality.height });
+    }
   }
 
   return <SubMenuWithButton menuConstructor={createMenu} label={locale.qualityTitle} preview={selectedQualityLabel} />;
@@ -130,14 +133,24 @@ export class QualitySelectionView extends PureComponent<QualitySelectionViewProp
             menu={
               <ScrollableMenu
                 title={context.locale.qualityTitle}
-                items={[undefined, ...availableVideoQualities].map((track, id) => (
+                items={[undefined, ...availableVideoQualities].map((quality, id) => (
                   <MenuRadioButton
                     key={id}
-                    label={context.locale.qualityLabelExtended({ quality: track as VideoQuality })}
+                    label={
+                      quality === undefined
+                        ? context.locale.automaticQualitySelectionLabel
+                        : context.locale.qualityLabelExtended({
+                            quality: quality as VideoQuality,
+                            label: quality.label,
+                            width: (quality as VideoQuality).width,
+                            height: (quality as VideoQuality).height,
+                            ...calculateBitrateParams(quality as VideoQuality),
+                          })
+                    }
                     uid={id}
                     onSelect={this.selectTargetVideoQuality}
                     selected={
-                      (track === undefined && selectedTarget === undefined) || (track !== undefined && track.uid === selectedTarget)
+                      (quality === undefined && selectedTarget === undefined) || (quality !== undefined && quality.uid === selectedTarget)
                     }></MenuRadioButton>
                 ))}
               />
