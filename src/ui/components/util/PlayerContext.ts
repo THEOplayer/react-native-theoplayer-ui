@@ -25,7 +25,7 @@ export interface UiContext {
   readonly adInProgress: boolean;
 
   /**
-   * The selected localization.
+   * The localized strings used in the UI components.
    */
   readonly locale: Locale;
 }
