@@ -41,11 +41,15 @@ const playerConfig: PlayerConfiguration = {
 };
 
 const SquareMarker = () => {
-  return <View style={{
-    width: 5,
-    height: 4,
-    backgroundColor: "yellow",
-  }} />;
+  return (
+    <View
+      style={{
+        width: 5,
+        height: 4,
+        backgroundColor: 'yellow',
+      }}
+    />
+  );
 };
 
 /**
@@ -82,14 +86,16 @@ export default function App() {
         displayIconUri: 'https://cdn.theoplayer.com/video/sintel_old/poster.jpg',
         artist: 'THEOplayer',
       },
-      textTracks: [{
-        kind: TextTrackKind.chapters,
-        src: 'https://cdn.theoplayer.com/video/sintel/chapters.vtt',
-        format: 'webvtt',
-        srclang: 'en',
-        label: 'Chapters',
-        default: true
-      }],
+      textTracks: [
+        {
+          kind: TextTrackKind.chapters,
+          src: 'https://cdn.theoplayer.com/video/sintel/chapters.vtt',
+          format: 'webvtt',
+          srclang: 'en',
+          label: 'Chapters',
+          default: true,
+        },
+      ],
     };
 
     player.muted = true;
@@ -151,7 +157,7 @@ export default function App() {
                     <Spacer />
                   </ControlBar>
                   <ControlBar>
-                    <SeekBar chapterMarkers={() => (<SquareMarker/>)} />
+                    <SeekBar chapterMarkers={() => <SquareMarker />} />
                   </ControlBar>
                   <ControlBar>
                     <MuteButton />
