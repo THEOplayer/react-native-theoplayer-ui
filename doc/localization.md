@@ -26,7 +26,7 @@ const App = () => {
     subtitleTitle: 'Ondertitels',
     playbackRateTitle: 'Afspeelsnelheid',
     liveLabel: 'LIVE',
-    // For a full list of available keys, see the Localization interface.
+    // For a full list of available keys, see the Locale interface.
   };
   return (
     <THEOplayerDefaultUi
