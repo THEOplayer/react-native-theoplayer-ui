@@ -1,4 +1,4 @@
-import React, { forwardRef, lazy } from 'react';
+import React, { lazy } from 'react';
 import * as ReactNative from 'react-native';
 import { Platform, StyleProp, ViewStyle } from 'react-native';
 
@@ -12,10 +12,10 @@ export interface AutoFocusGuideProps {
 const FOCUS_GUIDE_STYLE: ViewStyle = {
   width: '100%',
   justifyContent: 'center',
-  alignItems: 'center',
+  alignItems: 'center'
 };
 
-const TVFocusGuideView = lazy((): Promise<{ default: typeof ReactNative.TVFocusGuideView }> => {
+const TVFocusGuideView = lazy((): Promise<{ default: React.ComponentType<any> }> => {
   if (Platform.OS === 'ios' && Platform.isTV) {
     if (ReactNative.TVFocusGuideView) {
       return Promise.resolve({ default: ReactNative.TVFocusGuideView });
@@ -23,7 +23,7 @@ const TVFocusGuideView = lazy((): Promise<{ default: typeof ReactNative.TVFocusG
       console.warn('TVFocusGuideView not supported, a dependency on react-native-tvos is required.');
     }
   }
-  return Promise.resolve({ default: forwardRef(({ children }) => <>{children}</>) });
+  return Promise.resolve({ default: ({ children }) => <>{children}</> });
 });
 
 /**
