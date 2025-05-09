@@ -7,7 +7,7 @@ PODS:
   - glog (0.3.5)
   - google-cast-sdk-dynamic-xcframework (4.8.3)
   - GoogleAds-IMA-iOS-SDK (3.26.1)
-  - GoogleAds-IMA-tvOS-SDK (4.14.1)
+  - GoogleAds-IMA-tvOS-SDK (4.15.1)
   - PromisesObjC (2.4.0)
   - RCT-Folly (2024.11.18.00):
     - boost
@@ -1620,21 +1620,17 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - SocketRocket (0.7.1)
-  - THEOliveSDK (3.18.10)
-  - THEOplayer-Integration-GoogleIMA (9.2.0):
-    - THEOplayer-Integration-GoogleIMA/Base (= 9.2.0)
-    - THEOplayer-Integration-GoogleIMA/Dependencies (= 9.2.0)
-  - THEOplayer-Integration-GoogleIMA/Base (9.2.0)
-  - THEOplayer-Integration-GoogleIMA/Dependencies (9.2.0):
+  - THEOplayer-Integration-GoogleIMA (9.3.0):
+    - THEOplayer-Integration-GoogleIMA/Base (= 9.3.0)
+    - THEOplayer-Integration-GoogleIMA/Dependencies (= 9.3.0)
+  - THEOplayer-Integration-GoogleIMA/Base (9.3.0)
+  - THEOplayer-Integration-GoogleIMA/Dependencies (9.3.0):
     - GoogleAds-IMA-iOS-SDK (~> 3.18)
     - GoogleAds-IMA-tvOS-SDK (~> 4.8)
-  - THEOplayer-Integration-THEOlive (9.2.0):
-    - THEOplayer-Integration-THEOlive/Base (= 9.2.0)
-    - THEOplayer-Integration-THEOlive/Dependencies (= 9.2.0)
-  - THEOplayer-Integration-THEOlive/Base (9.2.0)
-  - THEOplayer-Integration-THEOlive/Dependencies (9.2.0):
-    - THEOliveSDK (= 3.18.10)
-  - THEOplayerSDK-core (9.2.0)
+  - THEOplayer-Integration-THEOlive (9.3.0):
+    - THEOplayer-Integration-THEOlive/Base (= 9.3.0)
+  - THEOplayer-Integration-THEOlive/Base (9.3.0)
+  - THEOplayerSDK-core (9.3.0)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1720,7 +1716,6 @@ SPEC REPOS:
     - GoogleAds-IMA-tvOS-SDK
     - PromisesObjC
     - SocketRocket
-    - THEOliveSDK
     - THEOplayer-Integration-GoogleIMA
     - THEOplayer-Integration-THEOlive
     - THEOplayerSDK-core
@@ -1884,7 +1879,7 @@ SPEC CHECKSUMS:
   glog: 2777ae82f2611bf0a9ed50bcd30b0eea7e7b7f05
   google-cast-sdk-dynamic-xcframework: d4dd8d548462f2a4874515fee68c17805d44be42
   GoogleAds-IMA-iOS-SDK: 10b8f194e7cd2714d4de9a0587c46c8aaf06c620
-  GoogleAds-IMA-tvOS-SDK: f1efc14f85842b0858528dfe5220adfee637a6da
+  GoogleAds-IMA-tvOS-SDK: 24968955747d50fc2d7bd2e622d832b8372c2223
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: 7fcb7677cc9c6a6e51b4ebcc986aecac5e1431de
   RCTDeprecation: 02eb8c8eb98d7efe983bf01521fd13b377fab08b
@@ -1951,10 +1946,9 @@ SPEC CHECKSUMS:
   ReactCommon: 2f8dd9a9137f26b8f9dbf1531cc5b69898413fc3
   RNSVG: 57225e3832e15933a2e18e15b9db2d0455610465
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  THEOliveSDK: 61479e7ad8164340a8aaccc211493e2606d4381d
-  THEOplayer-Integration-GoogleIMA: fef091222ee80528ba8ff8eb0a0801e42c2fd310
-  THEOplayer-Integration-THEOlive: c375519be02a2343f90cca3a321ae05b2953add3
-  THEOplayerSDK-core: 7e94ff8c486d8ed2748e696cba25e885083947a8
+  THEOplayer-Integration-GoogleIMA: d3bae0db0ae922e36ae9be9a5b2495abf7939081
+  THEOplayer-Integration-THEOlive: 518280fffbfed6dcbf991975dde661e290a8d727
+  THEOplayerSDK-core: b60aa2d5ecaa8b5fc69728c204fc5878b89d1c23
   Yoga: d4280c1f5bc3aef681cf28421e3a988c2d77ba31
 
 PODFILE CHECKSUM: bb063e6a118216fd63975fca676d802655237b73
