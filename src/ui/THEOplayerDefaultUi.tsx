@@ -98,21 +98,23 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
             }
             bottom={
               <>
-                <ControlBar style={{ justifyContent: 'flex-start' }}>
-                  <CastMessage />
-                </ControlBar>
+                {!Platform.isTV && (
+                  <ControlBar style={{ justifyContent: 'flex-start' }}>
+                    <CastMessage />
+                  </ControlBar>
+                )}
                 <ControlBar>
                   <SeekBar />
                 </ControlBar>
 
                 <ControlBar>
-                  <MuteButton />
+                  {!Platform.isTV && <MuteButton />}
                   <TimeLabel showDuration={true} />
 
                   <Spacer />
 
                   {bottomSlot}
-                  <FullscreenButton />
+                  {!Platform.isTV && <FullscreenButton />}
                 </ControlBar>
               </>
             }
@@ -137,7 +139,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                   <AdSkipButton />
                 </ControlBar>
                 <ControlBar>
-                  <MuteButton />
+                  {!Platform.isTV && <MuteButton />}
                   <SeekBar />
                 </ControlBar>
               </>
