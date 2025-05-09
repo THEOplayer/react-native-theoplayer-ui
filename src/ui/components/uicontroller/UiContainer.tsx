@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Animated, AppState, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
+import { type TVOSEvent, useTVOSEventHandler } from '../util/TVUtils';
 import type { AdEvent, PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
 import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
@@ -150,7 +151,9 @@ export const TOP_UI_CONTAINER_STYLE: ViewStyle = {
  */
 export const CENTER_UI_CONTAINER_STYLE: ViewStyle = {
   alignSelf: 'center',
-  width: '60%',
+  justifyContent: 'center',
+  flexDirection: 'row',
+  width: '100%',
 };
 
 /**
@@ -198,6 +201,11 @@ export const UiContainer = (props: UiContainerProps) => {
   const { player, locale } = props;
 
   const combinedLocale: Locale = { ...defaultLocale, ...locale };
+
+  useTVOSEventHandler((_event: TVOSEvent) => {
+    stopAnimationsAndShowUi_();
+    resumeAnimationsIfPossible_();
+  });
 
   useEffect(() => {
     const handlePlay = () => {
