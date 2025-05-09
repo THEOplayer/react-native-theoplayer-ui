@@ -1,14 +1,13 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Animated, AppState, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
-import { useTVOSEventHandler } from '../util/TVUtils';
+import { type TVOSEvent, useTVOSEventHandler } from '../util/TVUtils';
 import type { AdEvent, PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
 import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
 import { type Locale, defaultLocale } from '../util/Locale';
-import type * as ReactNative from 'react-native';
 
 export interface UiContainerProps {
   /**
@@ -203,8 +202,7 @@ export const UiContainer = (props: UiContainerProps) => {
 
   const combinedLocale: Locale = { ...defaultLocale, ...locale };
 
-  useTVOSEventHandler((event: ReactNative.HWEvent) => {
-    console.log(`[WILL] TVRemoteEventHandler triggered an event: ${event.eventType}`)
+  useTVOSEventHandler((_event: TVOSEvent) => {
     stopAnimationsAndShowUi_();
     resumeAnimationsIfPossible_();
   });
