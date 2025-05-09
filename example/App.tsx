@@ -142,6 +142,7 @@ export default function App() {
               top={
                 <AutoFocusGuide>
                   <ControlBar>
+                    <Spacer />
                     <LanguageMenuButton />
                     <SettingsMenuButton>
                       {/*Note: quality selection is not available on iOS */}
