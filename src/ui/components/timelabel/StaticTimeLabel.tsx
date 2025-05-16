@@ -57,8 +57,7 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
         {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>}
       </PlayerContext.Consumer>
     );
-  } catch (_ignore) {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
+  } catch {
     return <></>;
   }
 }
