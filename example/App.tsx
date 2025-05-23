@@ -2,12 +2,18 @@ import * as React from 'react';
 import { useState } from 'react';
 import {
   AdClickThroughButton,
+  AdCountdown,
+  AdDisplay,
+  AdSkipButton,
+  AutoFocusGuide,
   CenteredControlBar,
   CenteredDelayedActivityIndicator,
+  ChapterLabel,
   ControlBar,
   DEFAULT_THEOPLAYER_THEME,
   FullscreenButton,
   LanguageMenuButton,
+  type Locale,
   MuteButton,
   PipButton,
   PlaybackRateSubMenu,
@@ -19,15 +25,10 @@ import {
   Spacer,
   TimeLabel,
   UiContainer,
-  ChapterLabel,
-  type Locale,
 } from '@theoplayer/react-native-ui';
 import { PlayerConfiguration, PlayerEventType, TextTrackKind, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 
 import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
-import { AdDisplay } from '@theoplayer/react-native-ui';
-import { AdCountdown } from '@theoplayer/react-native-ui';
-import { AdSkipButton } from '@theoplayer/react-native-ui';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -71,6 +72,9 @@ export default function App() {
     player.addEventListener(PlayerEventType.SEEKING, console.log);
     player.addEventListener(PlayerEventType.SEEKED, console.log);
     player.addEventListener(PlayerEventType.ENDED, console.log);
+    player.muted = true;
+    player.autoplay = true;
+
     player.source = {
       sources: [
         {
@@ -97,9 +101,6 @@ export default function App() {
         },
       ],
     };
-
-    player.muted = true;
-    player.autoplay = true;
 
     player.backgroundAudioConfiguration = { enabled: true };
     player.pipConfiguration = { startsAutomatically: true };
@@ -139,18 +140,30 @@ export default function App() {
               locale={myCustomLocale}
               behind={<CenteredDelayedActivityIndicator size={50} />}
               top={
-                <ControlBar>
-                  <LanguageMenuButton />
-                  <SettingsMenuButton>
-                    {/*Note: quality selection is not available on iOS */}
-                    <QualitySubMenu />
-                    <PlaybackRateSubMenu />
-                  </SettingsMenuButton>
-                </ControlBar>
+                <AutoFocusGuide>
+                  <ControlBar>
+                    <Spacer />
+                    <LanguageMenuButton />
+                    <SettingsMenuButton>
+                      {/*Note: quality selection is not available on iOS */}
+                      <QualitySubMenu />
+                      <PlaybackRateSubMenu />
+                    </SettingsMenuButton>
+                  </ControlBar>
+                </AutoFocusGuide>
               }
-              center={<CenteredControlBar left={<SkipButton skip={-10} />} middle={<PlayButton />} right={<SkipButton skip={30} />} />}
+              center={
+                <AutoFocusGuide>
+                  <CenteredControlBar
+                    style={{ width: '50%' }}
+                    left={<SkipButton skip={-10} />}
+                    middle={<PlayButton />}
+                    right={<SkipButton skip={30} />}
+                  />
+                </AutoFocusGuide>
+              }
               bottom={
-                <>
+                <AutoFocusGuide>
                   <ControlBar>
                     <Spacer />
                     <ChapterLabel />
@@ -166,16 +179,22 @@ export default function App() {
                     <PipButton />
                     <FullscreenButton />
                   </ControlBar>
-                </>
+                </AutoFocusGuide>
               }
               adTop={
-                <ControlBar>
-                  <AdClickThroughButton />
-                </ControlBar>
+                <AutoFocusGuide>
+                  <ControlBar>
+                    <AdClickThroughButton />
+                  </ControlBar>
+                </AutoFocusGuide>
               }
-              adCenter={<CenteredControlBar middle={<PlayButton />} />}
+              adCenter={
+                <AutoFocusGuide>
+                  <CenteredControlBar middle={<PlayButton />} />
+                </AutoFocusGuide>
+              }
               adBottom={
-                <>
+                <AutoFocusGuide>
                   <ControlBar style={{ justifyContent: 'flex-start' }}>
                     <AdDisplay />
                     <AdCountdown />
@@ -186,7 +205,7 @@ export default function App() {
                     <MuteButton />
                     <SeekBar />
                   </ControlBar>
-                </>
+                </AutoFocusGuide>
               }
             />
           )}

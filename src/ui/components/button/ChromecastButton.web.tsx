@@ -33,7 +33,7 @@ export function ChromecastButton(props: CastButtonProps) {
     } else {
       player.cast.chromecast?.start();
     }
-  }, [player]);
+  }, [player, castState]);
 
   if (Platform.OS === 'web' && castState === CastState.unavailable) {
     return <></>;

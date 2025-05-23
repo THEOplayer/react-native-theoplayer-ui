@@ -14,14 +14,14 @@ export interface ThumbnailViewProps {
 export function SingleThumbnailView(props: ThumbnailViewProps) {
   const player = useContext(PlayerContext).player;
   const thumbnailTrack = useThumbnailTrack();
-
-  if (!thumbnailTrack) {
-    return <></>;
-  }
   const thumbnailSize = useMemo(() => {
     const window = Dimensions.get('window');
     return 0.35 * Math.min(window.height, window.width);
   }, []);
+
+  if (!thumbnailTrack) {
+    return <></>;
+  }
 
   const { seekableStart, seekableEnd, currentTime, seekBarWidth } = props;
   const marginHorizontal = 8;
