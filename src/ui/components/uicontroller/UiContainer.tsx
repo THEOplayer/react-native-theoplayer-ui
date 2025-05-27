@@ -187,7 +187,7 @@ export const UiContainer = (props: UiContainerProps) => {
   const _currentFadeOutTimeout = useRef<number | undefined>(undefined);
   const fadeAnimation = useRef(new Animated.Value(1)).current;
   const [currentMenu, setCurrentMenu] = useState<React.ReactNode | undefined>(undefined);
-  const [showing, setShowing] = useState(true);
+  const [isPassingPointerEvents, setIsPassingPointerEvents] = useState(true);
   const [buttonsEnabled_, setButtonsEnabled] = useState(true);
   const [error, setError] = useState<PlayerError | undefined>(undefined);
   const [firstPlay, setFirstPlay] = useState(false);
@@ -331,7 +331,7 @@ export const UiContainer = (props: UiContainerProps) => {
       toValue: 0,
       duration: 0,
     }).start(() => {
-      setShowing(false);
+      setIsPassingPointerEvents(false);
       player.presentationMode = PresentationMode.pip;
     });
   };
@@ -339,7 +339,7 @@ export const UiContainer = (props: UiContainerProps) => {
   const stopAnimationsAndShowUi_ = () => {
     clearTimeout(_currentFadeOutTimeout.current);
     _currentFadeOutTimeout.current = undefined;
-    if (!showing) {
+    if (!isPassingPointerEvents) {
       doFadeIn_();
     }
   };
@@ -358,7 +358,7 @@ export const UiContainer = (props: UiContainerProps) => {
   };
 
   const doFadeIn_ = () => {
-    setShowing(true);
+    setIsPassingPointerEvents(true);
     Animated.timing(fadeAnimation, {
       useNativeDriver: true,
       toValue: 1,
@@ -379,7 +379,7 @@ export const UiContainer = (props: UiContainerProps) => {
       toValue: 0,
       duration: 200,
     }).start(() => {
-      setShowing(false);
+      setIsPassingPointerEvents(false);
     });
   };
 
@@ -425,7 +425,7 @@ export const UiContainer = (props: UiContainerProps) => {
         <Animated.View
           style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
           onTouchStart={onUserAction_}
-          pointerEvents={showing ? 'auto' : 'box-only'}
+          pointerEvents={isPassingPointerEvents ? 'auto' : 'box-only'}
           {...(Platform.OS === 'web' ? { onMouseMove: onUserAction_, onMouseLeave: doFadeOut_ } : {})}>
           <>
             {/* The UI background */}
