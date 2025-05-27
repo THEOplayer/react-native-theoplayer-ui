@@ -237,13 +237,14 @@ export const UiContainer = (props: UiContainerProps) => {
     };
 
     const handleEnded = () => {
-      setShowing(true);
+      stopAnimationsAndShowUi_();
     };
 
     const handlePresentationModeChange = (event: PresentationModeChangeEvent) => {
       setPip(event.presentationMode === PresentationMode.pip);
       if (event.presentationMode !== PresentationMode.pip) {
-        setShowing(true);
+        stopAnimationsAndShowUi_();
+        resumeAnimationsIfPossible_();
       }
     };
 
