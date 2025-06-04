@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, AppState, Platform, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import { type TVOSEvent, useTVOSEventHandler } from '../util/TVUtils';
@@ -190,7 +190,7 @@ export const UiContainer = (props: UiContainerProps) => {
   const [isPassingPointerEvents, setIsPassingPointerEvents] = useState(true);
   const [buttonsEnabled_, setButtonsEnabled] = useState(true);
   const [error, setError] = useState<PlayerError | undefined>(undefined);
-  const [firstPlay, setFirstPlay] = useState(false);
+  const [didPlay, setDidPlay] = useState(false);
   const [paused, setPaused] = useState(true);
   const [casting, setCasting] = useState(false);
   const [pip, setPip] = useState(false);
@@ -202,19 +202,95 @@ export const UiContainer = (props: UiContainerProps) => {
 
   const combinedLocale: Locale = { ...defaultLocale, ...locale };
 
+  // Animation control
+  const fadeOutBlocked_ = useCallback(() => {
+    return !didPlay || currentMenu !== undefined || casting || pip || (paused && Platform.OS !== 'web');
+  }, [casting, currentMenu, didPlay, pip, paused]);
+
+  const doFadeOut_ = useCallback(() => {
+    if (fadeOutBlocked_()) {
+      return;
+    }
+    clearTimeout(_currentFadeOutTimeout.current);
+    setButtonsEnabled(false);
+    Animated.timing(fadeAnimation, {
+      useNativeDriver: true,
+      toValue: 0,
+      duration: 200,
+    }).start(() => {
+      setIsPassingPointerEvents(false);
+    });
+  }, [fadeOutBlocked_, fadeAnimation]);
+
+  const resumeUIFadeOut_ = useCallback(() => {
+    clearTimeout(_currentFadeOutTimeout.current);
+    // @ts-ignore
+    _currentFadeOutTimeout.current = setTimeout(doFadeOut_, props.theme.fadeAnimationTimoutMs);
+  }, [doFadeOut_, props.theme.fadeAnimationTimoutMs]);
+
+  const fadeInUI_ = useCallback(
+    (fadeOutEnabled: boolean = true) => {
+      clearTimeout(_currentFadeOutTimeout.current);
+      _currentFadeOutTimeout.current = undefined;
+      if (!isPassingPointerEvents) {
+        setIsPassingPointerEvents(true);
+        Animated.timing(fadeAnimation, {
+          useNativeDriver: true,
+          toValue: 1,
+          duration: 200,
+        }).start(() => {
+          setButtonsEnabled(true);
+        });
+      }
+      if (fadeOutEnabled) {
+        resumeUIFadeOut_();
+      }
+    },
+    [fadeAnimation, isPassingPointerEvents, resumeUIFadeOut_],
+  );
+
+  // TVOS events hook
   useTVOSEventHandler((_event: TVOSEvent) => {
-    stopAnimationsAndShowUi_();
-    resumeAnimationsIfPossible_();
+    fadeInUI_();
   });
 
+  // Ad listeners hook
+  useEffect(() => {
+    const handleAdEvent = (event: AdEvent) => {
+      if (event.subType === AdEventType.AD_BREAK_BEGIN) {
+        setAdInProgress(true);
+        setAdTapped(false);
+      } else if (event.subType === AdEventType.AD_BREAK_END) {
+        setAdInProgress(false);
+        setAdTapped(false);
+      } else if (event.subType === AdEventType.AD_CLICKED || event.subType === AdEventType.AD_TAPPED) {
+        setAdTapped(true);
+      }
+    };
+
+    player.addEventListener(PlayerEventType.AD_EVENT, handleAdEvent);
+    appStateSubscription.current = AppState.addEventListener('change', (state) => {
+      if (state === 'active' && adInProgress && adTapped) {
+        player.play();
+        setAdTapped(false);
+      }
+    });
+
+    return () => {
+      player.removeEventListener(PlayerEventType.AD_EVENT, handleAdEvent);
+      appStateSubscription.current?.remove();
+    };
+  }, [player, adInProgress, adTapped]);
+
+  // Player listeners hook
   useEffect(() => {
     const handlePlay = () => {
-      setFirstPlay(true);
+      setDidPlay(true);
       setPaused(false);
     };
 
     const handlePause = () => {
-      setFirstPlay(true);
+      setDidPlay(true);
       setPaused(true);
     };
 
@@ -237,26 +313,13 @@ export const UiContainer = (props: UiContainerProps) => {
     };
 
     const handleEnded = () => {
-      stopAnimationsAndShowUi_();
+      fadeInUI_(false);
     };
 
     const handlePresentationModeChange = (event: PresentationModeChangeEvent) => {
       setPip(event.presentationMode === PresentationMode.pip);
       if (event.presentationMode !== PresentationMode.pip) {
-        stopAnimationsAndShowUi_();
-        resumeAnimationsIfPossible_();
-      }
-    };
-
-    const handleAdEvent = (event: AdEvent) => {
-      if (event.subType === AdEventType.AD_BREAK_BEGIN) {
-        setAdInProgress(true);
-        setAdTapped(false);
-      } else if (event.subType === AdEventType.AD_BREAK_END) {
-        setAdInProgress(false);
-        setAdTapped(false);
-      } else if (event.subType === AdEventType.AD_CLICKED || event.subType === AdEventType.AD_TAPPED) {
-        setAdTapped(true);
+        fadeInUI_();
       }
     };
 
@@ -269,19 +332,8 @@ export const UiContainer = (props: UiContainerProps) => {
     player.addEventListener(PlayerEventType.SOURCE_CHANGE, handleSourceChange);
     player.addEventListener(PlayerEventType.ENDED, handleEnded);
     player.addEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, handlePresentationModeChange);
-    player.addEventListener(PlayerEventType.AD_EVENT, handleAdEvent);
 
-    if (player.source !== undefined && player.currentTime !== 0) {
-      handlePlay();
-    }
     setPip(player.presentationMode === 'picture-in-picture');
-
-    appStateSubscription.current = AppState.addEventListener('change', (state) => {
-      if (state === 'active' && adInProgress && adTapped) {
-        player.play();
-        setAdTapped(false);
-      }
-    });
 
     return () => {
       player.removeEventListener(PlayerEventType.LOAD_START, handleLoadStart);
@@ -293,13 +345,29 @@ export const UiContainer = (props: UiContainerProps) => {
       player.removeEventListener(PlayerEventType.SOURCE_CHANGE, handleSourceChange);
       player.removeEventListener(PlayerEventType.ENDED, handleEnded);
       player.removeEventListener(PlayerEventType.PRESENTATIONMODE_CHANGE, handlePresentationModeChange);
-      player.removeEventListener(PlayerEventType.AD_EVENT, handleAdEvent);
-      appStateSubscription.current?.remove();
     };
-  }, [player, adInProgress, adTapped]);
+  }, [player, paused, resumeUIFadeOut_, fadeInUI_, currentMenu]);
 
-  const animationsBlocked_ = () => {
-    return !firstPlay || currentMenu !== undefined || casting || pip;
+  // State reflecting hook
+  useEffect(() => {
+    if (currentMenu === undefined && !paused && didPlay) {
+      resumeUIFadeOut_();
+    } else {
+      fadeInUI_(false);
+    }
+  }, [currentMenu, paused, didPlay, fadeInUI_, resumeUIFadeOut_]);
+
+  // Interactions
+  const openMenu_ = (menuConstructor: () => ReactNode) => {
+    _menus.push(menuConstructor);
+    const newMenu = menuConstructor();
+    setCurrentMenu(newMenu);
+  };
+
+  const closeCurrentMenu_ = () => {
+    _menus.pop();
+    const nextMenu = _menus.length > 0 ? _menus[_menus.length - 1] : undefined;
+    setCurrentMenu(nextMenu?.());
   };
 
   const playPause_ = () => {
@@ -308,19 +376,6 @@ export const UiContainer = (props: UiContainerProps) => {
     } else {
       player.pause();
     }
-  };
-
-  const openMenu_ = (menuConstructor: () => ReactNode) => {
-    _menus.push(menuConstructor);
-    setCurrentMenu(menuConstructor());
-    stopAnimationsAndShowUi_();
-  };
-
-  const closeCurrentMenu_ = () => {
-    _menus.pop();
-    const nextMenu = _menus.length > 0 ? _menus[_menus.length - 1] : undefined;
-    setCurrentMenu(nextMenu?.());
-    resumeAnimationsIfPossible_();
   };
 
   const enterPip_ = () => {
@@ -337,63 +392,15 @@ export const UiContainer = (props: UiContainerProps) => {
     });
   };
 
-  const stopAnimationsAndShowUi_ = () => {
-    clearTimeout(_currentFadeOutTimeout.current);
-    _currentFadeOutTimeout.current = undefined;
-    if (!isPassingPointerEvents) {
-      doFadeIn_();
-    }
-  };
-
-  const resumeAnimationsIfPossible_ = () => {
-    clearTimeout(_currentFadeOutTimeout.current);
-    if (animationsBlocked_()) {
-      return;
-    }
-    // Only resume animation when paused except for web.
-    // This is because mobile users can tap away the UI when paused, but desktop users can't.
-    if (Platform.OS === 'web' || !paused) {
-      // @ts-ignore
-      _currentFadeOutTimeout.current = setTimeout(doFadeOut_, props.theme.fadeAnimationTimoutMs);
-    }
-  };
-
-  const doFadeIn_ = () => {
-    setIsPassingPointerEvents(true);
-    Animated.timing(fadeAnimation, {
-      useNativeDriver: true,
-      toValue: 1,
-      duration: 200,
-    }).start(() => {
-      setButtonsEnabled(true);
-    });
-  };
-
-  const doFadeOut_ = () => {
-    if (animationsBlocked_()) {
-      return;
-    }
-    clearTimeout(_currentFadeOutTimeout.current);
-    setButtonsEnabled(false);
-    Animated.timing(fadeAnimation, {
-      useNativeDriver: true,
-      toValue: 0,
-      duration: 200,
-    }).start(() => {
-      setIsPassingPointerEvents(false);
-    });
-  };
-
   /**
    * Request to show the UI due to user input.
    */
-  const onUserAction_ = () => {
-    if (!firstPlay) {
+  const onUserAction_ = useCallback(() => {
+    if (!didPlay) {
       return;
     }
-    stopAnimationsAndShowUi_();
-    resumeAnimationsIfPossible_();
-  };
+    fadeInUI_();
+  }, [fadeInUI_, didPlay]);
 
   const combinedUiContainerStyle = [UI_CONTAINER_STYLE, props.style];
   const combinedAdContainerStyle = [AD_CONTAINER_STYLE, props.style];
@@ -438,9 +445,9 @@ export const UiContainer = (props: UiContainerProps) => {
             {/* The UI control bars*/}
             {currentMenu === undefined && !adInProgress && (
               <>
-                {firstPlay && <View style={[TOP_UI_CONTAINER_STYLE, props.topStyle]}>{props.top}</View>}
+                {didPlay && <View style={[TOP_UI_CONTAINER_STYLE, props.topStyle]}>{props.top}</View>}
                 <View style={[CENTER_UI_CONTAINER_STYLE, props.centerStyle]}>{props.center}</View>
-                {firstPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, props.bottomStyle]}>{props.bottom}</View>}
+                {didPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, props.bottomStyle]}>{props.bottom}</View>}
                 {props.children}
               </>
             )}
