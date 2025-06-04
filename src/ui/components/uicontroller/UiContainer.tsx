@@ -360,8 +360,7 @@ export const UiContainer = (props: UiContainerProps) => {
   // Interactions
   const openMenu_ = (menuConstructor: () => ReactNode) => {
     _menus.push(menuConstructor);
-    const newMenu = menuConstructor();
-    setCurrentMenu(newMenu);
+    setCurrentMenu(menuConstructor());
   };
 
   const closeCurrentMenu_ = () => {
