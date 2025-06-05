@@ -203,12 +203,10 @@ export const UiContainer = (props: UiContainerProps) => {
   const combinedLocale: Locale = { ...defaultLocale, ...locale };
 
   // Animation control
-  const fadeOutBlocked_ = useCallback(() => {
-    return !didPlay || currentMenu !== undefined || casting || pip || (paused && Platform.OS !== 'web');
-  }, [casting, currentMenu, didPlay, pip, paused]);
+  const fadeOutBlocked = !didPlay || currentMenu !== undefined || casting || pip || (paused && Platform.OS !== 'web');
 
   const doFadeOut_ = useCallback(() => {
-    if (fadeOutBlocked_()) {
+    if (fadeOutBlocked) {
       return;
     }
     clearTimeout(_currentFadeOutTimeout.current);
@@ -220,7 +218,7 @@ export const UiContainer = (props: UiContainerProps) => {
     }).start(() => {
       setIsPassingPointerEvents(false);
     });
-  }, [fadeOutBlocked_, fadeAnimation]);
+  }, [fadeOutBlocked, fadeAnimation]);
 
   const resumeUIFadeOut_ = useCallback(() => {
     clearTimeout(_currentFadeOutTimeout.current);
