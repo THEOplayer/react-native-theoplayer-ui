@@ -1620,17 +1620,17 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - SocketRocket (0.7.1)
-  - THEOplayer-Integration-GoogleIMA (9.3.0):
-    - THEOplayer-Integration-GoogleIMA/Base (= 9.3.0)
-    - THEOplayer-Integration-GoogleIMA/Dependencies (= 9.3.0)
-  - THEOplayer-Integration-GoogleIMA/Base (9.3.0)
-  - THEOplayer-Integration-GoogleIMA/Dependencies (9.3.0):
+  - THEOplayer-Integration-GoogleIMA (9.4.1):
+    - THEOplayer-Integration-GoogleIMA/Base (= 9.4.1)
+    - THEOplayer-Integration-GoogleIMA/Dependencies (= 9.4.1)
+  - THEOplayer-Integration-GoogleIMA/Base (9.4.1)
+  - THEOplayer-Integration-GoogleIMA/Dependencies (9.4.1):
     - GoogleAds-IMA-iOS-SDK (~> 3.18)
     - GoogleAds-IMA-tvOS-SDK (~> 4.8)
-  - THEOplayer-Integration-THEOlive (9.3.0):
-    - THEOplayer-Integration-THEOlive/Base (= 9.3.0)
-  - THEOplayer-Integration-THEOlive/Base (9.3.0)
-  - THEOplayerSDK-core (9.3.0)
+  - THEOplayer-Integration-THEOlive (9.4.1):
+    - THEOplayer-Integration-THEOlive/Base (= 9.4.1)
+  - THEOplayer-Integration-THEOlive/Base (9.4.1)
+  - THEOplayerSDK-core (9.4.1)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1946,9 +1946,9 @@ SPEC CHECKSUMS:
   ReactCommon: 2f8dd9a9137f26b8f9dbf1531cc5b69898413fc3
   RNSVG: 57225e3832e15933a2e18e15b9db2d0455610465
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  THEOplayer-Integration-GoogleIMA: d3bae0db0ae922e36ae9be9a5b2495abf7939081
-  THEOplayer-Integration-THEOlive: 518280fffbfed6dcbf991975dde661e290a8d727
-  THEOplayerSDK-core: b60aa2d5ecaa8b5fc69728c204fc5878b89d1c23
+  THEOplayer-Integration-GoogleIMA: cc248521f2768bd854b5d11f3d90b4abfeafb8ff
+  THEOplayer-Integration-THEOlive: 01673d0e4eeeb5d5024938baae07ce9d20c9bae0
+  THEOplayerSDK-core: 2db86d3620feb0ee55138084f97ffa269a99da12
   Yoga: d4280c1f5bc3aef681cf28421e3a988c2d77ba31
 
 PODFILE CHECKSUM: bb063e6a118216fd63975fca676d802655237b73
