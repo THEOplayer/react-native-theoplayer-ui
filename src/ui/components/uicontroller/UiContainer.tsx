@@ -203,7 +203,7 @@ export const UiContainer = (props: UiContainerProps) => {
   const combinedLocale: Locale = { ...defaultLocale, ...locale };
 
   // Animation control
-  const fadeOutBlocked = !didPlay || currentMenu !== undefined || casting || pip || (paused && Platform.OS !== 'web');
+  const fadeOutBlocked = !didPlay || currentMenu !== undefined || casting || pip || paused;
 
   const doFadeOut_ = useCallback(() => {
     if (fadeOutBlocked) {
