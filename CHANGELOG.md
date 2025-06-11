@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added an AutoFocusGuide component to be used on tvOS as a wrapper around for example a controlBar. It catches the focus while navigating the UI with the Apple TV remote.
 
+### Fixed 
+
+- Fixed an issue where the UI became unreponsive for a short while after switching the presentationMode or after the stream has ended.
+
 ## [0.12.0] (2025-05-06)
 
 ### Added
