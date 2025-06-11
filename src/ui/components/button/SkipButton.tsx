@@ -58,7 +58,6 @@ export function SkipButton(props: SkipButtonProps) {
   }, [player]);
 
   const onPress = useCallback(() => {
-    const { skip, rotate } = props;
     player.currentTime = player.currentTime + skip * 1e3;
     if (rotate === true) {
       Animated.timing(spinValue, {

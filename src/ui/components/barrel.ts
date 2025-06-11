@@ -6,6 +6,7 @@ export * from './menu/barrel';
 export * from './message/barrel';
 export * from './seekbar/barrel';
 export * from './timelabel/barrel';
-export * from './chapterlabel/barrel'
+export * from './chapterlabel/barrel';
 export * from './uicontroller/barrel';
+export * from './focus/barrel';
 export * from './util/barrel';
