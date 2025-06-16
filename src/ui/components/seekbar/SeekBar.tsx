@@ -31,6 +31,10 @@ export interface SeekBarProps {
    * Optional
    */
   chapterMarkers?: (index?: number) => React.ReactNode;
+  /** 
+  * Callback for slider value updates. The provided callback will not be debounced.
+  */
+  onScrubbing?: (scrubTime: number) => void
   /**
    * An id used to locate this view in end-to-end tests.
    *
@@ -45,6 +49,7 @@ export interface SeekBarProps {
 const DEBOUNCE_SEEK_DELAY = 250;
 
 export const SeekBar = (props: SeekBarProps) => {
+  const { onScrubbing } = props
   const { player } = useContext(PlayerContext);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
@@ -66,6 +71,7 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingValueChange = (value: number[]) => {
     if (isScrubbing) {
+      if (onScrubbing) onScrubbing(value[0])
       setScrubberTime(value[0]);
       debounceSeek(value[0]);
     }
