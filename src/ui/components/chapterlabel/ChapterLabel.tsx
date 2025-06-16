@@ -37,9 +37,9 @@ export const DEFAULT_CHAPTER_LABEL_STYLE: TextStyle = {
 
 
 export const ChapterLabel = (props: ChapterLabelProps) => {
-    const { style, scrubTime } = props;
     const currentTime = useCurrentTime();
-    const chapters = useChaptersTrack()
+    const chapters = useChaptersTrack();
+    const { style, scrubTime } = props;
     const expectedSeekTarget = scrubTime || currentTime
     const currentChapter = chapters?.cues?.find(cue => (cue.startTime <= expectedSeekTarget && cue.endTime > expectedSeekTarget))
     const label = currentChapter?.content
