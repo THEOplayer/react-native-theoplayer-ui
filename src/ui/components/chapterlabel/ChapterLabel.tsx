@@ -10,6 +10,11 @@ export interface ChapterLabelProps {
    * The style overrides.
    */
   style?: StyleProp<TextStyle>;
+  /**
+   * The playhead position to which the user might seek. Use this property to pass slider values before the actual (debounced) seek happens.
+   */
+  scrubTime?: number
+
 }
 
 export interface ChapterLabelState {
@@ -32,11 +37,12 @@ export const DEFAULT_CHAPTER_LABEL_STYLE: TextStyle = {
 
 
 export const ChapterLabel = (props: ChapterLabelProps) => {
+    const { style, scrubTime } = props;
     const currentTime = useCurrentTime();
     const chapters = useChaptersTrack()
-    const currentChapter = chapters?.cues?.find(cue => (cue.startTime <= currentTime && cue.endTime > currentTime))
+    const expectedSeekTarget = scrubTime || currentTime
+    const currentChapter = chapters?.cues?.find(cue => (cue.startTime <= expectedSeekTarget && cue.endTime > expectedSeekTarget))
     const label = currentChapter?.content
-    const { style } = props;
     return (
         <PlayerContext.Consumer>
             {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>}
