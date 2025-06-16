@@ -34,7 +34,7 @@ export interface SeekBarProps {
   /** 
   * Callback for slider value updates. The provided callback will not be debounced.
   */
-  onScrubbing?: (scrubTime: number) => void
+  onScrubbing?: (scrubTime: number | undefined) => void
   /**
    * An id used to locate this view in end-to-end tests.
    *
@@ -79,6 +79,7 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingComplete = (value: number[]) => {
     setScrubberTime(undefined);
+    if (onScrubbing) onScrubbing(undefined)
     setIsScrubbing(false);
     debounceSeek(value[0], true);
   };
