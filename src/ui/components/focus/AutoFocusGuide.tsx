@@ -12,16 +12,14 @@ export interface AutoFocusGuideProps {
 const FOCUS_GUIDE_STYLE: ViewStyle = {
   width: '100%',
   justifyContent: 'center',
-  alignItems: 'center'
+  alignItems: 'center',
 };
 
 const TVFocusGuideView = lazy((): Promise<{ default: React.ComponentType<any> }> => {
-  if (Platform.OS === 'ios' && Platform.isTV) {
-    if (ReactNative.TVFocusGuideView) {
-      return Promise.resolve({ default: ReactNative.TVFocusGuideView });
-    } else {
-      console.warn('TVFocusGuideView not supported, a dependency on react-native-tvos is required.');
-    }
+  if (ReactNative.TVFocusGuideView) {
+    return Promise.resolve({ default: ReactNative.TVFocusGuideView });
+  } else {
+    console.warn('TVFocusGuideView not supported, a dependency on react-native-tvos is required.');
   }
   return Promise.resolve({ default: ({ children }) => <>{children}</> });
 });
@@ -31,9 +29,12 @@ const TVFocusGuideView = lazy((): Promise<{ default: React.ComponentType<any> }>
  */
 export const AutoFocusGuide = (props: React.PropsWithChildren<AutoFocusGuideProps>) => {
   const { style, children } = props;
-  return (
-    <TVFocusGuideView autoFocus style={[FOCUS_GUIDE_STYLE, style]}>
-      {children}
-    </TVFocusGuideView>
-  );
+  if (Platform.OS === 'ios' && Platform.isTV) {
+    return (
+      <TVFocusGuideView autoFocus style={[FOCUS_GUIDE_STYLE, style]}>
+        {children}
+      </TVFocusGuideView>
+    );
+  }
+  return <>{children}</>;
 };
