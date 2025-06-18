@@ -10,7 +10,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
+
+### Fixed
+
+- Fixed an issue where the UI would fade-out while scrubbing the seekbar.
 
 ### Added
 
@@ -23,7 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added an AutoFocusGuide component to be used on tvOS as a wrapper around for example a controlBar. It catches the focus while navigating the UI with the Apple TV remote.
 
-### Fixed 
+### Fixed
 
 - Fixed an issue where the UI became unreponsive for a short while after switching the presentationMode or after the stream has ended.
 
