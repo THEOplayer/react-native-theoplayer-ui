@@ -34,7 +34,7 @@ export interface SeekBarProps {
   /**
    * Optional style applied to the thumb of the slider.
    */
-  thumbStyle?: ViewStyle;
+  thumbStyle?: StyleProp<ViewStyle>;
   /**
    * An id used to locate this view in end-to-end tests.
    *
