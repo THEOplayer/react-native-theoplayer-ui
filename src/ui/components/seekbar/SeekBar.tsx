@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { type LayoutChangeEvent, StyleProp, View, ViewStyle } from 'react-native';
+import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
 import { useDuration } from '../../hooks/useDuration';
@@ -117,7 +117,7 @@ export const SeekBar = (props: SeekBarProps) => {
             minimumTrackTintColor={context.style.colors.seekBarMinimum}
             maximumTrackTintColor={context.style.colors.seekBarMaximum}
             thumbTintColor={context.style.colors.seekBarDot}
-            thumbStyle={props.thumbStyle}
+            thumbStyle={StyleSheet.flatten(props.thumbStyle)}
             renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
             trackMarks={chapterMarkerTimes}
           />
