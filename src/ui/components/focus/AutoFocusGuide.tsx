@@ -15,6 +15,9 @@ const FOCUS_GUIDE_STYLE: ViewStyle = {
   alignItems: 'center',
 };
 
+// Make sure we just warn once for all component instances, in case the TVFocusGuideView is missing.
+let hasWarnedAboutTVFocusGuideView = false;
+
 /**
  * A TV platform FocusGuide with autofocus capabilities
  */
@@ -28,7 +31,10 @@ export const AutoFocusGuide = (props: React.PropsWithChildren<AutoFocusGuideProp
         </ReactNative.TVFocusGuideView>
       );
     }
-    console.warn('TVFocusGuideView not supported, a dependency on react-native-tvos is required.');
+    if (!hasWarnedAboutTVFocusGuideView) {
+      console.warn('TVFocusGuideView not supported, a dependency on react-native-tvos is required.');
+      hasWarnedAboutTVFocusGuideView = true;
+    }
   }
   return <>{children}</>;
 };
