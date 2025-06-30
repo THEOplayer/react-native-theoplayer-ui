@@ -9,7 +9,7 @@ import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSliderTime } from './useSliderTime';
 import { TestIDs } from '../../utils/TestIDs';
 import { useChaptersTrack } from '../../hooks/useChaptersTrack';
-import { Dimensions } from '@miblanchard/react-native-slider/lib/types';
+import type { Dimensions } from '@miblanchard/react-native-slider/lib/types';
 
 export interface SeekBarProps {
   /**
