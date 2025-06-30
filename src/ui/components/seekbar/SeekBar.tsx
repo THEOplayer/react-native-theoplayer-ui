@@ -9,6 +9,7 @@ import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSliderTime } from './useSliderTime';
 import { TestIDs } from '../../utils/TestIDs';
 import { useChaptersTrack } from '../../hooks/useChaptersTrack';
+import { Dimensions } from '@miblanchard/react-native-slider/lib/types';
 
 export interface SeekBarProps {
   /**
@@ -39,6 +40,10 @@ export interface SeekBarProps {
    * Optional style applied to the thumb of the slider.
    */
   thumbStyle?: StyleProp<ViewStyle>;
+  /**
+   * [DEVIATION] Expose thumbTouchSize prop to allow custom thumb touch size.
+   */
+  thumbTouchSize?: Dimensions;
   /**
    * An id used to locate this view in end-to-end tests.
    *
@@ -125,6 +130,7 @@ export const SeekBar = (props: SeekBarProps) => {
             maximumTrackTintColor={context.style.colors.seekBarMaximum}
             thumbTintColor={context.style.colors.seekBarDot}
             thumbStyle={StyleSheet.flatten(props.thumbStyle)}
+            thumbTouchSize={props.thumbTouchSize}
             renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
             trackMarks={chapterMarkerTimes}
           />
