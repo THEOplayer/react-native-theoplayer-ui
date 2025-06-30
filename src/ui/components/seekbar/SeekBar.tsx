@@ -41,7 +41,7 @@ export interface SeekBarProps {
    */
   thumbStyle?: StyleProp<ViewStyle>;
   /**
-   * [DEVIATION] Expose thumbTouchSize prop to allow custom thumb touch size.
+   * Expose thumbTouchSize prop to allow custom thumb touch size.
    */
   thumbTouchSize?: Dimensions;
   /**
