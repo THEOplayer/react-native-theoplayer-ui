@@ -430,6 +430,7 @@ export const UiContainer = (props: UiContainerProps) => {
         <Animated.View
           style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
           onTouchStart={onUserAction_}
+          onTouchMove={onUserAction_}
           pointerEvents={isPassingPointerEvents ? 'auto' : 'box-only'}
           {...(Platform.OS === 'web' ? { onMouseMove: onUserAction_, onMouseLeave: doFadeOut_ } : {})}>
           <>

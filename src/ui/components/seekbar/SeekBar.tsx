@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { type LayoutChangeEvent, StyleProp, View, ViewStyle } from 'react-native';
+import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
 import { useDuration } from '../../hooks/useDuration';
@@ -31,6 +31,14 @@ export interface SeekBarProps {
    * Optional
    */
   chapterMarkers?: (index?: number) => React.ReactNode;
+  /** 
+  * Callback for slider value updates. The provided callback will not be debounced.
+  */
+  onScrubbing?: (scrubTime: number | undefined) => void
+  /**
+   * Optional style applied to the thumb of the slider.
+   */
+  thumbStyle?: StyleProp<ViewStyle>;
   /**
    * An id used to locate this view in end-to-end tests.
    *
@@ -45,6 +53,7 @@ export interface SeekBarProps {
 const DEBOUNCE_SEEK_DELAY = 250;
 
 export const SeekBar = (props: SeekBarProps) => {
+  const { onScrubbing } = props
   const { player } = useContext(PlayerContext);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
@@ -66,6 +75,7 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingValueChange = (value: number[]) => {
     if (isScrubbing) {
+      if (onScrubbing) onScrubbing(value[0])
       setScrubberTime(value[0]);
       debounceSeek(value[0]);
     }
@@ -73,6 +83,7 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingComplete = (value: number[]) => {
     setScrubberTime(undefined);
+    if (onScrubbing) onScrubbing(undefined)
     setIsScrubbing(false);
     debounceSeek(value[0], true);
   };
@@ -113,6 +124,7 @@ export const SeekBar = (props: SeekBarProps) => {
             minimumTrackTintColor={context.style.colors.seekBarMinimum}
             maximumTrackTintColor={context.style.colors.seekBarMaximum}
             thumbTintColor={context.style.colors.seekBarDot}
+            thumbStyle={StyleSheet.flatten(props.thumbStyle)}
             renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
             trackMarks={chapterMarkerTimes}
           />
