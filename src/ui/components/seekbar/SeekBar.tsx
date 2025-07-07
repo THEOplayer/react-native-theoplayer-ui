@@ -9,7 +9,11 @@ import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSliderTime } from './useSliderTime';
 import { TestIDs } from '../../utils/TestIDs';
 import { useChaptersTrack } from '../../hooks/useChaptersTrack';
-import type { Dimensions } from '@miblanchard/react-native-slider/lib/types';
+
+export type ThumbDimensions = {
+  height: number;
+  width: number;
+};
 
 export interface SeekBarProps {
   /**
@@ -32,10 +36,10 @@ export interface SeekBarProps {
    * Optional
    */
   chapterMarkers?: (index?: number) => React.ReactNode;
-  /** 
-  * Callback for slider value updates. The provided callback will not be debounced.
-  */
-  onScrubbing?: (scrubTime: number | undefined) => void
+  /**
+   * Callback for slider value updates. The provided callback will not be debounced.
+   */
+  onScrubbing?: (scrubTime: number | undefined) => void;
   /**
    * Optional style applied to the thumb of the slider.
    */
@@ -43,7 +47,7 @@ export interface SeekBarProps {
   /**
    * Expose thumbTouchSize prop to allow custom thumb touch size.
    */
-  thumbTouchSize?: Dimensions;
+  thumbTouchSize?: ThumbDimensions;
   /**
    * An id used to locate this view in end-to-end tests.
    *
@@ -58,7 +62,7 @@ export interface SeekBarProps {
 const DEBOUNCE_SEEK_DELAY = 250;
 
 export const SeekBar = (props: SeekBarProps) => {
-  const { onScrubbing } = props
+  const { onScrubbing } = props;
   const { player } = useContext(PlayerContext);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
@@ -80,7 +84,7 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingValueChange = (value: number[]) => {
     if (isScrubbing) {
-      if (onScrubbing) onScrubbing(value[0])
+      if (onScrubbing) onScrubbing(value[0]);
       setScrubberTime(value[0]);
       debounceSeek(value[0]);
     }
@@ -88,7 +92,7 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingComplete = (value: number[]) => {
     setScrubberTime(undefined);
-    if (onScrubbing) onScrubbing(undefined)
+    if (onScrubbing) onScrubbing(undefined);
     setIsScrubbing(false);
     debounceSeek(value[0], true);
   };
