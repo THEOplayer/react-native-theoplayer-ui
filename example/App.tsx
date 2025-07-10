@@ -23,6 +23,7 @@ import {
   SettingsMenuButton,
   SkipButton,
   Spacer,
+  SquareChapterMarker,
   TimeLabel,
   UiContainer,
 } from '@theoplayer/react-native-ui';
@@ -158,7 +159,7 @@ export default function App() {
                     <Spacer />
                   </ControlBar>
                   <ControlBar>
-                    <SeekBar chapterMarkers={() => <SquareMarker />} />
+                    <SeekBar chapterMarkers={() => <SquareChapterMarker />} />
                   </ControlBar>
                   <ControlBar>
                     <MuteButton />
