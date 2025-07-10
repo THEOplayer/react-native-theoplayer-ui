@@ -8,6 +8,7 @@ import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
 import { type Locale, defaultLocale } from '../util/Locale';
+import { useScrubberState } from '../../hooks/useScrubberState';
 
 export interface UiContainerProps {
   /**
@@ -196,6 +197,7 @@ export const UiContainer = (props: UiContainerProps) => {
   const [pip, setPip] = useState(false);
   const [adInProgress, setAdInProgress] = useState(false);
   const [adTapped, setAdTapped] = useState(false);
+  const scrubberState = useScrubberState();
   const appStateSubscription = useRef<any>(null);
   const _menus = useRef<MenuConstructor[]>([]).current;
   const { player, locale } = props;
@@ -419,8 +421,17 @@ export const UiContainer = (props: UiContainerProps) => {
     enterPip_,
   };
 
+  const contextValue = {
+    player,
+    style: props.theme,
+    ui,
+    adInProgress,
+    locale: combinedLocale,
+    scrubberState,
+  };
+
   return (
-    <PlayerContext.Provider value={{ player, style: props.theme, ui, adInProgress, locale: combinedLocale }}>
+    <PlayerContext.Provider value={contextValue}>
       {/* The View behind the UI, that is always visible.*/}
       <View style={FULLSCREEN_CENTER_STYLE} pointerEvents={'none'}>
         {props.behind}

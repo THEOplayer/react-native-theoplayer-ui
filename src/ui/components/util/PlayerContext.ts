@@ -4,6 +4,7 @@ import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import { DEFAULT_THEOPLAYER_THEME } from '../../THEOplayerTheme';
 import type { UiControls } from '../uicontroller/UiControls';
 import { type Locale, defaultLocale } from './Locale';
+import type { ScrubberState } from '../seekbar/ScrubberState';
 
 export interface UiContext {
   /**
@@ -28,6 +29,11 @@ export interface UiContext {
    * The localized strings used in the UI components.
    */
   readonly locale: Locale;
+
+  /**
+   * The current scrubber state, whether the user is dragging the seekbar's thumbnail.
+   */
+  readonly scrubberState: ScrubberState;
 }
 
 /**
@@ -39,4 +45,8 @@ export const PlayerContext = React.createContext<UiContext>({
   ui: undefined as unknown as UiControls,
   adInProgress: false,
   locale: defaultLocale,
+  scrubberState: {
+    isScrubbing: false,
+    currentTime: undefined,
+  },
 });
