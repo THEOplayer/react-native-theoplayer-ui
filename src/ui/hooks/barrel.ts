@@ -7,5 +7,6 @@ export * from './useEnded';
 export * from './useMuted';
 export * from './usePaused';
 export * from './usePresentationMode';
+export * from './useScrubberState';
 export * from './useSeekable';
 export * from './useThumbnailTrack';
