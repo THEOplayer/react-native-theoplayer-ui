@@ -39,7 +39,7 @@ export interface SeekBarProps {
   /**
    * Callback for slider value updates. The provided callback will not be debounced.
    */
-  onScrubbing?: (scrubTime: number | undefined) => void;
+  onScrubbing?: (scrubberTime: number | undefined) => void;
   /**
    * Optional style applied to the thumb of the slider.
    */
@@ -63,9 +63,8 @@ const DEBOUNCE_SEEK_DELAY = 250;
 
 export const SeekBar = (props: SeekBarProps) => {
   const { onScrubbing } = props;
-  const { player } = useContext(PlayerContext);
-  const [isScrubbing, setIsScrubbing] = useState(false);
-  const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
+  const { player, scrubberState } = useContext(PlayerContext);
+  const { isScrubbing, currentTime: scrubberTime } = scrubberState;
   const [width, setWidth] = useState(0);
   const duration = useDuration();
   const seekable = useSeekable();
@@ -78,22 +77,22 @@ export const SeekBar = (props: SeekBarProps) => {
   }, DEBOUNCE_SEEK_DELAY);
 
   const onSlidingStart = (value: number[]) => {
-    setIsScrubbing(true);
+    scrubberState.isScrubbing = true;
     debounceSeek(value[0]);
   };
 
   const onSlidingValueChange = (value: number[]) => {
     if (isScrubbing) {
       if (onScrubbing) onScrubbing(value[0]);
-      setScrubberTime(value[0]);
+      scrubberState.currentTime = value[0];
       debounceSeek(value[0]);
     }
   };
 
   const onSlidingComplete = (value: number[]) => {
-    setScrubberTime(undefined);
+    scrubberState.currentTime = undefined;
     if (onScrubbing) onScrubbing(undefined);
-    setIsScrubbing(false);
+    scrubberState.isScrubbing = false;
     debounceSeek(value[0], true);
   };
 
