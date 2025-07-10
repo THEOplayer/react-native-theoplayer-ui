@@ -1,7 +1,7 @@
 import type { StyleProp, TextStyle } from 'react-native';
-import { Text } from 'react-native'
-import React from 'react';
-import { PlayerContext, UiContext } from '../util/PlayerContext';
+import { Text } from 'react-native';
+import React, { useContext } from 'react';
+import { PlayerContext } from '../util/PlayerContext';
 import { useChaptersTrack } from '../../hooks/useChaptersTrack';
 import { useCurrentTime } from '../../hooks/useCurrentTime';
 
@@ -10,42 +10,21 @@ export interface ChapterLabelProps {
    * The style overrides.
    */
   style?: StyleProp<TextStyle>;
-  /**
-   * The playhead position to which the user might seek. Use this property to pass slider values before the actual (debounced) seek happens.
-   */
-  scrubTime?: number
-
-}
-
-export interface ChapterLabelState {
-  currentTime: number;
 }
 
 /**
- * The default style for the time label.
+ * The default chapter label component for the `react-native-theoplayer` UI.
  */
-export const DEFAULT_CHAPTER_LABEL_STYLE: TextStyle = {
-  marginLeft: 10,
-  marginRight: 10,
-  height: 20,
-  alignSelf: 'center',
-};
-
-/**
- * The default time label component for the `react-native-theoplayer` UI.
- */
-
-
 export const ChapterLabel = (props: ChapterLabelProps) => {
-    const currentTime = useCurrentTime();
-    const chapters = useChaptersTrack();
-    const { style, scrubTime } = props;
-    const expectedSeekTarget = scrubTime || currentTime
-    const currentChapter = chapters?.cues?.find(cue => (cue.startTime <= expectedSeekTarget && cue.endTime > expectedSeekTarget))
-    const label = currentChapter?.content
-    return (
-        <PlayerContext.Consumer>
-            {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>}
-        </PlayerContext.Consumer>
-        );
-}
+  const { scrubberState, style: uiStyle } = useContext(PlayerContext);
+  const currentTime = useCurrentTime();
+  const chapters = useChaptersTrack();
+  const { style } = props;
+  const expectedSeekTarget = scrubberState.currentTime || currentTime;
+  const currentChapter = chapters?.cues?.find((cue) => cue.startTime <= expectedSeekTarget && cue.endTime > expectedSeekTarget);
+  const label = currentChapter?.content;
+  if (!label) {
+    return <></>;
+  }
+  return <Text style={[uiStyle.text, { color: uiStyle.colors.text }, style]}>{label}</Text>;
+};
