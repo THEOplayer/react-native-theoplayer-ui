@@ -33,7 +33,7 @@ export interface SeekBarProps {
    */
   sliderMaximumTrackStyle?: ViewStyle;
   /**
-   * Optional
+   * Optional component for rendering chapter markers.
    */
   chapterMarkers?: (index?: number) => React.ReactNode;
   /**
