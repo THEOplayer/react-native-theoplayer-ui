@@ -59,7 +59,6 @@ const SquareMarker = () => {
  */
 export default function App() {
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
-  const [scrubTime, setScrubTime] = useState<number | undefined>(undefined)
   const onPlayerReady = (player: THEOplayer) => {
     setPlayer(player);
     // optional debug logs
@@ -167,11 +166,11 @@ export default function App() {
                 <AutoFocusGuide>
                   <ControlBar>
                     <Spacer />
-                    <ChapterLabel scrubTime={scrubTime}/>
+                    <ChapterLabel />
                     <Spacer />
                   </ControlBar>
                   <ControlBar>
-                    <SeekBar chapterMarkers={() => <SquareMarker />} onScrubbing={setScrubTime} />
+                    <SeekBar chapterMarkers={() => <SquareMarker />} />
                   </ControlBar>
                   <ControlBar>
                     <MuteButton />
