@@ -41,18 +41,6 @@ const playerConfig: PlayerConfiguration = {
   mutedAutoplay: 'all',
 };
 
-const SquareMarker = () => {
-  return (
-    <View
-      style={{
-        width: 5,
-        height: 4,
-        backgroundColor: 'yellow',
-      }}
-    />
-  );
-};
-
 /**
  * The example app demonstrates the use of the THEOplayerView with a custom UI using the provided UI components.
  * If you don't want to create a custom UI, you can just use the THEOplayerDefaultUi component instead.
