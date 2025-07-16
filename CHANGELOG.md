@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-### Added
+### Fixed
 
 - Prevent a fade out of the UI while the skip buttons are being used. 
 
