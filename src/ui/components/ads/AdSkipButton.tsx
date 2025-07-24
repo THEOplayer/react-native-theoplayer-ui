@@ -112,7 +112,12 @@ export class AdSkipButton extends PureComponent<AdSkipButtonProps, AdSkipButtonS
       <PlayerContext.Consumer>
         {(context: UiContext) => (
           <View style={[{ flexDirection: 'row', backgroundColor: context.style.colors.adSkipBackground, padding: 5 }, style]}>
-            <TouchableOpacity style={[{ flexDirection: 'row' }, style]} onPress={this.onPress}>
+            <TouchableOpacity
+              style={[{ flexDirection: 'row' }, style]}
+              onPress={() => {
+                this.onPress();
+                context.ui.onUserAction_();
+              }}>
               <Text style={[context.style.text, { color: context.style.colors.text }, textStyle]}>{context.locale.adSkip}</Text>
               <ActionButton touchable={false} svg={skipSvg} />
             </TouchableOpacity>
