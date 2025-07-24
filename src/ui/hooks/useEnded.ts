@@ -24,6 +24,6 @@ export const useEnded = () => {
   return useSyncExternalStore(
     subscribe,
     // TODO: replace this with `player.ended` once added to the SDK.
-    () => (player ? player.duration > 0 && player.currentTime === player.duration : true),
+    () => (player ? player.duration > 0 && player.currentTime >= player.duration : true),
   );
 };
