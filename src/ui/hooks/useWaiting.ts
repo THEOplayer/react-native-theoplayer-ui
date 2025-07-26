@@ -2,9 +2,6 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { PlayerContext } from '@theoplayer/react-native-ui';
 import { PlayerEventType, PlayerEventMap } from 'react-native-theoplayer';
 
-const BUFFERING_EVENTS = [PlayerEventType.WAITING, PlayerEventType.PLAYING] satisfies ReadonlyArray<
-  keyof PlayerEventMap
->;
 
 /**
  * Returns whether the player is waiting, automatically updating whenever it changes.
@@ -24,9 +21,9 @@ export const useWaiting = () => {
   }, [player]);
   useEffect(() => {
     if (!player) return;
-    BUFFERING_EVENTS.forEach((event) => player.addEventListener(event, onBufferingEvent));
+    player.addEventListener([PlayerEventType.WAITING, PlayerEventType.PLAYING], onBufferingEvent);
     return () => {
-      BUFFERING_EVENTS.forEach((event) => player.removeEventListener(event, onBufferingEvent));
+      player.removeEventListener([PlayerEventType.WAITING, PlayerEventType.PLAYING], onBufferingEvent);
     };
   }, [player, onBufferingEvent]);
 
