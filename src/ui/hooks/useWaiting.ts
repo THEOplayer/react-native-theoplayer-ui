@@ -14,18 +14,18 @@ import { PlayerEventType, PlayerEventMap } from 'react-native-theoplayer';
 export const useWaiting = () => {
   const { player } = useContext(PlayerContext);
   const [waiting, setWaiting] = useState(false);
-  const onBufferingEvent = useCallback((event: PlayerEventMap[PlayerEventType.PLAYING] | PlayerEventMap[PlayerEventType.WAITING]) => {
-    if (!player) return
-    if (event.type === PlayerEventType.WAITING) setWaiting(true)
-    if (event.type === PlayerEventType.PLAYING) setWaiting(false);
-  }, [player]);
   useEffect(() => {
     if (!player) return;
+    const onBufferingEvent = (event: PlayerEventMap[PlayerEventType.PLAYING] | PlayerEventMap[PlayerEventType.WAITING]) => {
+      if (!player) return
+      if (event.type === PlayerEventType.WAITING) setWaiting(true)
+      if (event.type === PlayerEventType.PLAYING) setWaiting(false);
+    };
     player.addEventListener([PlayerEventType.WAITING, PlayerEventType.PLAYING], onBufferingEvent);
     return () => {
       player.removeEventListener([PlayerEventType.WAITING, PlayerEventType.PLAYING], onBufferingEvent);
     };
-  }, [player, onBufferingEvent]);
+  }, [player]);
 
   return waiting;
 };
