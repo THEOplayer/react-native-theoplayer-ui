@@ -37,7 +37,7 @@ export const useWaiting = (debounceMs: number = WAITING_DEFAULT_DELAY_MS) => {
       }, debounceMs);
     }
     return () => clearTimeout(timer);
-  });
+  }, [debounceMs]);
 
   useEffect(() => {
     if (!player) return;
@@ -69,7 +69,7 @@ export const useWaiting = (debounceMs: number = WAITING_DEFAULT_DELAY_MS) => {
     return () => {
       player.removeEventListener(WAITING_CHANGE_EVENTS, onUpdateWaiting);
     };
-  }, [player]);
+  }, [player, hasError]);
 
   return showing && waiting;
 };
