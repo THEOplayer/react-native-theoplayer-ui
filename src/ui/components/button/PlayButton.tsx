@@ -8,14 +8,8 @@ import { usePaused } from '../../hooks/usePaused';
 import { useEnded } from '../../hooks/useEnded';
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import { TestIDs } from '../../utils/TestIDs';
-import { useWaiting } from '../../hooks/useWaiting';
-import { DelayedActivityIndicator } from '../activityindicator/DelayedActivityIndicator';
 
 export interface PlayButtonProps extends ButtonBaseProps {
-  /**
-   * Whether the play/pause icon should be replaced with the DelayedActivityIndicatorComponent when the player is stalling.
-   */
-  showSpinner?: boolean;
   /**
    * The icon components used in the button.
    */
@@ -26,13 +20,12 @@ export interface PlayButtonProps extends ButtonBaseProps {
  * The default play/pause button for the `react-native-theoplayer` UI.
  */
 export function PlayButton(props: PlayButtonProps) {
-  const { icon, style, showSpinner } = props;
+  const { icon, style } = props;
   const playSvg: ReactNode = icon?.play ?? <PlaySvg />;
   const pauseSvg: ReactNode = icon?.pause ?? <PauseSvg />;
   const replaySvg: ReactNode = icon?.replay ?? <ReplaySvg />;
   const { player } = useContext(PlayerContext);
   const paused = usePaused();
-  const waiting = useWaiting()
   const ended = useEnded();
 
   const togglePlayPause = useCallback(() => {
@@ -43,11 +36,7 @@ export function PlayButton(props: PlayButtonProps) {
     }
   }, [player]);
 
-  const shouldShowSpinner = () => {
-    return showSpinner && !player.paused && waiting
-  }
-
-  return (shouldShowSpinner() ? <DelayedActivityIndicator/> :
+  return (
     <ActionButton
       style={style}
       testID={props.testID ?? TestIDs.PLAY_BUTTON}
