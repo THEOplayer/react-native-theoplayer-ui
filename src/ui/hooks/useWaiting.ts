@@ -1,7 +1,17 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { PlayerContext } from '@theoplayer/react-native-ui';
-import { PlayerEventType, PlayerEventMap } from 'react-native-theoplayer';
+import { PlayerEventType, PlayerEventMap, ReadyStateChangeEvent } from 'react-native-theoplayer';
+import type { Event } from 'react-native-theoplayer/src/api/event/Event';
 
+const WAITING_CHANGE_EVENTS = [
+  PlayerEventType.READYSTATE_CHANGE,
+  PlayerEventType.ERROR,
+  PlayerEventType.PLAYING,
+  PlayerEventType.SOURCE_CHANGE,
+  PlayerEventType.LOAD_START,
+] satisfies ReadonlyArray<keyof PlayerEventMap>;
+
+type WaitingChangeEventType = (typeof WAITING_CHANGE_EVENTS)[number];
 
 /**
  * Returns whether the player is waiting, automatically updating whenever it changes.
@@ -14,16 +24,37 @@ import { PlayerEventType, PlayerEventMap } from 'react-native-theoplayer';
 export const useWaiting = () => {
   const { player } = useContext(PlayerContext);
   const [waiting, setWaiting] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
   useEffect(() => {
     if (!player) return;
-    const onBufferingEvent = (event: PlayerEventMap[PlayerEventType.PLAYING] | PlayerEventMap[PlayerEventType.WAITING]) => {
-      if (!player) return
-      if (event.type === PlayerEventType.WAITING) setWaiting(true)
-      if (event.type === PlayerEventType.PLAYING) setWaiting(false);
+    const onUpdateWaiting = (event: Event<WaitingChangeEventType>) => {
+      if (!player) return;
+      switch (event.type) {
+        case PlayerEventType.READYSTATE_CHANGE:
+          setWaiting((event as ReadyStateChangeEvent).readyState < 3 && !hasError && !player.paused);
+          break;
+        case PlayerEventType.ERROR:
+          setHasError(true);
+          setWaiting(false);
+          break;
+        case PlayerEventType.PLAYING:
+          setWaiting(false);
+          break;
+        case PlayerEventType.SOURCE_CHANGE:
+          setHasError(false);
+          setWaiting(false);
+          break;
+        case PlayerEventType.LOAD_START:
+          setHasError(false);
+          setWaiting(!player.paused);
+          break;
+      }
     };
-    player.addEventListener([PlayerEventType.WAITING, PlayerEventType.PLAYING], onBufferingEvent);
+
+    player.addEventListener(WAITING_CHANGE_EVENTS, onUpdateWaiting);
     return () => {
-      player.removeEventListener([PlayerEventType.WAITING, PlayerEventType.PLAYING], onBufferingEvent);
+      player.removeEventListener(WAITING_CHANGE_EVENTS, onUpdateWaiting);
     };
   }, [player]);
 
