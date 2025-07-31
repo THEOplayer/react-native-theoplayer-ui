@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
-import { PlayerContext } from '@theoplayer/react-native-ui';
 import { PlayerEventType, PlayerEventMap, ReadyStateChangeEvent } from 'react-native-theoplayer';
 import type { Event } from 'react-native-theoplayer/src/api/event/Event';
+import { PlayerContext } from '../barrel';
 
 const WAITING_CHANGE_EVENTS = [
   PlayerEventType.READYSTATE_CHANGE,
@@ -13,6 +13,8 @@ const WAITING_CHANGE_EVENTS = [
 
 type WaitingChangeEventType = (typeof WAITING_CHANGE_EVENTS)[number];
 
+export const WAITING_DEFAULT_DELAY_MS = 200;
+
 /**
  * Returns whether the player is waiting, automatically updating whenever it changes.
  *
@@ -21,10 +23,21 @@ type WaitingChangeEventType = (typeof WAITING_CHANGE_EVENTS)[number];
  *
  * @group Hooks
  */
-export const useWaiting = () => {
-  const { player } = useContext(PlayerContext);
+export const useWaiting = (debounceMs: number = WAITING_DEFAULT_DELAY_MS) => {
+  const [showing, setShowing] = useState(debounceMs === undefined);
   const [waiting, setWaiting] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const { player } = useContext(PlayerContext);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout | undefined = undefined;
+    if (debounceMs !== undefined) {
+      timer = setTimeout(() => {
+        setShowing(true);
+      }, debounceMs);
+    }
+    return () => clearTimeout(timer);
+  });
 
   useEffect(() => {
     if (!player) return;
@@ -58,5 +71,5 @@ export const useWaiting = () => {
     };
   }, [player]);
 
-  return waiting;
+  return showing && waiting;
 };
