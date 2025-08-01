@@ -4,7 +4,7 @@ import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
 import { useDuration } from '../../hooks/useDuration';
 import { useSeekable } from '../../hooks/useSeekable';
-import { useDebounce } from '../../hooks/useDebounce';
+import { useDebouncedCallback } from '../../hooks/useDebouncedCallback';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSliderTime } from './useSliderTime';
 import { TestIDs } from '../../utils/TestIDs';
@@ -81,7 +81,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const chapters = useChaptersTrack();
   const chapterMarkerTimes: number[] = chapters?.cues?.map((cue) => cue.endTime).slice(0, -1) ?? [];
   // Do not continuously seek while dragging the slider
-  const debounceSeek = useDebounce((value: number) => {
+  const debounceSeek = useDebouncedCallback((value: number) => {
     player.currentTime = value;
   }, DEBOUNCE_SEEK_DELAY);
 
