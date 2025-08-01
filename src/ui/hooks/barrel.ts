@@ -1,7 +1,9 @@
 export * from './useAirplay';
+export * from './useChaptersTrack';
 export * from './useChromecast';
 export * from './useCurrentTime';
-export * from './useDebouncedCallback';
+export { useDebouncedCallback as useDebounce } from './useDebouncedCallback';
+export * from './useDebouncedValue';
 export * from './useDuration';
 export * from './useEnded';
 export * from './useMuted';
@@ -9,3 +11,4 @@ export * from './usePaused';
 export * from './usePresentationMode';
 export * from './useSeekable';
 export * from './useThumbnailTrack';
+export * from './useWaiting';

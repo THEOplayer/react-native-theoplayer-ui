@@ -1,7 +1,6 @@
 import React from 'react';
 import { PlayButton, PlayButtonProps } from './PlayButton';
-import { useWaiting } from '../../hooks/useWaiting';
-import { useDebounce } from '../../hooks/useDebounce';
+import { useDebouncedValue, useWaiting } from '../../hooks/barrel';
 
 const DEFAULT_DELAY_MS = 200;
 
@@ -20,6 +19,6 @@ export interface ConditionalPlayButtonProps extends PlayButtonProps {
  */
 export function ConditionalPlayButton(props: ConditionalPlayButtonProps) {
   const waiting = useWaiting();
-  const hiding = useDebounce(waiting, props.delay ?? DEFAULT_DELAY_MS);
+  const hiding = useDebouncedValue(waiting, props.delay ?? DEFAULT_DELAY_MS);
   return hiding ? <></> : <PlayButton {...props} />;
 }

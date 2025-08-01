@@ -2,13 +2,10 @@ import React, { useContext, useState } from 'react';
 import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
-import { useDuration } from '../../hooks/useDuration';
-import { useSeekable } from '../../hooks/useSeekable';
-import { useDebouncedCallback } from '../../hooks/useDebouncedCallback';
+import { useChaptersTrack, useDuration, useSeekable, useDebounce } from '../../hooks/barrel';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSliderTime } from './useSliderTime';
 import { TestIDs } from '../../utils/TestIDs';
-import { useChaptersTrack } from '../../hooks/useChaptersTrack';
 
 export type ThumbDimensions = {
   height: number;
@@ -81,7 +78,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const chapters = useChaptersTrack();
   const chapterMarkerTimes: number[] = chapters?.cues?.map((cue) => cue.endTime).slice(0, -1) ?? [];
   // Do not continuously seek while dragging the slider
-  const debounceSeek = useDebouncedCallback((value: number) => {
+  const debounceSeek = useDebounce((value: number) => {
     player.currentTime = value;
   }, DEBOUNCE_SEEK_DELAY);
 
