@@ -31,13 +31,13 @@ export const useWaiting = (debounceMs: number = WAITING_DEFAULT_DELAY_MS) => {
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined = undefined;
-    if (debounceMs !== undefined) {
+    if (waiting) {
       timer = setTimeout(() => {
         setShowing(true);
       }, debounceMs);
     }
     return () => clearTimeout(timer);
-  }, [debounceMs]);
+  }, [debounceMs, waiting]);
 
   useEffect(() => {
     if (!player) return;
