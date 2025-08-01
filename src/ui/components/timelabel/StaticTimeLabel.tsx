@@ -54,7 +54,7 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
 }
 
 function isValidDuration(duration: number | undefined): boolean {
-  return duration !== undefined && !isNaN(duration);
+  return duration !== undefined && !isNaN(duration) && duration > 0;
 }
 
 function isLiveDuration(duration: number | undefined): boolean {
