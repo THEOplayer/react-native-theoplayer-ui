@@ -2,11 +2,22 @@ import React, { useContext } from 'react';
 import { ActivityIndicator, ActivityIndicatorProps, type StyleProp, View, type ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import { FULLSCREEN_CENTER_STYLE } from '../uicontroller/UiContainer';
-import { useWaiting, WAITING_DEFAULT_DELAY_MS } from '../../hooks/useWaiting';
+import { useWaiting } from '../../hooks/useWaiting';
+import { useDebounce } from '../../hooks/useDebounce';
+
+const DEFAULT_DELAY_MS = 200;
 
 export interface DelayedActivityIndicatorProps extends ActivityIndicatorProps {
+  /**
+   * The style override for the container.
+   */
   containerStyle?: StyleProp<ViewStyle>;
 
+  /**
+   * The additional delay before the ActivityIndicator is shown, in milliseconds.
+   *
+   * @default 200 milliseconds.
+   */
   delay?: number;
 }
 
@@ -15,10 +26,11 @@ export interface DelayedActivityIndicatorProps extends ActivityIndicatorProps {
  * readystate changes.
  */
 export const CenteredDelayedActivityIndicator = (props: DelayedActivityIndicatorProps) => {
-  const waiting = useWaiting(props.delay ?? WAITING_DEFAULT_DELAY_MS);
+  const waiting = useWaiting();
   const context = useContext(PlayerContext);
+  const showing = useDebounce(waiting, props.delay ?? DEFAULT_DELAY_MS);
 
-  return waiting ? (
+  return showing ? (
     <View style={[FULLSCREEN_CENTER_STYLE, props.containerStyle]}>
       <ActivityIndicator color={context.style.colors.icon} {...props} />
     </View>

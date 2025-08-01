@@ -1,12 +1,25 @@
 import React from 'react';
 import { PlayButton, PlayButtonProps } from './PlayButton';
 import { useWaiting } from '../../hooks/useWaiting';
+import { useDebounce } from '../../hooks/useDebounce';
+
+const DEFAULT_DELAY_MS = 200;
+
+export interface ConditionalPlayButtonProps extends PlayButtonProps {
+  /**
+   * The additional delay before the button is hidden when the player is waiting, in milliseconds.
+   *
+   * @default 200 milliseconds.
+   */
+  delay?: number;
+}
 
 /**
  * A conditional play/pause button for the `react-native-theoplayer` UI, which hides itself while the player is
  * not ready.
  */
-export function ConditionalPlayButton(props: PlayButtonProps) {
+export function ConditionalPlayButton(props: ConditionalPlayButtonProps) {
   const waiting = useWaiting();
-  return waiting ? <></> : <PlayButton {...props} />;
+  const hiding = useDebounce(waiting, props.delay ?? DEFAULT_DELAY_MS);
+  return hiding ? <></> : <PlayButton {...props} />;
 }
