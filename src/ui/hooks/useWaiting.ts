@@ -13,8 +13,6 @@ const WAITING_CHANGE_EVENTS = [
 
 type WaitingChangeEventType = (typeof WAITING_CHANGE_EVENTS)[number];
 
-export const WAITING_DEFAULT_DELAY_MS = 200;
-
 /**
  * Returns whether the player is waiting, automatically updating whenever it changes.
  *
@@ -23,21 +21,10 @@ export const WAITING_DEFAULT_DELAY_MS = 200;
  *
  * @group Hooks
  */
-export const useWaiting = (debounceMs: number = WAITING_DEFAULT_DELAY_MS) => {
-  const [showing, setShowing] = useState(debounceMs === undefined);
+export const useWaiting = () => {
   const [waiting, setWaiting] = useState(false);
   const [hasError, setHasError] = useState(false);
   const { player } = useContext(PlayerContext);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout | undefined = undefined;
-    if (waiting) {
-      timer = setTimeout(() => {
-        setShowing(true);
-      }, debounceMs);
-    }
-    return () => clearTimeout(timer);
-  }, [debounceMs, waiting]);
 
   useEffect(() => {
     if (!player) return;
@@ -71,5 +58,5 @@ export const useWaiting = (debounceMs: number = WAITING_DEFAULT_DELAY_MS) => {
     };
   }, [player, hasError]);
 
-  return showing && waiting;
+  return waiting;
 };
