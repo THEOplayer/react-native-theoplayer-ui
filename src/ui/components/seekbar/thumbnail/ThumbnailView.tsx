@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import type { ImageErrorEventData, NativeSyntheticEvent, StyleProp, ViewStyle } from 'react-native';
+import { type ImageErrorEventData, type NativeSyntheticEvent, Platform, type StyleProp, type ViewStyle } from 'react-native';
 import { Image, View } from 'react-native';
 import type { TextTrackCue } from 'react-native-theoplayer';
 import { isThumbnailTrack, TextTrack } from 'react-native-theoplayer';
@@ -120,6 +120,27 @@ function getThumbnailImageForCue(thumbnailTrack: TextTrack, cue: TextTrackCue): 
   }
 }
 
+/**
+ * Calculate the dimensions of the thumbnail tile map based on the W3C Media Fragments URIs for all cues.
+ *
+ * @param thumbnailTrack
+ */
+function maxThumbnailSize(thumbnailTrack: TextTrack) {
+  let maxWidth = 0,
+    maxHeight = 0;
+  thumbnailTrack.cues?.forEach((cue) => {
+    if (cue && cue.content) {
+      const spriteMatch = cue.content.match(SPRITE_REGEX);
+      if (spriteMatch) {
+        const [, , tileX, tileY, tileWidth, tileHeight] = spriteMatch;
+        maxWidth = Math.max(maxWidth, +tileX + +tileWidth);
+        maxHeight = Math.max(maxHeight, +tileY + +tileHeight);
+      }
+    }
+  });
+  return { maxTileWidth: maxWidth, maxTileHeight: maxHeight };
+}
+
 export const ThumbnailView = (props: ThumbnailViewProps) => {
   const [mounted, setMounted] = useState<boolean>(false);
   const [imageWidth, setImageWidth] = useState<number>(props.size);
@@ -141,9 +162,20 @@ export const ThumbnailView = (props: ThumbnailViewProps) => {
     const { size } = props;
     const { tileWidth, tileHeight } = thumbnail;
     if (tileWidth && tileHeight) {
+      /**
+       * On Android, Fresco can scale the React Native `<Image>` component internally if it is considered to be
+       * 'huge' (larger than 2048px width). There is no way to know the original size without using another
+       * image package.
+       * This work-around calculates the maximum tile size based on all cue W3C Media Fragments URIs.
+       *
+       * {@link https://github.com/facebook/react-native/issues/22145}
+       */
+      const { maxTileWidth, maxTileHeight } =
+        Platform.OS === 'android' ? maxThumbnailSize(props.thumbnailTrack) : { maxTileWidth: 0, maxTileHeight: 0 };
+
       Image.getSize(thumbnail.url, (width: number, height: number) => {
-        setImageWidth(width);
-        setImageHeight(height);
+        setImageWidth(Math.max(width, maxTileWidth));
+        setImageHeight(Math.max(height, maxTileHeight));
         setRenderWidth(size);
         setRenderHeight((tileHeight * size) / tileWidth);
       });

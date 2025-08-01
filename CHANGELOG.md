@@ -14,8 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Prevent a fade out of the UI while the skip buttons are being used. 
+- Prevent a fade out of the UI while the skip buttons are being used.
 - Fixed the useEnded hook to take into account a currentTime that can become slightly larger than the expected stream duration.
+- Fixed an issue on Android where a thumbnail preview would contain multiple tiles when the tile image was larger than 2048px.
 
 ## [0.14.0] (2025-07-04)
 
