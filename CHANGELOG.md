@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Prevent a fade out of the UI while the skip buttons are being used.
 - Fixed the useEnded hook to take into account a currentTime that can become slightly larger than the expected stream duration.
+- Fixed an issue where `<TimeLabel>` would briefly show an invalid duration when playing a live stream.
 
 ### Added
 
