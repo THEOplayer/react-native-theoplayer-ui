@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Prevent a fade out of the UI while the skip buttons are being used.
 - Fixed the useEnded hook to take into account a currentTime that can become slightly larger than the expected stream duration.
 - Fixed an issue on Android where a thumbnail preview would contain multiple tiles when the tile image was larger than 2048px.
+- Fixed an issue where `<TimeLabel>` would briefly show an invalid duration when playing a live stream.
+
+### Added
+
+- Added a `renderAboveThumbComponent` property to the `SeekBar` component that allows customizing an optional component that is rendered above the `SeekBar`'s thumbnail. The `ThumbnailView` remains the default component.
 
 ## [0.14.0] (2025-07-04)
 
