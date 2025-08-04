@@ -15,7 +15,7 @@ export const useAirplay = () => {
   const [castState, setCastState] = useState(player.cast.airplay?.state ?? CastState.unavailable);
   useEffect(() => {
     const onCastStateChangeEvent = (event: CastEvent) => {
-      if (event.subType === CastEventType.CHROMECAST_STATE_CHANGE) {
+      if (event.subType === CastEventType.AIRPLAY_STATE_CHANGE) {
         setCastState(event.state);
       }
     };
