@@ -4,19 +4,19 @@ import { PlayerEventType, type PlayerEventMap, TextTrack } from 'react-native-th
 
 const TEXT_TRACK_CHANGE_EVENTS = [PlayerEventType.LOADED_DATA, PlayerEventType.TEXT_TRACK_LIST] satisfies ReadonlyArray<keyof PlayerEventMap>;
 
-  /**
-   * Retain first chapters track encountered in the textTracks list.
-   */
-  function filterChaptersTrack(textTracks: TextTrack[] | undefined): TextTrack | undefined {
-    return textTracks && textTracks.find(isChaptersTrack);
-  }
-  
-  /**
-   * Query whether a track is a valid chapters track.
-   */
-  function isChaptersTrack(textTrack: TextTrack): boolean {
-    return textTrack.kind === 'chapters';
-  }
+/**
+ * Retain first chapters track encountered in the textTracks list.
+ */
+function filterChaptersTrack(textTracks: TextTrack[] | undefined): TextTrack | undefined {
+  return textTracks && textTracks.find(isChaptersTrack);
+}
+
+/**
+ * Query whether a track is a valid chapters track.
+ */
+function isChaptersTrack(textTrack: TextTrack): boolean {
+  return textTrack.kind === 'chapters';
+}
 
 /**
  * Returns a chapters track, if available.

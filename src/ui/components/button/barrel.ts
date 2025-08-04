@@ -2,6 +2,7 @@ export * from './actionbutton/ActionButton';
 export * from './svg/barrel';
 export * from './AirplayButton';
 export * from './ChromecastButton';
+export * from './ConditionalPlayButton';
 export * from './FullscreenButton';
 export * from './MuteButton';
 export * from './PipButton';

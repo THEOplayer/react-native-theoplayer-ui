@@ -44,7 +44,7 @@ export const SubMenuWithButton = (props: SubMenuButtonProps) => {
     <PlayerContext.Consumer>
       {(context: UiContext) => (
         <View style={[{ height: 44, flexDirection: 'row', width: '100%', justifyContent: 'center' }, style]}>
-          <Text style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text, width: '30%' }, textStyle]}>{label}</Text>
+          <Text style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text, width: '50%' }, textStyle]}>{label}</Text>
           <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'flex-end' }}>
             <TouchableOpacity style={{ flexDirection: 'row' }} onPress={onTouch}>
               <Text style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text }, textStyle]}>{preview}</Text>

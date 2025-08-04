@@ -2,13 +2,10 @@ import React, { useContext, useState } from 'react';
 import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
-import { useDuration } from '../../hooks/useDuration';
-import { useSeekable } from '../../hooks/useSeekable';
-import { useDebounce } from '../../hooks/useDebounce';
+import { useChaptersTrack, useDuration, useSeekable, useDebounce } from '../../hooks/barrel';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSliderTime } from './useSliderTime';
 import { TestIDs } from '../../utils/TestIDs';
-import { useChaptersTrack } from '../../hooks/useChaptersTrack';
 
 export type ThumbDimensions = {
   height: number;
