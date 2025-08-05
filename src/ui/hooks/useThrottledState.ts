@@ -11,23 +11,23 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * @param intervalMs The minimum interval (in milliseconds) between state updates.
  * @returns A tuple of `[state, setValue]`, just like `useState`.
  */
-export function useThrottledState<T>(initialValue: T, intervalMs: number): [T, (value: T) => void] {
+export function useThrottledState<T>(initialValue: T, intervalMs: number): [T, (value: T, forced: boolean | undefined) => void] {
   const [state, setState] = useState<T>(initialValue);
   const pendingValue = useRef<T>(initialValue);
   const lastExecuted = useRef<number>(Date.now());
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const setThrottled = useCallback(
-    (value: T) => {
+    (value: T, forced: boolean | undefined = false) => {
       pendingValue.current = value;
       const now = Date.now();
       const timeSinceLast = now - lastExecuted.current;
 
-      if (timeSinceLast >= intervalMs) {
+      clearTimeout(timeoutRef.current);
+      if (forced || timeSinceLast >= intervalMs) {
         setState(value);
         lastExecuted.current = now;
       } else {
-        clearTimeout(timeoutRef.current);
         timeoutRef.current = setTimeout(() => {
           setState(pendingValue.current);
           lastExecuted.current = Date.now();
