@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { PlayerEventType, PlayerEventMap, ReadyStateChangeEvent } from 'react-native-theoplayer';
-import type { Event } from 'react-native-theoplayer/src/api/event/Event';
+import { PlayerEventType, PlayerEventMap, ReadyStateChangeEvent, type Event } from 'react-native-theoplayer';
 import { PlayerContext } from '../barrel';
 
 const WAITING_CHANGE_EVENTS = [

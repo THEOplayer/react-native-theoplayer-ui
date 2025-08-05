@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { PlayerContext, useThrottledState } from '@theoplayer/react-native-ui';
-import { type PlayerEventMap, PlayerEventType } from 'react-native-theoplayer';
+import { type PlayerEventMap, PlayerEventType, type Event } from 'react-native-theoplayer';
 
 const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKING, PlayerEventType.SEEKED] satisfies ReadonlyArray<
   keyof PlayerEventMap
