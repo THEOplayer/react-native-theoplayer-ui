@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { PlayerContext, useThrottledState } from '@theoplayer/react-native-ui';
 import { PlayerEventType, type TimeRange, ProgressEvent } from 'react-native-theoplayer';
 
-const THROTTLED_INTERVAL = 1000;
+const THROTTLED_INTERVAL = 250;
 
 /**
  * Returns {@link react-native-theoplayer!THEOplayer.seekable | the player's seekable range}, automatically updating whenever it changes.
