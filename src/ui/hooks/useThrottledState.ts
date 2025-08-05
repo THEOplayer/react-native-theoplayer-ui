@@ -13,7 +13,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  */
 export function useThrottledState<T>(initialValue: T, intervalMs: number): [T, (value: T, forced: boolean | undefined) => void] {
   const [state, setState] = useState<T>(initialValue);
-  const lastExecuted = useRef<number>(Date.now());
+  const lastExecuted = useRef<number>(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const setThrottled = useCallback(
