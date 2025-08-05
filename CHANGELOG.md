@@ -10,16 +10,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.15.0] (2025-08-04)
 
 ### Fixed
 
 - Prevent a fade out of the UI while the skip buttons are being used.
 - Fixed an issue where the playback rate setting label text didn't fit in its `Text` component.
-- Prevent a fade out of the UI while the skip buttons are being used.
-- Fixed the useEnded hook to take into account a currentTime that can become slightly larger than the expected stream duration.
+- Fixed the `useEnded` hook to take into account a `currentTime` that can become slightly larger than the expected stream duration.
 - Fixed an issue on Android where a thumbnail preview would contain multiple tiles when the tile image was larger than 2048px.
 - Fixed an issue where `<TimeLabel>` would briefly show an invalid duration when playing a live stream.
+- Fixed an issue on iOS where both Chromecast and AirPlay buttons were shown as "connected" when connecting to a Chromecast receiver.
 
 ### Added
 
