@@ -11,7 +11,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * @param intervalMs The minimum interval (in milliseconds) between state updates.
  * @returns A tuple of `[state, setValue]`, just like `useState`.
  */
-export function useThrottledState<T>(initialValue: T, intervalMs: number): [T, (value: T, forced: boolean | undefined) => void] {
+export function useThrottledState<T>(initialValue: T, intervalMs: number): [T, (value: T, forced?: boolean) => void] {
   const [state, setState] = useState<T>(initialValue);
   const lastExecuted = useRef<number>(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
