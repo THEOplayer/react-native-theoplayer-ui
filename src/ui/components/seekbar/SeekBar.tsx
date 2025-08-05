@@ -62,6 +62,11 @@ export interface SeekBarProps {
  */
 const DEBOUNCE_SEEK_DELAY = 250;
 
+/**
+ * The throttle update value, in milliseconds, to reduce seekbar rerenders.
+ */
+const THROTTLED_UPDATE = 1000;
+
 const renderThumbnailView = (isScrubbing: boolean, scrubberTime: number | undefined, seekBarWidth: number): React.ReactNode => {
   return isScrubbing && scrubberTime !== undefined && <SingleThumbnailView currentTime={scrubberTime} seekBarWidth={seekBarWidth} />;
 };
@@ -73,8 +78,8 @@ export const SeekBar = (props: SeekBarProps) => {
   const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
   const [width, setWidth] = useState(0);
   const duration = useDuration();
-  const seekable = useSeekable();
-  const sliderTime = useSliderTime();
+  const seekable = useSeekable(THROTTLED_UPDATE);
+  const sliderTime = useSliderTime(THROTTLED_UPDATE);
   const chapters = useChaptersTrack();
   const chapterMarkerTimes: number[] = chapters?.cues?.map((cue) => cue.endTime).slice(0, -1) ?? [];
   // Do not continuously seek while dragging the slider
