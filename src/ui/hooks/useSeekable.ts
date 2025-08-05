@@ -23,6 +23,6 @@ export const useSeekable = () => {
     return () => {
       player?.removeEventListener(PlayerEventType.PROGRESS, onUpdateSeekable);
     };
-  }, [player]);
+  }, [player, setSeekable]);
   return seekable;
 };
