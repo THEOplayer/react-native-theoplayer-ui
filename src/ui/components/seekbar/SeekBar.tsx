@@ -78,7 +78,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
   const [width, setWidth] = useState(0);
   const duration = useDuration();
-  const seekable = useSeekable(THROTTLED_UPDATE);
+  const seekable = useSeekable();
   const sliderTime = useSliderTime(THROTTLED_UPDATE);
   const chapters = useChaptersTrack();
   const chapterMarkerTimes: number[] = chapters?.cues?.map((cue) => cue.endTime).slice(0, -1) ?? [];
