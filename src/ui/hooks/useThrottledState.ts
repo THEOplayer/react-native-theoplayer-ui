@@ -13,13 +13,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  */
 export function useThrottledState<T>(initialValue: T, intervalMs: number): [T, (value: T, forced: boolean | undefined) => void] {
   const [state, setState] = useState<T>(initialValue);
-  const pendingValue = useRef<T>(initialValue);
   const lastExecuted = useRef<number>(Date.now());
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const setThrottled = useCallback(
     (value: T, forced: boolean | undefined = false) => {
-      pendingValue.current = value;
       const now = Date.now();
       const timeSinceLast = now - lastExecuted.current;
 
@@ -29,7 +27,7 @@ export function useThrottledState<T>(initialValue: T, intervalMs: number): [T, (
         lastExecuted.current = now;
       } else {
         timeoutRef.current = setTimeout(() => {
-          setState(pendingValue.current);
+          setState(value);
           lastExecuted.current = Date.now();
         }, intervalMs - timeSinceLast);
       }
