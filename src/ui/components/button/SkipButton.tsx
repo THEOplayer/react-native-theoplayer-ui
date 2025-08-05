@@ -90,7 +90,10 @@ export function SkipButton(props: SkipButtonProps) {
             activeOpacity={rotate === true ? 1 : 0.2}
             style={[{ height: '100%', aspectRatio: 1, justifyContent: 'center' }, style]}
             testID={props.testID}
-            onPress={onPress}>
+            onPress={() => {
+              onPress();
+              context.ui.onUserAction_();
+            }}>
             <ActionButton touchable={false} svg={skip < 0 ? backwardSvg : forwardSvg} />
             <View style={[StyleSheet.absoluteFill, { justifyContent: 'center' }]}>
               <Text style={[context.style.text, { color: context.style.colors.text }, textStyle]}>{Math.abs(skip)}</Text>

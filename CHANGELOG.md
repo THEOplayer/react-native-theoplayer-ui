@@ -10,6 +10,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] (2025-08-04)
+
+### Fixed
+
+- Prevent a fade out of the UI while the skip buttons are being used.
+- Fixed an issue where the playback rate setting label text didn't fit in its `Text` component.
+- Fixed the `useEnded` hook to take into account a `currentTime` that can become slightly larger than the expected stream duration.
+- Fixed an issue on Android where a thumbnail preview would contain multiple tiles when the tile image was larger than 2048px.
+- Fixed an issue where `<TimeLabel>` would briefly show an invalid duration when playing a live stream.
+- Fixed an issue on iOS where both Chromecast and AirPlay buttons were shown as "connected" when connecting to a Chromecast receiver.
+
+### Added
+
+- Added a `renderAboveThumbComponent` property to the `SeekBar` component that allows customizing an optional component that is rendered above the `SeekBar`'s thumbnail. The `ThumbnailView` remains the default component.
+
 ## [0.14.0] (2025-07-04)
 
 ### Fixed
@@ -20,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added `onScrubbing` callback for the Slider component.
 - Added `scrubTime` property to the `ChapterLabel` component.
+- Added a `<ConditionalPlayButton>` component that only renders itself while the player is not waiting on media content.
 
 ## [0.13.0] (2025-06-11)
 
