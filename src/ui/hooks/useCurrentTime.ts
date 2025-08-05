@@ -6,6 +6,8 @@ const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKING
   keyof PlayerEventMap
 >;
 
+type TimeChangeEventType = (typeof TIME_CHANGE_EVENTS)[number];
+
 /**
  * Returns {@link react-native-theoplayer!THEOplayer.duration | the player's current time}, automatically updating whenever it changes.
  *
@@ -19,14 +21,20 @@ const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKING
  */
 export const useCurrentTime = (throttledIntervalMs: number | undefined = undefined) => {
   const { player } = useContext(PlayerContext);
-  const [currentTime, setCurrentTime] = throttledIntervalMs
+  const isThrottling = throttledIntervalMs !== undefined;
+  const [currentTime, setCurrentTime] = isThrottling
     ? useThrottledState(player?.currentTime ?? 0, throttledIntervalMs)
     : useState(player?.currentTime ?? 0);
-  const onTimeUpdate = useCallback(() => {
-    if (player) {
-      setCurrentTime(player.currentTime);
-    }
-  }, [player]);
+  const onTimeUpdate = useCallback(
+    (event: Event<TimeChangeEventType>) => {
+      if (player) {
+        // Do not throttle state update when currentTime changes due to seeking/seeked events.
+        const forced = isThrottling && event.type !== PlayerEventType.TIME_UPDATE;
+        setCurrentTime(player.currentTime, forced);
+      }
+    },
+    [player],
+  );
   useEffect(() => {
     if (!player) return;
     TIME_CHANGE_EVENTS.forEach((event) => player.addEventListener(event, onTimeUpdate));
