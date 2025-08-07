@@ -12,3 +12,4 @@ export * from './usePresentationMode';
 export * from './useSeekable';
 export * from './useThumbnailTrack';
 export * from './useWaiting';
+export * from './useThrottledState';
