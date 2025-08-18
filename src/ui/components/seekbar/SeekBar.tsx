@@ -69,12 +69,10 @@ const renderThumbnailView = (isScrubbing: boolean, scrubberTime: number | undefi
 export const SeekBar = (props: SeekBarProps) => {
   const { onScrubbing, renderAboveThumbComponent: customRenderAboveThumbComponent } = props;
   const { player } = useContext(PlayerContext);
-  const [isScrubbing, setIsScrubbing] = useState(false);
-  const [scrubberTime, setScrubberTime] = useState<number | undefined>(undefined);
   const [width, setWidth] = useState(0);
   const duration = useDuration();
   const seekable = useSeekable();
-  const sliderTime = useSliderTime();
+  const [sliderTime, isScrubbing, setIsScrubbing] = useSliderTime();
   const chapters = useChaptersTrack();
   const chapterMarkerTimes: number[] = chapters?.cues?.map((cue) => cue.endTime).slice(0, -1) ?? [];
   // Do not continuously seek while dragging the slider
@@ -90,13 +88,11 @@ export const SeekBar = (props: SeekBarProps) => {
   const onSlidingValueChange = (value: number[]) => {
     if (isScrubbing) {
       if (onScrubbing) onScrubbing(value[0]);
-      setScrubberTime(value[0]);
       debounceSeek(value[0]);
     }
   };
 
   const onSlidingComplete = (value: number[]) => {
-    setScrubberTime(undefined);
     if (onScrubbing) onScrubbing(undefined);
     setIsScrubbing(false);
     debounceSeek(value[0], true);
@@ -136,7 +132,7 @@ export const SeekBar = (props: SeekBarProps) => {
             onSlidingStart={onSlidingStart}
             onValueChange={onSlidingValueChange}
             onSlidingComplete={onSlidingComplete}
-            value={isScrubbing && scrubberTime !== undefined ? scrubberTime : sliderTime}
+            value={sliderTime}
             minimumTrackTintColor={context.style.colors.seekBarMinimum}
             maximumTrackTintColor={context.style.colors.seekBarMaximum}
             thumbTintColor={context.style.colors.seekBarDot}
