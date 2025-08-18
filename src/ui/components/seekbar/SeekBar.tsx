@@ -4,7 +4,7 @@ import { PlayerContext, UiContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
 import { useChaptersTrack, useDuration, useSeekable, useDebounce } from '../../hooks/barrel';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
-import { useSliderTime } from './useSliderTime';
+import { useSlider } from './useSlider';
 import { TestIDs } from '../../utils/TestIDs';
 
 export type ThumbDimensions = {
@@ -72,7 +72,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const [width, setWidth] = useState(0);
   const duration = useDuration();
   const seekable = useSeekable();
-  const [sliderTime, isScrubbing, setIsScrubbing] = useSliderTime();
+  const [sliderTime, isScrubbing, setIsScrubbing] = useSlider();
   const chapters = useChaptersTrack();
   const chapterMarkerTimes: number[] = chapters?.cues?.map((cue) => cue.endTime).slice(0, -1) ?? [];
   // Do not continuously seek while dragging the slider

@@ -7,14 +7,14 @@ const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKING
 >;
 
 /**
- * Returns the player's current slider time.
+ * Returns the player's current slider time, and its scrubbing state.
  *
  * This hook must only be used in a component mounted inside a {@link THEOplayerDefaultUi} or {@link UiContainer},
  * or alternatively any other component that provides a {@link PlayerContext}.
  **
  * @group Hooks
  */
-export const useSliderTime = (): [number, boolean, React.Dispatch<React.SetStateAction<boolean>>] => {
+export const useSlider = (): [number, boolean, React.Dispatch<React.SetStateAction<boolean>>] => {
   const { player } = useContext(PlayerContext);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [currentTime, setCurrentTime] = useState(player?.currentTime ?? 0);
