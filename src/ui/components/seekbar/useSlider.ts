@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { PlayerContext } from '@theoplayer/react-native-ui';
 import { type PlayerEventMap, PlayerEventType } from 'react-native-theoplayer';
 
@@ -20,7 +20,7 @@ export const useSlider = (): [number, boolean, React.Dispatch<React.SetStateActi
   const [currentTime, setCurrentTime] = useState(player?.currentTime ?? 0);
   useEffect(() => {
     if (!player) return;
-     // Block time updates while scrubbing
+    // Block time updates while scrubbing
     if (isScrubbing) return;
     const onTimeUpdate = () => {
       setCurrentTime(player.currentTime);
