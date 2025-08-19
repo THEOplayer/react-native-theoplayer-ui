@@ -18,20 +18,18 @@ export const useSlider = (): [number, boolean, React.Dispatch<React.SetStateActi
   const { player } = useContext(PlayerContext);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [currentTime, setCurrentTime] = useState(player?.currentTime ?? 0);
-  const onTimeUpdate = useCallback(() => {
-    // Block time updates while scrubbing
-    if (player && !isScrubbing) {
-      setCurrentTime(player.currentTime);
-    }
-  }, [player, isScrubbing]);
-
   useEffect(() => {
     if (!player) return;
+     // Block time updates while scrubbing
+    if (isScrubbing) return;
+    const onTimeUpdate = () => {
+      setCurrentTime(player.currentTime);
+    };
     TIME_CHANGE_EVENTS.forEach((event) => player.addEventListener(event, onTimeUpdate));
     return () => {
       TIME_CHANGE_EVENTS.forEach((event) => player.removeEventListener(event, onTimeUpdate));
     };
-  }, [player, onTimeUpdate]);
+  }, [player, isScrubbing]);
 
   return [Number.isFinite(currentTime) ? Math.round(currentTime * 1e-3) * 1e3 : 0, isScrubbing, setIsScrubbing];
 };
