@@ -1,4 +1,4 @@
-import { PlayerContext, UiContext } from '../../util/PlayerContext';
+import { PlayerContext } from '../../util/PlayerContext';
 import { StyleProp, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import React, { useContext } from 'react';
 import { ArrowForwardSvg } from '../../button/svg/ArrowForwardSvg';
@@ -41,18 +41,14 @@ export const SubMenuWithButton = (props: SubMenuButtonProps) => {
     }
   };
   return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => (
-        <View style={[{ height: 44, flexDirection: 'row', width: '100%', justifyContent: 'center' }, style]}>
-          <Text style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text, width: '50%' }, textStyle]}>{label}</Text>
-          <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'flex-end' }}>
-            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={onTouch}>
-              <Text style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text }, textStyle]}>{preview}</Text>
-              <ActionButton touchable={false} svg={<ArrowForwardSvg />} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </PlayerContext.Consumer>
+    <View style={[{ height: 44, flexDirection: 'row', width: '100%', justifyContent: 'center' }, style]}>
+      <Text style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text, width: '50%' }, textStyle]}>{label}</Text>
+      <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'flex-end' }}>
+        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={onTouch}>
+          <Text style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text }, textStyle]}>{preview}</Text>
+          <ActionButton touchable={false} svg={<ArrowForwardSvg />} />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };

@@ -1,6 +1,6 @@
 import { StyleProp, Text, TextStyle, TouchableOpacity } from 'react-native';
-import React from 'react';
-import { PlayerContext, UiContext } from '../../util/PlayerContext';
+import React, { useContext } from 'react';
+import { PlayerContext } from '../../util/PlayerContext';
 
 export interface MenuRadioButtonProps {
   /**
@@ -41,25 +41,22 @@ export const DEFAULT_MENU_BUTTON_STYLE: TextStyle = {
  */
 export const MenuRadioButton = (props: MenuRadioButtonProps) => {
   const { uid, onSelect, label, selected, style } = props;
+  const context = useContext(PlayerContext);
   return (
     <TouchableOpacity
       onPress={() => {
         onSelect(uid);
       }}>
-      <PlayerContext.Consumer>
-        {(context: UiContext) => (
-          <Text
-            style={[
-              DEFAULT_MENU_BUTTON_STYLE,
-              selected
-                ? { color: context.style.colors.textSelected, backgroundColor: context.style.colors.textSelectedBackground }
-                : { color: context.style.colors.text },
-              style,
-            ]}>
-            {label}
-          </Text>
-        )}
-      </PlayerContext.Consumer>
+      <Text
+        style={[
+          DEFAULT_MENU_BUTTON_STYLE,
+          selected
+            ? { color: context.style.colors.textSelected, backgroundColor: context.style.colors.textSelectedBackground }
+            : { color: context.style.colors.text },
+          style,
+        ]}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 };
