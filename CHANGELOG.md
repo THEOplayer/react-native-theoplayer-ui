@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed an issue where high-frequency `progress` events would trigger excessive re-renders and cause memory buildup.
+- Fixed an issue where menu items with long labels would not be properly displayed.
 
 ## [0.15.0] (2025-08-04)
 
