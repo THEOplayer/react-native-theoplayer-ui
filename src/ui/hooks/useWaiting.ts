@@ -3,6 +3,7 @@ import { PlayerEventType, PlayerEventMap, ReadyStateChangeEvent, type Event } fr
 import { PlayerContext } from '../barrel';
 
 const WAITING_CHANGE_EVENTS = [
+  PlayerEventType.WAITING,
   PlayerEventType.READYSTATE_CHANGE,
   PlayerEventType.ERROR,
   PlayerEventType.PLAYING,
@@ -30,6 +31,9 @@ export const useWaiting = () => {
     const onUpdateWaiting = (event: Event<WaitingChangeEventType>) => {
       if (!player) return;
       switch (event.type) {
+        case PlayerEventType.WAITING:
+          setWaiting(!hasError && !player.paused);
+          break;
         case PlayerEventType.READYSTATE_CHANGE:
           setWaiting((event as ReadyStateChangeEvent).readyState < 3 && !hasError && !player.paused);
           break;

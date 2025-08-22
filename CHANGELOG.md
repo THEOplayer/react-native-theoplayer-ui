@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Fixed an issue where the `<CenteredDelayedActivityIndicator>` was not shown in all platforms when the `waiting` was fired.
 - Fixed an issue where high-frequency `progress` events would trigger excessive re-renders and cause memory buildup.
 
 ## [0.15.0] (2025-08-04)
