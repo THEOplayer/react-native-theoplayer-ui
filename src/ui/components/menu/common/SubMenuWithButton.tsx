@@ -1,5 +1,5 @@
-import { PlayerContext, UiContext } from '../../util/PlayerContext';
-import { StyleProp, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { PlayerContext } from '../../util/PlayerContext';
+import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import React, { useContext } from 'react';
 import { ArrowForwardSvg } from '../../button/svg/ArrowForwardSvg';
 import type { MenuConstructor } from '../../uicontroller/UiControls';
@@ -41,18 +41,38 @@ export const SubMenuWithButton = (props: SubMenuButtonProps) => {
     }
   };
   return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => (
-        <View style={[{ height: 44, flexDirection: 'row', width: '100%', justifyContent: 'center' }, style]}>
-          <Text style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text, width: '50%' }, textStyle]}>{label}</Text>
-          <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'flex-end' }}>
-            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={onTouch}>
-              <Text style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text }, textStyle]}>{preview}</Text>
-              <ActionButton touchable={false} svg={<ArrowForwardSvg />} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </PlayerContext.Consumer>
+    <View style={[styles.container, style]}>
+      <Text
+        ellipsizeMode={'tail'}
+        numberOfLines={1}
+        style={[DEFAULT_MENU_BUTTON_STYLE, styles.label, { color: context.style.colors.text }, textStyle]}>
+        {label}
+      </Text>
+      <View style={styles.valueContainer}>
+        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={onTouch}>
+          <Text ellipsizeMode={'tail'} numberOfLines={1} style={[DEFAULT_MENU_BUTTON_STYLE, { color: context.style.colors.text }, textStyle]}>
+            {preview}
+          </Text>
+          <ActionButton touchable={false} svg={<ArrowForwardSvg />} />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    height: 44,
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'center',
+  },
+  label: {
+    flexShrink: 1,
+  },
+  valueContainer: {
+    flexDirection: 'row',
+    flexGrow: 1,
+    justifyContent: 'flex-end',
+  },
+});

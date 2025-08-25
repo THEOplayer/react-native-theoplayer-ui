@@ -1,7 +1,7 @@
 import { Image, ImageSourcePropType, Platform, TouchableOpacity, View, ViewStyle } from 'react-native';
 import React, { ReactNode, useContext, useState } from 'react';
 import { SvgContext } from '../svg/SvgUtils';
-import { PlayerContext, UiContext } from '../../util/PlayerContext';
+import { PlayerContext } from '../../util/PlayerContext';
 import type { ButtonBaseProps } from '../ButtonBaseProps';
 
 export interface ActionButtonProps extends ButtonBaseProps {
@@ -57,41 +57,37 @@ export const ActionButton = (props: ActionButtonProps) => {
   };
 
   return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => (
-        <TouchableOpacity
-          style={[DEFAULT_ACTION_BUTTON_STYLE, style]}
-          testID={testID}
-          onPress={onTouch}
-          onFocus={() => {
-            context.ui.onUserAction_();
-            setFocused(true);
-          }}
-          onBlur={() => {
-            setFocused(false);
+    <TouchableOpacity
+      style={[DEFAULT_ACTION_BUTTON_STYLE, style]}
+      testID={testID}
+      onPress={onTouch}
+      onFocus={() => {
+        context.ui.onUserAction_();
+        setFocused(true);
+      }}
+      onBlur={() => {
+        setFocused(false);
+      }}>
+      {/* Give priority to SVG over image sources.*/}
+      {svg && (
+        <SvgContext.Provider
+          value={{
+            fill: shouldChangeTintColor ? context.style.colors.iconSelected : context.style.colors.icon,
+            height: '100%',
+            width: '100%',
           }}>
-          {/* Give priority to SVG over image sources.*/}
-          {svg && (
-            <SvgContext.Provider
-              value={{
-                fill: shouldChangeTintColor ? context.style.colors.iconSelected : context.style.colors.icon,
-                height: '100%',
-                width: '100%',
-              }}>
-              <View>{svg}</View>
-            </SvgContext.Provider>
-          )}
-          {svg === undefined && icon && (
-            <Image
-              style={[
-                { height: '100%', width: '100%' },
-                { tintColor: shouldChangeTintColor ? context.style.colors.iconSelected : context.style.colors.icon },
-              ]}
-              source={icon}
-            />
-          )}
-        </TouchableOpacity>
+          <View>{svg}</View>
+        </SvgContext.Provider>
       )}
-    </PlayerContext.Consumer>
+      {svg === undefined && icon && (
+        <Image
+          style={[
+            { height: '100%', width: '100%' },
+            { tintColor: shouldChangeTintColor ? context.style.colors.iconSelected : context.style.colors.icon },
+          ]}
+          source={icon}
+        />
+      )}
+    </TouchableOpacity>
   );
 };
