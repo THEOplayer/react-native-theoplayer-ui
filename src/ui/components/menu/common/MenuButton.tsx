@@ -1,7 +1,7 @@
 import type { ImageSourcePropType, StyleProp, ViewStyle } from 'react-native';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { ActionButton } from '../../button/actionbutton/ActionButton';
-import { PlayerContext, UiContext } from '../../util/PlayerContext';
+import { PlayerContext } from '../../util/PlayerContext';
 import type { MenuConstructor } from '../../uicontroller/UiControls';
 
 export interface MenuButtonProps {
@@ -28,22 +28,18 @@ export interface MenuButtonProps {
  */
 export const MenuButton = (props: MenuButtonProps) => {
   const { icon, svg, style, menuConstructor } = props;
-
+  const context = useContext(PlayerContext);
   return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => (
-        <ActionButton
-          svg={svg}
-          icon={icon}
-          onPress={() => {
-            if (menuConstructor) {
-              context.ui.openMenu_(menuConstructor);
-            }
-          }}
-          style={style}
-          touchable={true}
-        />
-      )}
-    </PlayerContext.Consumer>
+    <ActionButton
+      svg={svg}
+      icon={icon}
+      onPress={() => {
+        if (menuConstructor) {
+          context.ui.openMenu_(menuConstructor);
+        }
+      }}
+      style={style}
+      touchable={true}
+    />
   );
 };

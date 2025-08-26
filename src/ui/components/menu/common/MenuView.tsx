@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext } from 'react';
-import { PlayerContext, UiContext } from '../../util/PlayerContext';
+import { PlayerContext } from '../../util/PlayerContext';
 import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { ControlBar } from '../../controlbar/ControlBar';
 import { TOP_UI_CONTAINER_STYLE } from '../../uicontroller/UiContainer';
@@ -42,21 +42,17 @@ export const MenuView = (props: MenuViewProps) => {
     context.ui.closeCurrentMenu_();
   };
   return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => (
-        <View style={StyleSheet.absoluteFill}>
-          <ControlBar style={TOP_UI_CONTAINER_STYLE}>
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity style={{ flexDirection: 'row' }} onPress={onClose}>
-                <ActionButton touchable={false} svg={<BackSvg />} />
-                <Text style={{ color: context.style.colors.text, fontSize: 16, lineHeight: 30 }}>{context.locale.backButton}</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{ flexGrow: 1 }} />
-          </ControlBar>
-          <View style={[DEFAULT_MENU_VIEW_STYLE, style]}>{menu}</View>
+    <View style={StyleSheet.absoluteFill}>
+      <ControlBar style={TOP_UI_CONTAINER_STYLE}>
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity style={{ flexDirection: 'row' }} onPress={onClose}>
+            <ActionButton touchable={false} svg={<BackSvg />} />
+            <Text style={{ color: context.style.colors.text, fontSize: 16, lineHeight: 30 }}>{context.locale.backButton}</Text>
+          </TouchableOpacity>
         </View>
-      )}
-    </PlayerContext.Consumer>
+        <View style={{ flexGrow: 1 }} />
+      </ControlBar>
+      <View style={[DEFAULT_MENU_VIEW_STYLE, style]}>{menu}</View>
+    </View>
   );
 };
