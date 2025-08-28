@@ -1,6 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
-import { PlayerContext } from '@theoplayer/react-native-ui';
+import { useContext, useEffect } from 'react';
+import { PlayerContext, useThrottledState } from '@theoplayer/react-native-ui';
 import { PlayerEventType, type TimeRange, ProgressEvent } from 'react-native-theoplayer';
+
+const THROTTLED_INTERVAL = 250;
 
 /**
  * Returns {@link react-native-theoplayer!THEOplayer.seekable | the player's seekable range}, automatically updating whenever it changes.
@@ -12,7 +14,7 @@ import { PlayerEventType, type TimeRange, ProgressEvent } from 'react-native-the
  */
 export const useSeekable = () => {
   const { player } = useContext(PlayerContext);
-  const [seekable, setSeekable] = useState<TimeRange[]>([]);
+  const [seekable, setSeekable] = useThrottledState<TimeRange[]>([], THROTTLED_INTERVAL);
   useEffect(() => {
     const onUpdateSeekable = (event: ProgressEvent) => {
       setSeekable(event.seekable ?? player?.seekable ?? []);
@@ -21,6 +23,6 @@ export const useSeekable = () => {
     return () => {
       player?.removeEventListener(PlayerEventType.PROGRESS, onUpdateSeekable);
     };
-  }, [player]);
+  }, [player, setSeekable]);
   return seekable;
 };

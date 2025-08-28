@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
-import { PlayerEventType, PlayerEventMap, ReadyStateChangeEvent } from 'react-native-theoplayer';
-import type { Event } from 'react-native-theoplayer/src/api/event/Event';
+import { PlayerEventType, PlayerEventMap, ReadyStateChangeEvent, type Event } from 'react-native-theoplayer';
 import { PlayerContext } from '../barrel';
 
 const WAITING_CHANGE_EVENTS = [
+  PlayerEventType.WAITING,
   PlayerEventType.READYSTATE_CHANGE,
   PlayerEventType.ERROR,
   PlayerEventType.PLAYING,
@@ -31,6 +31,9 @@ export const useWaiting = () => {
     const onUpdateWaiting = (event: Event<WaitingChangeEventType>) => {
       if (!player) return;
       switch (event.type) {
+        case PlayerEventType.WAITING:
+          setWaiting(!hasError && !player.paused);
+          break;
         case PlayerEventType.READYSTATE_CHANGE:
           setWaiting((event as ReadyStateChangeEvent).readyState < 3 && !hasError && !player.paused);
           break;

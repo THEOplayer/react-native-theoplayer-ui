@@ -1,6 +1,6 @@
 import { StyleProp, Text, TextStyle } from 'react-native';
-import React from 'react';
-import { PlayerContext, UiContext } from '../../util/PlayerContext';
+import React, { useContext } from 'react';
+import { PlayerContext } from '../../util/PlayerContext';
 
 export interface MenuTitleProps {
   /**
@@ -29,9 +29,6 @@ export const DEFAULT_MENU_TITLE_STYLE: TextStyle = {
  */
 export const MenuTitle = (props: MenuTitleProps) => {
   const { label, style } = props;
-  return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => <Text style={[DEFAULT_MENU_TITLE_STYLE, { color: context.style.colors.text }, style]}>{label}</Text>}
-    </PlayerContext.Consumer>
-  );
+  const context = useContext(PlayerContext);
+  return <Text style={[DEFAULT_MENU_TITLE_STYLE, { color: context.style.colors.text }, style]}>{label}</Text>;
 };
