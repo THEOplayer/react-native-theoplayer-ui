@@ -373,15 +373,9 @@ export const UiContainer = (props: UiContainerProps) => {
   const enterPip_ = () => {
     // Make sure the UI is disabled first before entering PIP
     clearTimeout(_currentFadeOutTimeout.current);
+    fadeAnimation.setValue(0);
     setButtonsEnabled(false);
-    Animated.timing(fadeAnimation, {
-      useNativeDriver: true,
-      toValue: 0,
-      duration: 0,
-    }).start(() => {
-      setIsPassingPointerEvents(false);
-      player.presentationMode = PresentationMode.pip;
-    });
+    player.presentationMode = PresentationMode.pip;
   };
 
   /**
