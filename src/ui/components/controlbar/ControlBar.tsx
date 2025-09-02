@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext } from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { StyleProp, View, type ViewProps, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 
 /**
@@ -10,7 +10,7 @@ export const DEFAULT_CONTROL_BAR_STYLE: ViewStyle = {
   justifyContent: 'flex-end',
 };
 
-export interface ControlBarProps {
+export interface ControlBarProps extends ViewProps {
   /**
    * The style overrides for the control bar.
    */
@@ -21,10 +21,13 @@ export interface ControlBarProps {
  * A control bar component that renders all children horizontally.
  */
 export const ControlBar = (props: React.PropsWithChildren<ControlBarProps>) => {
-  const { style, children } = props;
+  const { style, children, pointerEvents } = props;
   const context = useContext(PlayerContext);
   return (
-    <View pointerEvents={'box-none'} style={[DEFAULT_CONTROL_BAR_STYLE, { height: context.style.dimensions.controlBarHeight }, style]}>
+    <View
+      {...props}
+      pointerEvents={pointerEvents ?? 'box-none'}
+      style={[DEFAULT_CONTROL_BAR_STYLE, { height: context.style.dimensions.controlBarHeight }, style]}>
       {children}
     </View>
   );
