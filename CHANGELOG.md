@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed an issue on Android where the controls would not be visible when returning from PiP in paused state.
 - Fixed an issue where the skip buttons would sometimes not be visible.
+- Fixed an issue where buttons in the `center` slot would not be tappable on smaller player views.
 
 ### Changed
 
