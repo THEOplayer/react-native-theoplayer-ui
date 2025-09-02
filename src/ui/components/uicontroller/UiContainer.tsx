@@ -187,7 +187,7 @@ export const UiContainer = (props: UiContainerProps) => {
   const _currentFadeOutTimeout = useRef<number | undefined>(undefined);
   const fadeAnimation = useRef(new Animated.Value(1)).current;
   const [currentMenu, setCurrentMenu] = useState<React.ReactNode | undefined>(undefined);
-  const [buttonsEnabled_, setButtonsEnabled] = useState(true);
+  const [uiVisible_, setUiVisible] = useState(true);
   const [error, setError] = useState<PlayerError | undefined>(undefined);
   const [didPlay, setDidPlay] = useState(false);
   const [paused, setPaused] = useState(true);
@@ -214,7 +214,7 @@ export const UiContainer = (props: UiContainerProps) => {
       toValue: 0,
       duration: 200,
     }).start(() => {
-      setButtonsEnabled(false);
+      setUiVisible(false);
     });
   }, [fadeOutBlocked, fadeAnimation]);
 
@@ -228,7 +228,7 @@ export const UiContainer = (props: UiContainerProps) => {
     (fadeOutEnabled: boolean = true) => {
       clearTimeout(_currentFadeOutTimeout.current);
       _currentFadeOutTimeout.current = undefined;
-      setButtonsEnabled(true);
+      setUiVisible(true);
       Animated.timing(fadeAnimation, {
         useNativeDriver: true,
         toValue: 1,
@@ -373,7 +373,7 @@ export const UiContainer = (props: UiContainerProps) => {
     // Make sure the UI is disabled first before entering PIP
     clearTimeout(_currentFadeOutTimeout.current);
     fadeAnimation.setValue(0);
-    setButtonsEnabled(false);
+    setUiVisible(false);
     player.presentationMode = PresentationMode.pip;
   };
 
@@ -400,7 +400,7 @@ export const UiContainer = (props: UiContainerProps) => {
   }
 
   const ui: UiControls = {
-    buttonsEnabled_,
+    buttonsEnabled_: uiVisible_,
     onUserAction_,
     openMenu_,
     closeCurrentMenu_,
@@ -419,9 +419,9 @@ export const UiContainer = (props: UiContainerProps) => {
           style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
           onTouchStart={onUserAction_}
           onTouchMove={onUserAction_}
-          pointerEvents={buttonsEnabled_ ? 'auto' : 'box-only'}
+          pointerEvents={uiVisible_ ? 'auto' : 'box-only'}
           {...(Platform.OS === 'web' ? { onMouseMove: onUserAction_, onMouseLeave: doFadeOut_ } : {})}>
-          {buttonsEnabled_ && (
+          {uiVisible_ && (
             <>
               {/* The UI background */}
               <View style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]} onTouchStart={doFadeOut_} />
