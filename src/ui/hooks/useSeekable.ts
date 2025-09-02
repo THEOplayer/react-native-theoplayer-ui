@@ -14,7 +14,7 @@ const THROTTLED_INTERVAL = 250;
  */
 export const useSeekable = () => {
   const { player } = useContext(PlayerContext);
-  const [seekable, setSeekable] = useThrottledState<TimeRange[]>([], THROTTLED_INTERVAL);
+  const [seekable, setSeekable] = useThrottledState<TimeRange[]>(player?.seekable ?? [], THROTTLED_INTERVAL);
   useEffect(() => {
     const onUpdateSeekable = (event: ProgressEvent) => {
       setSeekable(event.seekable ?? player?.seekable ?? []);
