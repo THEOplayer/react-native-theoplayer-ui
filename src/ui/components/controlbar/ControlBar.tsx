@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
-import { PlayerContext, UiContext } from '../util/PlayerContext';
+import { PlayerContext } from '../util/PlayerContext';
 
 /**
  * The default style for the control bar.
@@ -22,12 +22,11 @@ export interface ControlBarProps {
  */
 export const ControlBar = (props: React.PropsWithChildren<ControlBarProps>) => {
   const { style, children } = props;
+  const context = useContext(PlayerContext);
   return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => (
-        <View style={[DEFAULT_CONTROL_BAR_STYLE, { height: context.style.dimensions.controlBarHeight }, style]}>{children}</View>
-      )}
-    </PlayerContext.Consumer>
+    <View pointerEvents={'box-none'} style={[DEFAULT_CONTROL_BAR_STYLE, { height: context.style.dimensions.controlBarHeight }, style]}>
+      {children}
+    </View>
   );
 };
 
@@ -55,15 +54,20 @@ export interface CenteredControlBarProps {
  */
 export const CenteredControlBar = (props: CenteredControlBarProps) => {
   const { style, middle, left, right } = props;
+  const context = useContext(PlayerContext);
   return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => (
-        <ControlBar style={[{ height: context.style.dimensions.centerControlBarHeight, width: '60%', justifyContent: 'space-between' }, style]}>
-          <View style={{ height: context.style.dimensions.centerControlBarHeight }}>{left}</View>
-          {middle}
-          <View style={{ height: context.style.dimensions.centerControlBarHeight }}>{right}</View>
-        </ControlBar>
-      )}
-    </PlayerContext.Consumer>
+    <ControlBar
+      style={[
+        {
+          height: context.style.dimensions.centerControlBarHeight,
+          width: '60%',
+          justifyContent: 'space-between',
+        },
+        style,
+      ]}>
+      <View style={{ height: context.style.dimensions.centerControlBarHeight }}>{left}</View>
+      {middle}
+      <View style={{ height: context.style.dimensions.centerControlBarHeight }}>{right}</View>
+    </ControlBar>
   );
 };
