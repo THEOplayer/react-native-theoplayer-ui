@@ -16,10 +16,6 @@ export interface ChapterLabelProps {
   scrubTime?: number;
 }
 
-export interface ChapterLabelState {
-  currentTime: number;
-}
-
 /**
  * The default style for the time label.
  */
@@ -42,5 +38,5 @@ export const ChapterLabel = (props: ChapterLabelProps) => {
   const expectedSeekTarget = scrubTime || currentTime;
   const currentChapter = chapters?.cues?.find((cue) => cue.startTime <= expectedSeekTarget && cue.endTime > expectedSeekTarget);
   const label = currentChapter?.content;
-  return <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>;
+  return <Text style={[DEFAULT_CHAPTER_LABEL_STYLE, context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>;
 };
