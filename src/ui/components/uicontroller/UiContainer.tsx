@@ -187,7 +187,6 @@ export const UiContainer = (props: UiContainerProps) => {
   const _currentFadeOutTimeout = useRef<number | undefined>(undefined);
   const fadeAnimation = useRef(new Animated.Value(1)).current;
   const [currentMenu, setCurrentMenu] = useState<React.ReactNode | undefined>(undefined);
-  const [isPassingPointerEvents, setIsPassingPointerEvents] = useState(true);
   const [buttonsEnabled_, setButtonsEnabled] = useState(true);
   const [error, setError] = useState<PlayerError | undefined>(undefined);
   const [didPlay, setDidPlay] = useState(false);
@@ -215,9 +214,7 @@ export const UiContainer = (props: UiContainerProps) => {
       useNativeDriver: true,
       toValue: 0,
       duration: 200,
-    }).start(() => {
-      setIsPassingPointerEvents(false);
-    });
+    }).start();
   }, [fadeOutBlocked, fadeAnimation]);
 
   const resumeUIFadeOut_ = useCallback(() => {
@@ -230,21 +227,19 @@ export const UiContainer = (props: UiContainerProps) => {
     (fadeOutEnabled: boolean = true) => {
       clearTimeout(_currentFadeOutTimeout.current);
       _currentFadeOutTimeout.current = undefined;
-      if (!isPassingPointerEvents) {
-        setIsPassingPointerEvents(true);
+      if (!buttonsEnabled_) {
+        setButtonsEnabled(true);
         Animated.timing(fadeAnimation, {
           useNativeDriver: true,
           toValue: 1,
           duration: 200,
-        }).start(() => {
-          setButtonsEnabled(true);
-        });
+        }).start();
       }
       if (fadeOutEnabled) {
         resumeUIFadeOut_();
       }
     },
-    [fadeAnimation, isPassingPointerEvents, resumeUIFadeOut_],
+    [fadeAnimation, buttonsEnabled_, resumeUIFadeOut_],
   );
 
   // TVOS events hook
@@ -431,7 +426,7 @@ export const UiContainer = (props: UiContainerProps) => {
           style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
           onTouchStart={onUserAction_}
           onTouchMove={onUserAction_}
-          pointerEvents={isPassingPointerEvents ? 'auto' : 'box-only'}
+          pointerEvents={buttonsEnabled_ ? 'auto' : 'box-only'}
           {...(Platform.OS === 'web' ? { onMouseMove: onUserAction_, onMouseLeave: doFadeOut_ } : {})}>
           <>
             {/* The UI background */}
