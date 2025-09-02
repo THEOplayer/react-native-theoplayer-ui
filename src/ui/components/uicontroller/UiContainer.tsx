@@ -432,9 +432,19 @@ export const UiContainer = (props: UiContainerProps) => {
               {/* The UI control bars*/}
               {currentMenu === undefined && !adInProgress && (
                 <>
-                  {didPlay && <View style={[TOP_UI_CONTAINER_STYLE, props.topStyle]}>{props.top}</View>}
-                  <View style={[CENTER_UI_CONTAINER_STYLE, props.centerStyle]}>{props.center}</View>
-                  {didPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, props.bottomStyle]}>{props.bottom}</View>}
+                  {didPlay && (
+                    <View style={[TOP_UI_CONTAINER_STYLE, props.topStyle]} pointerEvents={'box-none'}>
+                      {props.top}
+                    </View>
+                  )}
+                  <View style={[CENTER_UI_CONTAINER_STYLE, props.centerStyle]} pointerEvents={'box-none'}>
+                    {props.center}
+                  </View>
+                  {didPlay && (
+                    <View style={[BOTTOM_UI_CONTAINER_STYLE, props.bottomStyle]} pointerEvents={'box-none'}>
+                      {props.bottom}
+                    </View>
+                  )}
                   {props.children}
                 </>
               )}
