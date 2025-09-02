@@ -1,7 +1,7 @@
 import type { StyleProp, TextStyle } from 'react-native';
 import { Text } from 'react-native';
 import React, { useContext } from 'react';
-import { PlayerContext, UiContext } from '../util/PlayerContext';
+import { PlayerContext } from '../util/PlayerContext';
 import { useChaptersTrack } from '../../hooks/useChaptersTrack';
 import { useCurrentTime } from '../../hooks/useCurrentTime';
 
