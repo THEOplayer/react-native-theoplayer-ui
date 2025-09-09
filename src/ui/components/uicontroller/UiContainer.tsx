@@ -144,6 +144,7 @@ export const TOP_UI_CONTAINER_STYLE: ViewStyle = {
   paddingTop: 10,
   paddingLeft: 10,
   paddingRight: 10,
+  pointerEvents: 'box-none',
 };
 
 /**
@@ -154,6 +155,7 @@ export const CENTER_UI_CONTAINER_STYLE: ViewStyle = {
   justifyContent: 'center',
   flexDirection: 'row',
   width: '100%',
+  pointerEvents: 'box-none',
 };
 
 /**
@@ -168,6 +170,7 @@ export const BOTTOM_UI_CONTAINER_STYLE: ViewStyle = {
   paddingBottom: 10,
   paddingLeft: 10,
   paddingRight: 10,
+  pointerEvents: 'box-none',
 };
 
 /**
