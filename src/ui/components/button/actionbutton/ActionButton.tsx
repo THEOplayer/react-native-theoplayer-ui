@@ -25,6 +25,10 @@ export interface ActionButtonProps extends ButtonBaseProps {
    * Whether the button should be highlighted with `ColorTheme.iconSelected` color.
    */
   highlighted?: boolean;
+  /**
+   * Determines what the opacity of the wrapped view should be when touch is active. Defaults to 0.2.
+   */
+  activeOpacity?: number | undefined;
 }
 
 /**
@@ -39,8 +43,8 @@ export const DEFAULT_ACTION_BUTTON_STYLE: ViewStyle = {
 /**
  * The default button component that renders an image/svg source for the `react-native-theoplayer` UI.
  */
-export const ActionButton = (props: ActionButtonProps) => {
-  const { icon, style, svg, onPress, highlighted, testID } = props;
+export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) => {
+  const { activeOpacity, children, icon, style, svg, onPress, highlighted, testID } = props;
   const [focused, setFocused] = useState<boolean>(false);
   const context = useContext(PlayerContext);
   const shouldChangeTintColor = highlighted || (focused && Platform.isTV);
@@ -60,6 +64,7 @@ export const ActionButton = (props: ActionButtonProps) => {
     <TouchableOpacity
       style={[DEFAULT_ACTION_BUTTON_STYLE, style]}
       testID={testID}
+      activeOpacity={activeOpacity}
       onPress={onTouch}
       onFocus={() => {
         context.ui.onUserAction_();
@@ -88,6 +93,7 @@ export const ActionButton = (props: ActionButtonProps) => {
           source={icon}
         />
       )}
+      {children}
     </TouchableOpacity>
   );
 };

@@ -1,7 +1,7 @@
 import type { StyleProp, TextStyle } from 'react-native';
 import { Text } from 'react-native';
-import React from 'react';
-import { PlayerContext, UiContext } from '../util/PlayerContext';
+import React, { useContext } from 'react';
+import { PlayerContext } from '../util/PlayerContext';
 import { useChaptersTrack } from '../../hooks/useChaptersTrack';
 import { useCurrentTime } from '../../hooks/useCurrentTime';
 
@@ -14,10 +14,6 @@ export interface ChapterLabelProps {
    * The playhead position to which the user might seek. Use this property to pass slider values before the actual (debounced) seek happens.
    */
   scrubTime?: number;
-}
-
-export interface ChapterLabelState {
-  currentTime: number;
 }
 
 /**
@@ -37,13 +33,10 @@ export const DEFAULT_CHAPTER_LABEL_STYLE: TextStyle = {
 export const ChapterLabel = (props: ChapterLabelProps) => {
   const currentTime = useCurrentTime();
   const chapters = useChaptersTrack();
+  const context = useContext(PlayerContext);
   const { style, scrubTime } = props;
   const expectedSeekTarget = scrubTime || currentTime;
   const currentChapter = chapters?.cues?.find((cue) => cue.startTime <= expectedSeekTarget && cue.endTime > expectedSeekTarget);
   const label = currentChapter?.content;
-  return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>}
-    </PlayerContext.Consumer>
-  );
+  return <Text style={[DEFAULT_CHAPTER_LABEL_STYLE, context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>;
 };
