@@ -144,6 +144,7 @@ export const TOP_UI_CONTAINER_STYLE: ViewStyle = {
   paddingTop: 10,
   paddingLeft: 10,
   paddingRight: 10,
+  pointerEvents: 'box-none',
 };
 
 /**
@@ -154,6 +155,7 @@ export const CENTER_UI_CONTAINER_STYLE: ViewStyle = {
   justifyContent: 'center',
   flexDirection: 'row',
   width: '100%',
+  pointerEvents: 'box-none',
 };
 
 /**
@@ -168,6 +170,7 @@ export const BOTTOM_UI_CONTAINER_STYLE: ViewStyle = {
   paddingBottom: 10,
   paddingLeft: 10,
   paddingRight: 10,
+  pointerEvents: 'box-none',
 };
 
 /**
@@ -187,8 +190,7 @@ export const UiContainer = (props: UiContainerProps) => {
   const _currentFadeOutTimeout = useRef<number | undefined>(undefined);
   const fadeAnimation = useRef(new Animated.Value(1)).current;
   const [currentMenu, setCurrentMenu] = useState<React.ReactNode | undefined>(undefined);
-  const [isPassingPointerEvents, setIsPassingPointerEvents] = useState(true);
-  const [buttonsEnabled_, setButtonsEnabled] = useState(true);
+  const [uiVisible_, setUiVisible] = useState(true);
   const [error, setError] = useState<PlayerError | undefined>(undefined);
   const [didPlay, setDidPlay] = useState(false);
   const [paused, setPaused] = useState(true);
@@ -210,13 +212,12 @@ export const UiContainer = (props: UiContainerProps) => {
       return;
     }
     clearTimeout(_currentFadeOutTimeout.current);
-    setButtonsEnabled(false);
     Animated.timing(fadeAnimation, {
       useNativeDriver: true,
       toValue: 0,
       duration: 200,
     }).start(() => {
-      setIsPassingPointerEvents(false);
+      setUiVisible(false);
     });
   }, [fadeOutBlocked, fadeAnimation]);
 
@@ -230,21 +231,17 @@ export const UiContainer = (props: UiContainerProps) => {
     (fadeOutEnabled: boolean = true) => {
       clearTimeout(_currentFadeOutTimeout.current);
       _currentFadeOutTimeout.current = undefined;
-      if (!isPassingPointerEvents) {
-        setIsPassingPointerEvents(true);
-        Animated.timing(fadeAnimation, {
-          useNativeDriver: true,
-          toValue: 1,
-          duration: 200,
-        }).start(() => {
-          setButtonsEnabled(true);
-        });
-      }
+      setUiVisible(true);
+      Animated.timing(fadeAnimation, {
+        useNativeDriver: true,
+        toValue: 1,
+        duration: 200,
+      }).start();
       if (fadeOutEnabled) {
         resumeUIFadeOut_();
       }
     },
-    [fadeAnimation, isPassingPointerEvents, resumeUIFadeOut_],
+    [fadeAnimation, resumeUIFadeOut_],
   );
 
   // TVOS events hook
@@ -378,15 +375,9 @@ export const UiContainer = (props: UiContainerProps) => {
   const enterPip_ = () => {
     // Make sure the UI is disabled first before entering PIP
     clearTimeout(_currentFadeOutTimeout.current);
-    setButtonsEnabled(false);
-    Animated.timing(fadeAnimation, {
-      useNativeDriver: true,
-      toValue: 0,
-      duration: 0,
-    }).start(() => {
-      setIsPassingPointerEvents(false);
-      player.presentationMode = PresentationMode.pip;
-    });
+    fadeAnimation.setValue(0);
+    setUiVisible(false);
+    player.presentationMode = PresentationMode.pip;
   };
 
   /**
@@ -412,7 +403,7 @@ export const UiContainer = (props: UiContainerProps) => {
   }
 
   const ui: UiControls = {
-    buttonsEnabled_,
+    buttonsEnabled_: uiVisible_,
     onUserAction_,
     openMenu_,
     closeCurrentMenu_,
@@ -431,34 +422,46 @@ export const UiContainer = (props: UiContainerProps) => {
           style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
           onTouchStart={onUserAction_}
           onTouchMove={onUserAction_}
-          pointerEvents={isPassingPointerEvents ? 'auto' : 'box-only'}
+          pointerEvents={uiVisible_ ? 'auto' : 'box-only'}
           {...(Platform.OS === 'web' ? { onMouseMove: onUserAction_, onMouseLeave: doFadeOut_ } : {})}>
-          <>
-            {/* The UI background */}
-            <View style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]} onTouchStart={doFadeOut_} />
+          {uiVisible_ && (
+            <>
+              {/* The UI background */}
+              <View style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]} onTouchStart={doFadeOut_} />
 
-            {/* The Settings Menu */}
-            {currentMenu !== undefined && <View style={[combinedUiContainerStyle]}>{currentMenu}</View>}
+              {/* The Settings Menu */}
+              {currentMenu !== undefined && <View style={[combinedUiContainerStyle]}>{currentMenu}</View>}
 
-            {/* The UI control bars*/}
-            {currentMenu === undefined && !adInProgress && (
-              <>
-                {didPlay && <View style={[TOP_UI_CONTAINER_STYLE, props.topStyle]}>{props.top}</View>}
-                <View style={[CENTER_UI_CONTAINER_STYLE, props.centerStyle]}>{props.center}</View>
-                {didPlay && <View style={[BOTTOM_UI_CONTAINER_STYLE, props.bottomStyle]}>{props.bottom}</View>}
-                {props.children}
-              </>
-            )}
+              {/* The UI control bars*/}
+              {currentMenu === undefined && !adInProgress && (
+                <>
+                  {didPlay && (
+                    <View style={[TOP_UI_CONTAINER_STYLE, props.topStyle]} pointerEvents={'box-none'}>
+                      {props.top}
+                    </View>
+                  )}
+                  <View style={[CENTER_UI_CONTAINER_STYLE, props.centerStyle]} pointerEvents={'box-none'}>
+                    {props.center}
+                  </View>
+                  {didPlay && (
+                    <View style={[BOTTOM_UI_CONTAINER_STYLE, props.bottomStyle]} pointerEvents={'box-none'}>
+                      {props.bottom}
+                    </View>
+                  )}
+                  {props.children}
+                </>
+              )}
 
-            {/* The Ad UI */}
-            {currentMenu === undefined && adInProgress && (
-              <>
-                <View style={[AD_UI_TOP_CONTAINER_STYLE, props.adTopStyle]}>{props.adTop}</View>
-                <View style={[AD_UI_CENTER_CONTAINER_STYLE, props.adCenterStyle]}>{props.adCenter}</View>
-                <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, props.adBottomStyle]}>{props.adBottom}</View>
-              </>
-            )}
-          </>
+              {/* The Ad UI */}
+              {currentMenu === undefined && adInProgress && (
+                <>
+                  <View style={[AD_UI_TOP_CONTAINER_STYLE, props.adTopStyle]}>{props.adTop}</View>
+                  <View style={[AD_UI_CENTER_CONTAINER_STYLE, props.adCenterStyle]}>{props.adCenter}</View>
+                  <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, props.adBottomStyle]}>{props.adBottom}</View>
+                </>
+              )}
+            </>
+          )}
         </Animated.View>
       )}
       {/* Simplistic ad view to allow play pause during an ad on mobile. */}

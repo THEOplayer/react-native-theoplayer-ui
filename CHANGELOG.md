@@ -10,6 +10,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+# [0.17.0] (2025-09-10)
+
+### Fixed
+
+- Fixed an issue on Android where the controls would not be visible when returning from PiP in paused state.
+- Fixed an issue where the skip buttons would sometimes not be visible.
+- Fixed an issue where buttons in the `center` slot would not be tappable on smaller player views.
+
+### Changed
+
+- Optimized UI performance by disabling component rendering while the UI is not visible.
+
 ## [0.16.0] (2025-08-26)
 
 ### Fixed
