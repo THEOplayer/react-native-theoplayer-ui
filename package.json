@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-ui",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "A React Native UI for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -17,13 +17,14 @@
     "!**/__mocks__"
   ],
   "scripts": {
-    "changeset:version": "changeset version && node .changeset/post-process.js",
+    "changeset:version": "changeset version",
     "typescript": "tsc --noEmit",
     "prettier": "prettier --check \"(src|example)/**/*.{js,jsx,ts,tsx}\"",
     "prettier:fix": "prettier --write \"(src|example)/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint \"{src,example}/**/*.{ts,tsx}\"",
     "lint:fix": "npm run lint -- --fix",
-    "prepare": "bob build && husky install",
+    "build": "bob build",
+    "prepare": "bob build && husky",
     "docs": "typedoc --treatWarningsAsErrors"
   },
   "lint-staged": {
