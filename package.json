@@ -47,6 +47,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.7",
     "@eslint/js": "^9.13.0",
     "@react-native/eslint-config": "^0.75.4",
     "@types/react": "^18.3.12",

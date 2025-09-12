@@ -2,44 +2,29 @@
 description: Find out what's new in the React Native UI.
 sidebar_custom_props: { 'icon': '📰' }
 ---
+# @theoplayer/react-native-ui
 
-# Changelog
+# 0.17.0
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-
-# [Unreleased]
-
-### Added
-
-- Added support for THEOplayer v10 and React Native THEOplayer v10.
-
-# [0.17.0] (2025-09-10)
-
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue on Android where the controls would not be visible when returning from PiP in paused state.
 - Fixed an issue where the skip buttons would sometimes not be visible.
 - Fixed an issue where buttons in the `center` slot would not be tappable on smaller player views.
-
-### Changed
-
 - Optimized UI performance by disabling component rendering while the UI is not visible.
 
-## [0.16.0] (2025-08-26)
+## 0.16.0
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where the `<CenteredDelayedActivityIndicator>` was not shown in all platforms when the `waiting` was fired.
 - Fixed an issue where high-frequency `progress` events would trigger excessive re-renders and cause memory buildup.
 - Fixed an issue on iOS and Android where the `<SeekBar>` time would sometimes jump while seeking to a new position.
 - Fixed an issue where menu items with long labels would not be properly displayed.
 
-## [0.15.0] (2025-08-04)
+## 0.15.0
 
-### Fixed
+### 🐛 Issues
 
 - Prevent a fade out of the UI while the skip buttons are being used.
 - Fixed an issue where the playback rate setting label text didn't fit in its `Text` component.
@@ -48,149 +33,151 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed an issue where `<TimeLabel>` would briefly show an invalid duration when playing a live stream.
 - Fixed an issue on iOS where both Chromecast and AirPlay buttons were shown as "connected" when connecting to a Chromecast receiver.
 
-### Added
+### ✨ Features
 
 - Added a `renderAboveThumbComponent` property to the `SeekBar` component that allows customizing an optional component that is rendered above the `SeekBar`'s thumbnail. The `ThumbnailView` remains the default component.
 
-## [0.14.0] (2025-07-04)
+## 0.14.0
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where the UI would fade-out while scrubbing the seekbar.
 
-### Added
+### ✨ Features
 
 - Added `onScrubbing` callback for the Slider component.
 - Added `scrubTime` property to the `ChapterLabel` component.
 - Added a `<ConditionalPlayButton>` component that only renders itself while the player is not waiting on media content.
 
-## [0.13.0] (2025-06-11)
+## 0.13.0
 
-### Added
+### ✨ Features
 
 - Added an AutoFocusGuide component to be used on tvOS as a wrapper around for example a controlBar. It catches the focus while navigating the UI with the Apple TV remote.
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where the UI became unreponsive for a short while after switching the presentationMode or after the stream has ended.
 
-## [0.12.0] (2025-05-06)
+## 0.12.0
 
-### Added
+### ✨ Features
 
 - Added localization support.
 - Added support for rendering chapter markers & label.
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where the play button would stay in the paused state after starting the stream.
 
-## [0.11.0] (2025-04-03)
+## 0.11.0
 
-### Added
+### ✨ Features
 
 - Added `testID` properties on button and seekBar components to support automated testing.
 - Added support for THEOplayer 9.0.
 
-## [0.10.1] (2025-02-26)
+## 0.10.1
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue for Web where the `SeekBar` component would throw an infinite loop error on Safari browsers.
 
-## 0.10.0 (2025-01-22)
+## 0.10.0
 
-### Changed
+### 📦 Dependency Updates
 
 - Replaced slider component as a dependency of the seek bar.
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where an app using the UI would crash when using the `SeekBar` component while streaming a live asset.
 
-## 0.9.0 (2024-10-25)
+## 0.9.0
 
-### Changed
+### ✨ Features
 
 - Ad play-out is resumed when the app is foregrounded again after tapping the ad `clickthrough`. This feature requires `react-native-theoplayer` v8.6.0.
 
-## 0.8.0 (2024-09-11)
+## 0.8.0
 
-### Added
+### ✨ Features
 
 - Added support for THEOplayer 8.0.
 
-### Fixed
+### 🐛 Issues
 
 - Fixed a deprecation warning by removing `defaultProps`.
 
-## 0.7.2 (2024-05-15)
+## 0.7.2
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where the `SeekBar`'s seekable state was not updated when switching to a MP4 source.
 - Fixed an issue where the `SkipButton` components are not rendered when switching sources while casting.
 
-## 0.7.1 (2024-04-16)
+## 0.7.1
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where the mute button sometimes did not update its icon after toggling.
 
-## 0.7.0 (2024-04-11)
+## 0.7.0
 
-### Added
+### ✨ Features
 
 - Added support for THEOplayer 7.0 and React Native THEOplayer 7.0.
 
-### Fixed
+### 🐛 Issues
 
 - Fixed TypeScript type definitions to export interfaces describing the props for all components.
 
-## 0.6.0 (2024-03-27)
+## 0.6.0
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where the skip buttons would remain disabled for MP4 sources.
 
-## 0.5.0 (2024-03-06)
+## 0.5.0
 
-### Added
+### ✨ Features
 
 - Added support for CSAI.
 
-### Fixed
+### 🐛 Issues
 
 - Fixed connected state for chromecastButton to not take into account the casting state in general (e.g. airplay should not influence this state).
 
-## 0.4.0 (2024-02-14)
+## 0.4.0
 
-### Added
+### ✨ Features
 
 - Added support for overriding button icons.
 
-## 0.3.0 (2023-12-01)
+## 0.3.0
 
-### Fixed
+### 🐛 Issues
 
 - Fixed several transitioning issues related to PiP state changes and closing menus.
 
-## 0.2.0 (2023-06-26)
+## 0.2.0
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where components were still tappable after the UI had faded out.
 
-### Changed
+### ✨ Features
 
 - Assume `PlayerConfiguration.chromeless` to be `true` if not specified.
 
-## 0.1.1 (2023-06-06)
+## 0.1.1
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue on Web where using the `ChromecastButton` component would result in a crash.
 
-## 0.1.0 (2023-06-05)
+## 0.1.0
+
+### ✨ Features
 
 - Initial release.
