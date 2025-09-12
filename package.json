@@ -23,7 +23,8 @@
     "prettier:fix": "prettier --write \"(src|example)/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint \"{src,example}/**/*.{ts,tsx}\"",
     "lint:fix": "npm run lint -- --fix",
-    "prepare": "bob build && husky install",
+    "build": "bob build",
+    "prepare": "bob build && husky",
     "docs": "typedoc --treatWarningsAsErrors"
   },
   "lint-staged": {
