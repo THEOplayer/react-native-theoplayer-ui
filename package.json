@@ -17,6 +17,7 @@
     "!**/__mocks__"
   ],
   "scripts": {
+    "changeset:version": "changeset version && node .changeset/post-process.js",
     "typescript": "tsc --noEmit",
     "prettier": "prettier --check \"(src|example)/**/*.{js,jsx,ts,tsx}\"",
     "prettier:fix": "prettier --write \"(src|example)/**/*.{js,jsx,ts,tsx}\"",
@@ -47,6 +48,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.7",
     "@eslint/js": "^9.13.0",
     "@react-native/eslint-config": "^0.75.4",
     "@types/react": "^18.3.12",
@@ -75,7 +77,7 @@
     "react-native": "*",
     "react-native-google-cast": "*",
     "react-native-svg": "^13.8.0 || ^14 || ^15",
-    "react-native-theoplayer": "^2.7.0 || ^3 || ^7 || ^8 || ^9"
+    "react-native-theoplayer": "^7 || ^8 || ^9 || ^10"
   },
   "eslintIgnore": [
     "node_modules/",
