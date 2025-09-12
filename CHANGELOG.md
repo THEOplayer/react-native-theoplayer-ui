@@ -1,14 +1,10 @@
----
-
-## 0.18.0
-### Minor Changes
-
-- 57ffb84: Added support for THEOplayer v10 and React Native THEOplayer v10.
-description: Find out what's new in the React Native UI.
-sidebar_custom_props: { 'icon': '📰' }
----
-
 # @theoplayer/react-native-ui
+
+# 0.18.0
+
+### ✨ Features
+
+- Added support for THEOplayer v10 and React Native THEOplayer v10.
 
 # 0.17.0
 
