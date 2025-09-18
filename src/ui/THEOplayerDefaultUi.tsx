@@ -1,27 +1,37 @@
 import React, { ReactNode, useState } from 'react';
 import { PlayerConfiguration, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
-import { SeekBar } from './components/seekbar/SeekBar';
-import { AirplayButton } from './components/button/AirplayButton';
-import { CenteredControlBar, ControlBar } from './components/controlbar/ControlBar';
-import { TimeLabel } from './components/timelabel/TimeLabel';
-import { FullscreenButton } from './components/button/FullscreenButton';
-import { LanguageMenuButton } from './components/menu/LanguageMenuButton';
-import { MuteButton } from './components/button/MuteButton';
-import { CastMessage } from './components/message/CastMessage';
+
 import { DEFAULT_THEOPLAYER_THEME, THEOplayerTheme } from './THEOplayerTheme';
 import { Platform, StyleProp, View, ViewStyle } from 'react-native';
-import { FULLSCREEN_CENTER_STYLE, UiContainer } from './components/uicontroller/UiContainer';
-import { PlayButton } from './components/button/PlayButton';
-import { SkipButton } from './components/button/SkipButton';
-import { Spacer } from './components/controlbar/Spacer';
-import { ChromecastButton } from './components/button/ChromecastButton';
-import { CenteredDelayedActivityIndicator } from './components/activityindicator/CenteredDelayedActivityIndicator';
-import { AdDisplay } from './components/ads/AdDisplay';
-import { AdCountdown } from './components/ads/AdCountdown';
-import { AdSkipButton } from './components/ads/AdSkipButton';
-import { AdClickThroughButton } from './components/ads/AdClickThroughButton';
 import { TestIDs } from './utils/TestIDs';
 import type { Locale } from './components/util/Locale';
+import {
+  AirplayButton,
+  AutoFocusGuide,
+  CenteredControlBar,
+  CenteredDelayedActivityIndicator,
+  ChromecastButton,
+  ControlBar,
+  FullscreenButton,
+  FULLSCREEN_CENTER_STYLE,
+  MuteButton,
+  PipButton,
+  PlaybackRateSubMenu,
+  PlayButton,
+  QualitySubMenu,
+  SeekBar,
+  SettingsMenuButton,
+  SkipButton,
+  Spacer,
+  TimeLabel,
+  UiContainer,
+  LanguageMenuButton,
+  CastMessage,
+  AdClickThroughButton,
+  AdDisplay,
+  AdCountdown,
+  AdSkipButton,
+} from '..';
 
 export interface THEOplayerDefaultUiProps {
   /**
@@ -68,8 +78,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
   };
 
   return (
-    <View style={style}>
-      <View style={[FULLSCREEN_CENTER_STYLE, { backgroundColor: '#000000' }]} />
+    <View style={[FULLSCREEN_CENTER_STYLE, { backgroundColor: '#000000' }, style]}>
       <THEOplayerView config={config} onPlayerReady={onPlayerReady}>
         {player !== undefined && (
           <UiContainer
@@ -78,26 +87,38 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
             player={player}
             behind={<CenteredDelayedActivityIndicator size={50} />}
             top={
-              <ControlBar>
+              <AutoFocusGuide>
                 {topSlot}
-                {!Platform.isTV && (
-                  <>
-                    <AirplayButton />
-                    <ChromecastButton />
-                  </>
-                )}
-                <LanguageMenuButton />
-              </ControlBar>
+                <ControlBar>
+                  <Spacer />
+                  {!Platform.isTV && (
+                    <>
+                      <AirplayButton />
+                      <ChromecastButton />
+                    </>
+                  )}
+                  <LanguageMenuButton />
+                  <SettingsMenuButton>
+                    {/*Note: quality selection is not available on iOS */}
+                    <QualitySubMenu />
+                    <PlaybackRateSubMenu />
+                  </SettingsMenuButton>
+                </ControlBar>
+              </AutoFocusGuide>
             }
             center={
-              <CenteredControlBar
-                left={<SkipButton skip={-10} testID={TestIDs.SKIP_BWD_BUTTON} />}
-                middle={<PlayButton />}
-                right={<SkipButton skip={30} testID={TestIDs.SKIP_FWD_BUTTON} />}
-              />
+              <AutoFocusGuide>
+                <CenteredControlBar
+                  style={{ width: '50%' }}
+                  left={<SkipButton skip={-10} testID={TestIDs.SKIP_BWD_BUTTON} />}
+                  middle={<PlayButton />}
+                  right={<SkipButton skip={30} testID={TestIDs.SKIP_FWD_BUTTON} />}
+                />
+              </AutoFocusGuide>
             }
             bottom={
-              <>
+              <AutoFocusGuide>
+                {bottomSlot}
                 {!Platform.isTV && (
                   <ControlBar style={{ justifyContent: 'flex-start' }}>
                     <CastMessage />
@@ -106,32 +127,29 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                 <ControlBar>
                   <SeekBar />
                 </ControlBar>
-
                 <ControlBar>
-                  {!Platform.isTV && <MuteButton />}
+                  <MuteButton />
                   <TimeLabel showDuration={true} />
-
                   <Spacer />
-
-                  {bottomSlot}
-                  {!Platform.isTV && <FullscreenButton />}
+                  <PipButton />
+                  <FullscreenButton />
                 </ControlBar>
-              </>
+              </AutoFocusGuide>
             }
             adTop={
-              <>
+              <AutoFocusGuide>
                 <ControlBar>
                   <AdClickThroughButton />
                 </ControlBar>
-              </>
+              </AutoFocusGuide>
             }
             adCenter={
-              <>
+              <AutoFocusGuide>
                 <CenteredControlBar middle={<PlayButton />} />
-              </>
+              </AutoFocusGuide>
             }
             adBottom={
-              <>
+              <AutoFocusGuide>
                 <ControlBar style={{ justifyContent: 'flex-start' }}>
                   <AdDisplay />
                   <AdCountdown />
@@ -139,10 +157,10 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                   <AdSkipButton />
                 </ControlBar>
                 <ControlBar>
-                  {!Platform.isTV && <MuteButton />}
+                  <MuteButton />
                   <SeekBar />
                 </ControlBar>
-              </>
+              </AutoFocusGuide>
             }
           />
         )}
