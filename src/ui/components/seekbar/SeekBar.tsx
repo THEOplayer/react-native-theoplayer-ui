@@ -103,6 +103,8 @@ export const SeekBar = (props: SeekBarProps) => {
     start: seekable.length > 0 ? seekable[0].start : 0,
     end: seekable.length > 0 ? seekable[seekable.length - 1].end : normalizedDuration,
   };
+  const normalizedSeekableStart = isNaN(seekableRange.start) || !isFinite(seekableRange.start) ? 0 : Math.max(0, seekableRange.start);
+  const normalizedSeekableEnd = isNaN(seekableRange.end) || !isFinite(seekableRange.end) ? 0 : Math.max(0, seekableRange.end);
 
   const renderAboveThumbComponent = (_index: number, value: number) => {
     if (customRenderAboveThumbComponent) {
@@ -121,9 +123,9 @@ export const SeekBar = (props: SeekBarProps) => {
             setWidth(event.nativeEvent.layout.width);
           }}>
           <Slider
-            disabled={(!(duration > 0) && seekable.length > 0) || context.adInProgress}
-            minimumValue={seekableRange.start}
-            maximumValue={seekableRange.end}
+            disabled={(!(normalizedDuration > 0) && seekable.length > 0) || context.adInProgress}
+            minimumValue={normalizedSeekableStart}
+            maximumValue={normalizedSeekableEnd}
             containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
             minimumTrackStyle={props.sliderMinimumTrackStyle ?? {}}
             maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
