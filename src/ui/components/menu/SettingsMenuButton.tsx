@@ -24,6 +24,12 @@ export interface SettingsMenuButtonProps {
 export const SettingsMenuButton = (props: React.PropsWithChildren<SettingsMenuButtonProps>) => {
   const { children, menuStyle, icon } = props;
   const context = useContext(PlayerContext);
+
+  // Do not render an empty menu
+  if (React.Children.toArray(children).length === 0) {
+    return <></>;
+  }
+
   const createMenu = () => {
     return <MenuView style={menuStyle} menu={<ScrollableMenu title={context.locale.settingsTitle} items={children} />} />;
   };
