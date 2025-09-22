@@ -109,8 +109,8 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
             behind={<CenteredDelayedActivityIndicator size={50} />}
             top={
               <AutoFocusGuide>
-                {topSlot}
                 <ControlBar>
+                  {topSlot}
                   <Spacer />
                   {!Platform.isTV && !excludedFeatures.includes(UIFeature.Cast) && (
                     <>
@@ -138,7 +138,6 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
             }
             bottom={
               <AutoFocusGuide>
-                {bottomSlot}
                 {!Platform.isTV && !excludedFeatures.includes(UIFeature.Cast) && (
                   <ControlBar style={{ justifyContent: 'flex-start' }}>
                     <CastMessage />
@@ -149,6 +148,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                   {!excludedFeatures.includes(UIFeature.Mute) && <MuteButton />}
                   <TimeLabel showDuration={true} />
                   <Spacer />
+                  {bottomSlot}
                   {!excludedFeatures.includes(UIFeature.PiP) && <PipButton />}
                   {!excludedFeatures.includes(UIFeature.Fullscreen) && <FullscreenButton />}
                 </ControlBar>
