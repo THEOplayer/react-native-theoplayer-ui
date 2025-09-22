@@ -33,6 +33,21 @@ import {
   AdSkipButton,
 } from '..';
 
+export enum UIFeature {
+  Cast,
+  Fullscreen,
+  Language,
+  Mute,
+  PiP,
+  PlaybackRate,
+  SeekBar,
+  TrickPlay,
+  VideoQuality,
+}
+
+// By default, exclude Cast for which an extra dependency is needed.
+const defaultExcludedFeatures = [UIFeature.Cast];
+
 export interface THEOplayerDefaultUiProps {
   /**
    * The style for the container.
@@ -63,13 +78,19 @@ export interface THEOplayerDefaultUiProps {
    * A slot in the bottom right to add additional UI components.
    */
   bottomSlot?: ReactNode;
+  /**
+   * A set of feature to exclude from the UI.
+   *
+   * @default [Cast]
+   */
+  excludedFeatures?: UIFeature[];
 }
 
 /**
  * A default UI layout which uses UI components from `react-native-theoplayer` to create a basic playback UI around a THEOplayerView.
  */
 export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
-  const { theme, config, topSlot, bottomSlot, style, locale } = props;
+  const { theme, config, topSlot, bottomSlot, style, locale, excludedFeatures = defaultExcludedFeatures } = props;
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
 
   const onPlayerReady = (player: THEOplayer) => {
@@ -91,17 +112,16 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                 {topSlot}
                 <ControlBar>
                   <Spacer />
-                  {!Platform.isTV && (
+                  {!Platform.isTV && !excludedFeatures.includes(UIFeature.Cast) && (
                     <>
                       <AirplayButton />
                       <ChromecastButton />
                     </>
                   )}
-                  <LanguageMenuButton />
+                  {!excludedFeatures.includes(UIFeature.Language) && <LanguageMenuButton />}
                   <SettingsMenuButton>
-                    {/*Note: quality selection is not available on iOS */}
-                    <QualitySubMenu />
-                    <PlaybackRateSubMenu />
+                    {!excludedFeatures.includes(UIFeature.VideoQuality) && <QualitySubMenu />}
+                    {!excludedFeatures.includes(UIFeature.PlaybackRate) && <PlaybackRateSubMenu />}
                   </SettingsMenuButton>
                 </ControlBar>
               </AutoFocusGuide>
@@ -110,29 +130,27 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
               <AutoFocusGuide>
                 <CenteredControlBar
                   style={{ width: '50%' }}
-                  left={<SkipButton skip={-10} testID={TestIDs.SKIP_BWD_BUTTON} />}
+                  left={!excludedFeatures.includes(UIFeature.TrickPlay) ? <SkipButton skip={-10} testID={TestIDs.SKIP_BWD_BUTTON} /> : <></>}
                   middle={<PlayButton />}
-                  right={<SkipButton skip={30} testID={TestIDs.SKIP_FWD_BUTTON} />}
+                  right={!excludedFeatures.includes(UIFeature.TrickPlay) ? <SkipButton skip={30} testID={TestIDs.SKIP_FWD_BUTTON} /> : <></>}
                 />
               </AutoFocusGuide>
             }
             bottom={
               <AutoFocusGuide>
                 {bottomSlot}
-                {!Platform.isTV && (
+                {!Platform.isTV && !excludedFeatures.includes(UIFeature.Cast) && (
                   <ControlBar style={{ justifyContent: 'flex-start' }}>
                     <CastMessage />
                   </ControlBar>
                 )}
+                <ControlBar>{!excludedFeatures.includes(UIFeature.SeekBar) && <SeekBar />}</ControlBar>
                 <ControlBar>
-                  <SeekBar />
-                </ControlBar>
-                <ControlBar>
-                  <MuteButton />
+                  {!excludedFeatures.includes(UIFeature.Mute) && <MuteButton />}
                   <TimeLabel showDuration={true} />
                   <Spacer />
-                  <PipButton />
-                  <FullscreenButton />
+                  {!excludedFeatures.includes(UIFeature.PiP) && <PipButton />}
+                  {!excludedFeatures.includes(UIFeature.Fullscreen) && <FullscreenButton />}
                 </ControlBar>
               </AutoFocusGuide>
             }
