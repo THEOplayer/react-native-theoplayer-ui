@@ -17,7 +17,7 @@
     "!**/__mocks__"
   ],
   "scripts": {
-    "changeset:version": "changeset version",
+    "changeset:version": "changeset version && node .changeset/post-process.mjs",
     "typescript": "tsc --noEmit",
     "prettier": "prettier --check \"(src|example)/**/*.{js,jsx,ts,tsx}\"",
     "prettier:fix": "prettier --write \"(src|example)/**/*.{js,jsx,ts,tsx}\"",
