@@ -34,7 +34,8 @@ import {
 } from '..';
 
 export enum UIFeature {
-  Cast,
+  Chromecast,
+  AirPlay,
   Fullscreen,
   Language,
   Mute,
@@ -45,8 +46,8 @@ export enum UIFeature {
   VideoQuality,
 }
 
-// By default, exclude Cast for which an extra dependency is needed.
-const defaultExcludedFeatures = [UIFeature.Cast];
+// By default, exclude Chromecast, for which an extra dependency is needed.
+const defaultExcludedFeatures = [UIFeature.Chromecast];
 
 export interface THEOplayerDefaultUiProps {
   /**
@@ -112,10 +113,10 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                 <ControlBar>
                   {topSlot}
                   <Spacer />
-                  {!Platform.isTV && !excludedFeatures.includes(UIFeature.Cast) && (
+                  {!Platform.isTV && (
                     <>
-                      <AirplayButton />
-                      <ChromecastButton />
+                      {!excludedFeatures.includes(UIFeature.AirPlay) && <AirplayButton />}
+                      {!excludedFeatures.includes(UIFeature.Chromecast) && <ChromecastButton />}
                     </>
                   )}
                   {!excludedFeatures.includes(UIFeature.Language) && <LanguageMenuButton />}
@@ -138,7 +139,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
             }
             bottom={
               <AutoFocusGuide>
-                {!Platform.isTV && !excludedFeatures.includes(UIFeature.Cast) && (
+                {!Platform.isTV && !excludedFeatures.includes(UIFeature.Chromecast) && !excludedFeatures.includes(UIFeature.AirPlay) && (
                   <ControlBar style={{ justifyContent: 'flex-start' }}>
                     <CastMessage />
                   </ControlBar>
