@@ -17,7 +17,7 @@ export interface QualitySubMenuProps {
 }
 
 /**
- * A button component that opens a playbackRate selection menu for the `react-native-theoplayer` UI.
+ * A button component that opens a video quality selection menu for the `react-native-theoplayer` UI.
  */
 export const QualitySubMenu = (props: QualitySubMenuProps) => {
   const { menuStyle } = props;

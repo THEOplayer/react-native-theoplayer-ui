@@ -1,27 +1,53 @@
 import React, { ReactNode, useState } from 'react';
 import { PlayerConfiguration, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
-import { SeekBar } from './components/seekbar/SeekBar';
-import { AirplayButton } from './components/button/AirplayButton';
-import { CenteredControlBar, ControlBar } from './components/controlbar/ControlBar';
-import { TimeLabel } from './components/timelabel/TimeLabel';
-import { FullscreenButton } from './components/button/FullscreenButton';
-import { LanguageMenuButton } from './components/menu/LanguageMenuButton';
-import { MuteButton } from './components/button/MuteButton';
-import { CastMessage } from './components/message/CastMessage';
+
 import { DEFAULT_THEOPLAYER_THEME, THEOplayerTheme } from './THEOplayerTheme';
 import { Platform, StyleProp, View, ViewStyle } from 'react-native';
-import { FULLSCREEN_CENTER_STYLE, UiContainer } from './components/uicontroller/UiContainer';
-import { PlayButton } from './components/button/PlayButton';
-import { SkipButton } from './components/button/SkipButton';
-import { Spacer } from './components/controlbar/Spacer';
-import { ChromecastButton } from './components/button/ChromecastButton';
-import { CenteredDelayedActivityIndicator } from './components/activityindicator/CenteredDelayedActivityIndicator';
-import { AdDisplay } from './components/ads/AdDisplay';
-import { AdCountdown } from './components/ads/AdCountdown';
-import { AdSkipButton } from './components/ads/AdSkipButton';
-import { AdClickThroughButton } from './components/ads/AdClickThroughButton';
 import { TestIDs } from './utils/TestIDs';
 import type { Locale } from './components/util/Locale';
+import {
+  AirplayButton,
+  AutoFocusGuide,
+  CenteredControlBar,
+  CenteredDelayedActivityIndicator,
+  ChromecastButton,
+  ControlBar,
+  FullscreenButton,
+  FULLSCREEN_CENTER_STYLE,
+  MuteButton,
+  PipButton,
+  PlaybackRateSubMenu,
+  PlayButton,
+  QualitySubMenu,
+  SeekBar,
+  SettingsMenuButton,
+  SkipButton,
+  Spacer,
+  TimeLabel,
+  UiContainer,
+  LanguageMenuButton,
+  CastMessage,
+  AdClickThroughButton,
+  AdDisplay,
+  AdCountdown,
+  AdSkipButton,
+} from '..';
+
+export enum UIFeature {
+  Chromecast,
+  AirPlay,
+  Fullscreen,
+  Language,
+  Mute,
+  PiP,
+  PlaybackRate,
+  SeekBar,
+  TrickPlay,
+  VideoQuality,
+}
+
+// By default, exclude Chromecast, for which an extra dependency is needed.
+const defaultExcludedFeatures = [UIFeature.Chromecast];
 
 export interface THEOplayerDefaultUiProps {
   /**
@@ -53,13 +79,19 @@ export interface THEOplayerDefaultUiProps {
    * A slot in the bottom right to add additional UI components.
    */
   bottomSlot?: ReactNode;
+  /**
+   * A set of features to exclude from the UI.
+   *
+   * @default [Cast]
+   */
+  excludedFeatures?: UIFeature[];
 }
 
 /**
  * A default UI layout which uses UI components from `react-native-theoplayer` to create a basic playback UI around a THEOplayerView.
  */
 export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
-  const { theme, config, topSlot, bottomSlot, style, locale } = props;
+  const { theme, config, topSlot, bottomSlot, style, locale, excludedFeatures = defaultExcludedFeatures } = props;
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
 
   const onPlayerReady = (player: THEOplayer) => {
@@ -68,8 +100,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
   };
 
   return (
-    <View style={style}>
-      <View style={[FULLSCREEN_CENTER_STYLE, { backgroundColor: '#000000' }]} />
+    <View style={[FULLSCREEN_CENTER_STYLE, { backgroundColor: '#000000' }, style]}>
       <THEOplayerView config={config} onPlayerReady={onPlayerReady}>
         {player !== undefined && (
           <UiContainer
@@ -78,60 +109,66 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
             player={player}
             behind={<CenteredDelayedActivityIndicator size={50} />}
             top={
-              <ControlBar>
-                {topSlot}
-                {!Platform.isTV && (
-                  <>
-                    <AirplayButton />
-                    <ChromecastButton />
-                  </>
-                )}
-                <LanguageMenuButton />
-              </ControlBar>
+              <AutoFocusGuide>
+                <ControlBar>
+                  {topSlot}
+                  <Spacer />
+                  {!Platform.isTV && (
+                    <>
+                      {!excludedFeatures.includes(UIFeature.AirPlay) && <AirplayButton />}
+                      {!excludedFeatures.includes(UIFeature.Chromecast) && <ChromecastButton />}
+                    </>
+                  )}
+                  {!excludedFeatures.includes(UIFeature.Language) && <LanguageMenuButton />}
+                  <SettingsMenuButton>
+                    {!excludedFeatures.includes(UIFeature.VideoQuality) && <QualitySubMenu />}
+                    {!excludedFeatures.includes(UIFeature.PlaybackRate) && <PlaybackRateSubMenu />}
+                  </SettingsMenuButton>
+                </ControlBar>
+              </AutoFocusGuide>
             }
             center={
-              <CenteredControlBar
-                left={<SkipButton skip={-10} testID={TestIDs.SKIP_BWD_BUTTON} />}
-                middle={<PlayButton />}
-                right={<SkipButton skip={30} testID={TestIDs.SKIP_FWD_BUTTON} />}
-              />
+              <AutoFocusGuide>
+                <CenteredControlBar
+                  style={{ width: '50%' }}
+                  left={!excludedFeatures.includes(UIFeature.TrickPlay) ? <SkipButton skip={-10} testID={TestIDs.SKIP_BWD_BUTTON} /> : <></>}
+                  middle={<PlayButton />}
+                  right={!excludedFeatures.includes(UIFeature.TrickPlay) ? <SkipButton skip={30} testID={TestIDs.SKIP_FWD_BUTTON} /> : <></>}
+                />
+              </AutoFocusGuide>
             }
             bottom={
-              <>
-                {!Platform.isTV && (
+              <AutoFocusGuide>
+                {!Platform.isTV && !excludedFeatures.includes(UIFeature.Chromecast) && !excludedFeatures.includes(UIFeature.AirPlay) && (
                   <ControlBar style={{ justifyContent: 'flex-start' }}>
                     <CastMessage />
                   </ControlBar>
                 )}
+                <ControlBar>{!excludedFeatures.includes(UIFeature.SeekBar) && <SeekBar />}</ControlBar>
                 <ControlBar>
-                  <SeekBar />
-                </ControlBar>
-
-                <ControlBar>
-                  {!Platform.isTV && <MuteButton />}
+                  {!excludedFeatures.includes(UIFeature.Mute) && <MuteButton />}
                   <TimeLabel showDuration={true} />
-
                   <Spacer />
-
                   {bottomSlot}
-                  {!Platform.isTV && <FullscreenButton />}
+                  {!excludedFeatures.includes(UIFeature.PiP) && <PipButton />}
+                  {!excludedFeatures.includes(UIFeature.Fullscreen) && <FullscreenButton />}
                 </ControlBar>
-              </>
+              </AutoFocusGuide>
             }
             adTop={
-              <>
+              <AutoFocusGuide>
                 <ControlBar>
                   <AdClickThroughButton />
                 </ControlBar>
-              </>
+              </AutoFocusGuide>
             }
             adCenter={
-              <>
+              <AutoFocusGuide>
                 <CenteredControlBar middle={<PlayButton />} />
-              </>
+              </AutoFocusGuide>
             }
             adBottom={
-              <>
+              <AutoFocusGuide>
                 <ControlBar style={{ justifyContent: 'flex-start' }}>
                   <AdDisplay />
                   <AdCountdown />
@@ -139,10 +176,10 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                   <AdSkipButton />
                 </ControlBar>
                 <ControlBar>
-                  {!Platform.isTV && <MuteButton />}
+                  <MuteButton />
                   <SeekBar />
                 </ControlBar>
-              </>
+              </AutoFocusGuide>
             }
           />
         )}
