@@ -1,5 +1,15 @@
 # @theoplayer/react-native-ui
 
+## 0.19.0
+
+### ✨ Features
+
+- Added support for feature exclusion in `<THEOplayerDefaultUI>` using the `excludedFeatures` property.
+
+### 🐛 Issues
+
+- Fixed an issue where the seekable ranges passed to the Seekbar could contain NaN values
+
 ## 0.18.0
 
 ### ✨ Features
