@@ -1,12 +1,12 @@
 # @theoplayer/react-native-ui
 
-# 0.18.0
+## 0.18.0
 
 ### ✨ Features
 
 - Added support for THEOplayer v10 and React Native THEOplayer v10.
 
-# 0.17.0
+## 0.17.0
 
 ### 🐛 Issues
 
