@@ -80,7 +80,7 @@ export interface THEOplayerDefaultUiProps {
    */
   bottomSlot?: ReactNode;
   /**
-   * A set of feature to exclude from the UI.
+   * A set of features to exclude from the UI.
    *
    * @default [Cast]
    */
