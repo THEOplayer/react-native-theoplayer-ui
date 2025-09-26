@@ -22,5 +22,5 @@ export const usePointerMove = (elementId: string, onMove: () => void, onLeave?: 
         elementRef?.removeEventListener('mouseleave', onLeave);
       }
     };
-  }, [debouncedMove, onLeave]);
+  }, [debouncedMove, onLeave, elementId]);
 };
