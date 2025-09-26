@@ -8,6 +8,7 @@ import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
 import { type Locale, defaultLocale } from '../util/Locale';
+import { usePointerMove } from '../../hooks/usePointerMove';
 
 export interface UiContainerProps {
   /**
@@ -368,6 +369,12 @@ export const UiContainer = (props: UiContainerProps) => {
     fadeInUI_();
   }, [fadeInUI_, didPlay]);
 
+  /**
+   * On Web platform, use (throttled) pointer moves on the root container to enable showing/hiding instead of the UI container.
+   * If an ad is playing, the UI should pass through all pointer events ("box-none") in order for ad clickThrough to work.
+   */
+  usePointerMove('#theoplayer-root-container', onUserAction_, doFadeOut_);
+
   const combinedUiContainerStyle = [UI_CONTAINER_STYLE, props.style];
 
   if (error !== undefined) {
@@ -404,8 +411,7 @@ export const UiContainer = (props: UiContainerProps) => {
         style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
         onTouchStart={onUserAction_}
         onTouchMove={onUserAction_}
-        pointerEvents={adInProgress ? 'box-none' : 'auto'}
-        {...(Platform.OS === 'web' ? { onMouseMove: onUserAction_, onMouseLeave: doFadeOut_ } : {})}>
+        pointerEvents={adInProgress ? 'box-none' : 'auto'}>
         {uiVisible_ && (
           <>
             {/* The UI background. */}
