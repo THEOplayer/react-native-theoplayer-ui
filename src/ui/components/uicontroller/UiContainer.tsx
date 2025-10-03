@@ -9,6 +9,7 @@ import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
 import { type Locale, defaultLocale } from '../util/Locale';
 import { usePointerMove } from '../../hooks/usePointerMove';
+import { useThrottledCallback } from '../../hooks/useThrottledCallback';
 
 export interface UiContainerProps {
   /**
@@ -166,6 +167,8 @@ export const BOTTOM_UI_CONTAINER_STYLE: ViewStyle = {
 export const AD_UI_TOP_CONTAINER_STYLE: ViewStyle = TOP_UI_CONTAINER_STYLE;
 export const AD_UI_CENTER_CONTAINER_STYLE: ViewStyle = CENTER_UI_CONTAINER_STYLE;
 export const AD_UI_BOTTOM_CONTAINER_STYLE: ViewStyle = BOTTOM_UI_CONTAINER_STYLE;
+
+const WEB_POINTER_MOVE_THROTTLE = 500;
 
 /**
  * A component that does all the coordination between UI components.
@@ -372,8 +375,9 @@ export const UiContainer = (props: UiContainerProps) => {
   /**
    * On Web platform, use (throttled) pointer moves on the root container to enable showing/hiding instead of the UI container.
    * If an ad is playing, the UI should pass through all pointer events ("box-none") in order for ad clickThrough to work.
+   * Throttle the callback avoids hammering the fade-in animation.
    */
-  usePointerMove('#theoplayer-root-container', onUserAction_, doFadeOut_);
+  usePointerMove('#theoplayer-root-container', useThrottledCallback(onUserAction_, WEB_POINTER_MOVE_THROTTLE), doFadeOut_);
 
   const combinedUiContainerStyle = [UI_CONTAINER_STYLE, props.style];
 
