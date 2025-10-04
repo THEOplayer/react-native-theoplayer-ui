@@ -1,5 +1,12 @@
 # @theoplayer/react-native-ui
 
+## 0.20.0
+
+### ✨ Features
+
+- Fixed an issue where the clickthough of an ad could not be tapped/clicked.
+- Added usage of `adTop`, `adCenter` and `adBottom` UI slots to define a custom ad lay-out on both Web and mobile platforms.
+
 ## 0.19.0
 
 ### ✨ Features
