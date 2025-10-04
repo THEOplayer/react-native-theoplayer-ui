@@ -28,7 +28,8 @@ import {
 } from '@theoplayer/react-native-ui';
 import { PlayerConfiguration, PlayerEventType, TextTrackKind, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 
-import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -59,7 +60,9 @@ const SquareMarker = () => {
  */
 export default function App() {
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
-  const [scrubTime, setScrubTime] = useState<number | undefined>(undefined)
+  const [scrubTime, setScrubTime] = useState<number | undefined>(undefined);
+  const isDarkMode = useColorScheme() === 'dark';
+
   const onPlayerReady = (player: THEOplayer) => {
     setPlayer(player);
     // optional debug logs
@@ -108,18 +111,6 @@ export default function App() {
     console.log('THEOplayer is ready:', player.version);
   };
 
-  const needsBorder = Platform.OS === 'ios';
-  const PLAYER_CONTAINER_STYLE: ViewStyle = {
-    position: 'absolute',
-    top: needsBorder ? 20 : 0,
-    left: needsBorder ? 5 : 0,
-    bottom: 0,
-    right: needsBorder ? 5 : 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#000000',
-  };
-
   const myCustomLocale: Partial<Locale> = {
     backButton: 'Terug',
     settingsTitle: 'Instellingen',
@@ -131,87 +122,110 @@ export default function App() {
   };
 
   return (
-    <View style={[StyleSheet.absoluteFill, { backgroundColor: '#000000' }]}>
-      <View style={PLAYER_CONTAINER_STYLE}>
-        <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}>
-          {player !== undefined && (
-            <UiContainer
-              theme={{ ...DEFAULT_THEOPLAYER_THEME }}
-              player={player}
-              locale={myCustomLocale}
-              behind={<CenteredDelayedActivityIndicator size={50} />}
-              top={
-                <AutoFocusGuide>
-                  <ControlBar>
-                    <Spacer />
-                    <LanguageMenuButton />
-                    <SettingsMenuButton>
-                      {/*Note: quality selection is not available on iOS */}
-                      <QualitySubMenu />
-                      <PlaybackRateSubMenu />
-                    </SettingsMenuButton>
-                  </ControlBar>
-                </AutoFocusGuide>
-              }
-              center={
-                <AutoFocusGuide>
-                  <CenteredControlBar
-                    style={{ width: '50%' }}
-                    left={<SkipButton skip={-10} />}
-                    middle={<PlayButton />}
-                    right={<SkipButton skip={30} />}
-                  />
-                </AutoFocusGuide>
-              }
-              bottom={
-                <AutoFocusGuide>
-                  <ControlBar>
-                    <Spacer />
-                    <ChapterLabel scrubTime={scrubTime}/>
-                    <Spacer />
-                  </ControlBar>
-                  <ControlBar>
-                    <SeekBar chapterMarkers={() => <SquareMarker />} onScrubbing={setScrubTime} />
-                  </ControlBar>
-                  <ControlBar>
-                    <MuteButton />
-                    <TimeLabel showDuration={true} />
-                    <Spacer />
-                    <PipButton />
-                    <FullscreenButton />
-                  </ControlBar>
-                </AutoFocusGuide>
-              }
-              adTop={
-                <AutoFocusGuide>
-                  <ControlBar>
-                    <AdClickThroughButton />
-                  </ControlBar>
-                </AutoFocusGuide>
-              }
-              adCenter={
-                <AutoFocusGuide>
-                  <CenteredControlBar middle={<PlayButton />} />
-                </AutoFocusGuide>
-              }
-              adBottom={
-                <AutoFocusGuide>
-                  <ControlBar style={{ justifyContent: 'flex-start' }}>
-                    <AdDisplay />
-                    <AdCountdown />
-                    <Spacer />
-                    <AdSkipButton />
-                  </ControlBar>
-                  <ControlBar>
-                    <MuteButton />
-                    <SeekBar />
-                  </ControlBar>
-                </AutoFocusGuide>
-              }
-            />
-          )}
-        </THEOplayerView>
-      </View>
-    </View>
+    /**
+     * The SafeAreaProvider component is a View from where insets provided by consumers are relative to.
+     * This means that if this view overlaps with any system elements (status bar, notches, etc.) these values will be provided to
+     * descendent consumers such as SafeAreaView.
+     * {@link https://appandflow.github.io/react-native-safe-area-context/api/safe-area-provider}
+     */
+    <SafeAreaProvider>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <SafeAreaView style={styles.container}>
+        <View style={styles.playerContainer}>
+          <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}>
+            {player !== undefined && (
+              <UiContainer
+                theme={{ ...DEFAULT_THEOPLAYER_THEME }}
+                player={player}
+                locale={myCustomLocale}
+                behind={<CenteredDelayedActivityIndicator size={50} />}
+                top={
+                  <AutoFocusGuide>
+                    <ControlBar>
+                      <Spacer />
+                      <LanguageMenuButton />
+                      <SettingsMenuButton>
+                        {/*Note: quality selection is not available on iOS */}
+                        <QualitySubMenu />
+                        <PlaybackRateSubMenu />
+                      </SettingsMenuButton>
+                    </ControlBar>
+                  </AutoFocusGuide>
+                }
+                center={
+                  <AutoFocusGuide>
+                    <CenteredControlBar
+                      style={{ width: '50%' }}
+                      left={<SkipButton skip={-10} />}
+                      middle={<PlayButton />}
+                      right={<SkipButton skip={30} />}
+                    />
+                  </AutoFocusGuide>
+                }
+                bottom={
+                  <AutoFocusGuide>
+                    <ControlBar>
+                      <Spacer />
+                      <ChapterLabel scrubTime={scrubTime} />
+                      <Spacer />
+                    </ControlBar>
+                    <ControlBar>
+                      <SeekBar chapterMarkers={() => <SquareMarker />} onScrubbing={setScrubTime} />
+                    </ControlBar>
+                    <ControlBar>
+                      <MuteButton />
+                      <TimeLabel showDuration={true} />
+                      <Spacer />
+                      <PipButton />
+                      <FullscreenButton />
+                    </ControlBar>
+                  </AutoFocusGuide>
+                }
+                adTop={
+                  <AutoFocusGuide>
+                    <ControlBar>
+                      <AdClickThroughButton />
+                    </ControlBar>
+                  </AutoFocusGuide>
+                }
+                adCenter={
+                  <AutoFocusGuide>
+                    <CenteredControlBar middle={<PlayButton />} />
+                  </AutoFocusGuide>
+                }
+                adBottom={
+                  <AutoFocusGuide>
+                    <ControlBar style={{ justifyContent: 'flex-start' }}>
+                      <AdDisplay />
+                      <AdCountdown />
+                      <Spacer />
+                      <AdSkipButton />
+                    </ControlBar>
+                    <ControlBar>
+                      <MuteButton />
+                      <SeekBar />
+                    </ControlBar>
+                  </AutoFocusGuide>
+                }
+              />
+            )}
+          </THEOplayerView>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  playerContainer: {
+    flex: 1,
+    // on iOS, we cannot stretch an inline playerView to cover the whole screen, otherwise it assumes fullscreen presentationMode.
+    marginHorizontal: Platform.select({ ios: 2, default: 0 }),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
