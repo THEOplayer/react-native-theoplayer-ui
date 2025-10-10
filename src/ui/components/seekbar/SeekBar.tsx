@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { PlayerContext, UiContext } from '../util/PlayerContext';
+import { PlayerContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
 import { useChaptersTrack, useDuration, useSeekable, useDebounce } from '../../hooks/barrel';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
@@ -68,7 +68,7 @@ const renderThumbnailView = (isScrubbing: boolean, scrubberTime: number | undefi
 
 export const SeekBar = (props: SeekBarProps) => {
   const { onScrubbing, renderAboveThumbComponent: customRenderAboveThumbComponent } = props;
-  const { player } = useContext(PlayerContext);
+  const { player, style: theme, adInProgress } = useContext(PlayerContext);
   const [width, setWidth] = useState(0);
   const duration = useDuration();
   const seekable = useSeekable();
@@ -112,38 +112,34 @@ export const SeekBar = (props: SeekBarProps) => {
   };
 
   return (
-    <PlayerContext.Consumer>
-      {(context: UiContext) => (
-        <View
-          style={[props.style ?? { flex: 1 }]}
-          testID={props.testID ?? TestIDs.SEEK_BAR}
-          onLayout={(event: LayoutChangeEvent) => {
-            setWidth(event.nativeEvent.layout.width);
-          }}>
-          <Slider
-            disabled={(!(normalizedDuration > 0) && seekable.length > 0) || context.adInProgress}
-            minimumValue={normalizedTime(seekableRange.start)}
-            maximumValue={normalizedTime(seekableRange.end)}
-            containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
-            minimumTrackStyle={props.sliderMinimumTrackStyle ?? {}}
-            maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
-            step={1000}
-            renderAboveThumbComponent={renderAboveThumbComponent}
-            onSlidingStart={onSlidingStart}
-            onValueChange={onSlidingValueChange}
-            onSlidingComplete={onSlidingComplete}
-            value={sliderTime}
-            minimumTrackTintColor={context.style.colors.seekBarMinimum}
-            maximumTrackTintColor={context.style.colors.seekBarMaximum}
-            thumbTintColor={context.style.colors.seekBarDot}
-            thumbStyle={StyleSheet.flatten(props.thumbStyle)}
-            thumbTouchSize={props.thumbTouchSize}
-            renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
-            trackMarks={chapterMarkerTimes}
-          />
-        </View>
-      )}
-    </PlayerContext.Consumer>
+    <View
+      style={[props.style ?? { flex: 1 }]}
+      testID={props.testID ?? TestIDs.SEEK_BAR}
+      onLayout={(event: LayoutChangeEvent) => {
+        setWidth(event.nativeEvent.layout.width);
+      }}>
+      <Slider
+        disabled={(!(normalizedDuration > 0) && seekable.length > 0) || adInProgress}
+        minimumValue={normalizedTime(seekableRange.start)}
+        maximumValue={normalizedTime(seekableRange.end)}
+        containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
+        minimumTrackStyle={props.sliderMinimumTrackStyle ?? {}}
+        maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
+        step={1000}
+        renderAboveThumbComponent={renderAboveThumbComponent}
+        onSlidingStart={onSlidingStart}
+        onValueChange={onSlidingValueChange}
+        onSlidingComplete={onSlidingComplete}
+        value={sliderTime}
+        minimumTrackTintColor={theme.colors.seekBarMinimum}
+        maximumTrackTintColor={theme.colors.seekBarMaximum}
+        thumbTintColor={theme.colors.seekBarDot}
+        thumbStyle={StyleSheet.flatten(props.thumbStyle)}
+        thumbTouchSize={props.thumbTouchSize}
+        renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
+        trackMarks={chapterMarkerTimes}
+      />
+    </View>
   );
 };
 
