@@ -111,6 +111,17 @@ export const SeekBar = (props: SeekBarProps) => {
     return renderThumbnailView(isScrubbing, value, width);
   };
 
+  /**
+   * Disable the seekbar:
+   * - while playing an ad;
+   * - if duration === 0;
+   * - if seekable length === 0;
+   *
+   * Do not disable seekbar for live content.
+   */
+  const isLive = duration === Infinity;
+  const disabled = (!(normalizedDuration > 0 || isLive) && seekable.length > 0) || adInProgress;
+
   return (
     <View
       style={[props.style ?? { flex: 1 }]}
@@ -119,7 +130,7 @@ export const SeekBar = (props: SeekBarProps) => {
         setWidth(event.nativeEvent.layout.width);
       }}>
       <Slider
-        disabled={(!(normalizedDuration > 0) && seekable.length > 0) || adInProgress}
+        disabled={disabled}
         minimumValue={normalizedTime(seekableRange.start)}
         maximumValue={normalizedTime(seekableRange.end)}
         containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
