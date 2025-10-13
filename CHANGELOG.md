@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## 0.20.1
+
+### 🐛 Issues
+
+- Fixed an issue where the `<SeekBar>` would be disabled for live content.
+
 ## 0.20.0
 
 ### ✨ Features
