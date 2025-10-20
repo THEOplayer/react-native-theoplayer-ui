@@ -415,7 +415,7 @@ export const UiContainer = (props: UiContainerProps) => {
         style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
         onTouchStart={onUserAction_}
         onTouchMove={onUserAction_}
-        pointerEvents={uiVisible_ ? 'auto' : 'box-only'}>
+        pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}>
         {uiVisible_ && (
           <>
             {/* The UI background. */}
@@ -425,8 +425,8 @@ export const UiContainer = (props: UiContainerProps) => {
             {showUIBackground && (
               <View
                 style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]}
-                pointerEvents={uiVisible_ ? 'auto' : 'box-none'}
                 onTouchStart={doFadeOut_}
+                pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}
               />
             )}
 
