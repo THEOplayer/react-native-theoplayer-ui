@@ -413,8 +413,9 @@ export const UiContainer = (props: UiContainerProps) => {
       {/* - Disable tap/click when ad is in progress to allow clickThrough. */}
       <Animated.View
         style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
-        onTouchStart={onUserAction_}
         onTouchMove={onUserAction_}
+        onStartShouldSetResponder={() => true}
+        onResponderRelease={onUserAction_}
         pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}>
         {uiVisible_ && (
           <>
@@ -425,7 +426,8 @@ export const UiContainer = (props: UiContainerProps) => {
             {showUIBackground && (
               <View
                 style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]}
-                onTouchStart={doFadeOut_}
+                onStartShouldSetResponder={() => true}
+                onResponderRelease={doFadeOut_}
                 pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}
               />
             )}
