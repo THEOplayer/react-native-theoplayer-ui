@@ -409,6 +409,7 @@ export const UiContainer = (props: UiContainerProps) => {
       </View>
 
       {/* The UI Container. */}
+      {/* - Enable onTouchMove to make sure keeps visible while scrubbing the slider. */}
       {/* - Enable tap/click to force-fully fade-in the UI. */}
       {/* - Disable tap/click when ad is in progress to allow clickThrough. */}
       <Animated.View
@@ -426,7 +427,9 @@ export const UiContainer = (props: UiContainerProps) => {
             {showUIBackground && (
               <View
                 style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]}
+                // become responder on the start of a touch or mouse click
                 onStartShouldSetResponder={() => true}
+                // at the end of the touch or mouse click, fade-out UI
                 onResponderRelease={doFadeOut_}
                 pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}
               />
