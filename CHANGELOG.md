@@ -1,5 +1,12 @@
 # @theoplayer/react-native-ui
 
+## 0.20.2
+
+### 🐛 Issues
+
+- Fixed an issue on Web where it was not possible to dismiss the UI by clicking or tapping.
+- Fixed an issue on iOS where the UI would not reappear when tapping the screen.
+
 ## 0.20.1
 
 ### 🐛 Issues
