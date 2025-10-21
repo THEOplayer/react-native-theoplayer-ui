@@ -409,13 +409,15 @@ export const UiContainer = (props: UiContainerProps) => {
       </View>
 
       {/* The UI Container. */}
+      {/* - Enable onTouchMove to make sure keeps visible while scrubbing the slider. */}
       {/* - Enable tap/click to force-fully fade-in the UI. */}
       {/* - Disable tap/click when ad is in progress to allow clickThrough. */}
       <Animated.View
         style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
-        onTouchStart={onUserAction_}
         onTouchMove={onUserAction_}
-        pointerEvents={adInProgress ? 'box-none' : 'auto'}>
+        onStartShouldSetResponder={() => true}
+        onResponderRelease={onUserAction_}
+        pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}>
         {uiVisible_ && (
           <>
             {/* The UI background. */}
@@ -425,8 +427,11 @@ export const UiContainer = (props: UiContainerProps) => {
             {showUIBackground && (
               <View
                 style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]}
-                pointerEvents={adInProgress ? 'box-none' : 'auto'}
-                onTouchStart={doFadeOut_}
+                // become responder on the start of a touch or mouse click
+                onStartShouldSetResponder={() => true}
+                // at the end of the touch or mouse click, fade-out UI
+                onResponderRelease={doFadeOut_}
+                pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}
               />
             )}
 
