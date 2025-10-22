@@ -174,7 +174,7 @@ export default function App() {
                     </ControlBar>
                     <ControlBar>
                       <MuteButton />
-                      <TimeLabel showDuration={true} />
+                      <TimeLabel showDuration={true} scrubTime={scrubTime} />
                       <Spacer />
                       <PipButton />
                       <FullscreenButton />
