@@ -6,11 +6,26 @@ import { useChaptersTrack, useDuration, useSeekable, useDebounce } from '../../h
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSlider } from './useSlider';
 import { TestIDs } from '../../utils/TestIDs';
+import { PlayerEventType } from 'react-native-theoplayer';
+import type { THEOplayer } from 'react-native-theoplayer';
 
 export type ThumbDimensions = {
   height: number;
   width: number;
 };
+
+export const waitForSeeked = (player: THEOplayer): Promise<void> => {
+  return new Promise<void>((resolve,reject) => {
+    if (!player) {
+      reject()
+    }
+    const onSeeked = () => {
+      player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
+      resolve()
+    }
+    player.addEventListener(PlayerEventType.SEEKED, onSeeked);
+  })
+}
 
 export interface SeekBarProps {
   /**
@@ -93,7 +108,11 @@ export const SeekBar = (props: SeekBarProps) => {
   };
 
   const onSlidingComplete = (value: number[]) => {
-    if (onScrubbing) onScrubbing(undefined);
+    if (onScrubbing) {
+      waitForSeeked(player).then( () => {
+        onScrubbing(undefined)
+      })
+    };
     debounceSeek(value[0], true);
   };
 
