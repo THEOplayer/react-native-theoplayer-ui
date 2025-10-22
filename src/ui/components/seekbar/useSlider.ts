@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { PlayerContext } from '@theoplayer/react-native-ui';
-import { type PlayerEventMap, PlayerEventType } from 'react-native-theoplayer';
+import { type PlayerEventMap, PlayerEventType, TimeUpdateEvent, SeekingEvent, SeekedEvent } from 'react-native-theoplayer';
 
-const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKING, PlayerEventType.SEEKED] satisfies ReadonlyArray<
+const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKED] satisfies ReadonlyArray<
   keyof PlayerEventMap
 >;
 
@@ -21,8 +21,11 @@ export const useSlider = (): [number, boolean, React.Dispatch<React.SetStateActi
   useEffect(() => {
     if (!player) return;
     // Block time updates while scrubbing
-    if (isScrubbing) return;
-    const onTimeUpdate = () => {
+    const onTimeUpdate = (event: TimeUpdateEvent | SeekingEvent | SeekedEvent) => {
+      if (event.type === PlayerEventType.SEEKED) {
+        setIsScrubbing(false)
+      }
+      if (isScrubbing) return;
       setCurrentTime(player.currentTime);
     };
     TIME_CHANGE_EVENTS.forEach((event) => player.addEventListener(event, onTimeUpdate));
