@@ -94,7 +94,6 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingComplete = (value: number[]) => {
     if (onScrubbing) onScrubbing(undefined);
-    setIsScrubbing(false);
     debounceSeek(value[0], true);
   };
 
