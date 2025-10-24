@@ -8,4 +8,5 @@ export const TestIDs = {
   SEEK_BAR: 'seek-bar',
   SKIP_FWD_BUTTON: 'skip-fwd-button',
   SKIP_BWD_BUTTON: 'skip-bwd-button',
+  GO_TO_LIVE_BUTTON: 'go-to-live-button',
 };
