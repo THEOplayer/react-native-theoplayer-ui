@@ -1,6 +1,7 @@
 import { StyleProp, Text, TextStyle } from 'react-native';
 import React, { useContext } from 'react';
 import { PlayerContext } from '../util/PlayerContext';
+import { isLiveDuration } from '../util/LiveUtils';
 
 export interface StaticTimeLabelProps {
   /**
@@ -55,8 +56,4 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
 
 function isValidDuration(duration: number | undefined): boolean {
   return duration !== undefined && !isNaN(duration) && duration > 0;
-}
-
-function isLiveDuration(duration: number | undefined): boolean {
-  return duration !== undefined && !isFinite(duration);
 }
