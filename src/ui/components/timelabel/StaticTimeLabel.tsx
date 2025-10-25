@@ -44,6 +44,15 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
     if (isAtLive(duration, time, seekable)) {
       return <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.liveLabel}</Text>;
     }
+
+    const seekableEnd = seekable && seekable.length > 0 ? seekable[seekable.length - 1].end : 0;
+    const delayFromLive = seekableEnd - time;
+    let delayLabel = new Date(delayFromLive).toISOString().substring(11, 19);
+    if (delayLabel.startsWith('00:')) {
+      // Don't render hours if not needed.
+      delayLabel = delayLabel.slice(3);
+    }
+    return <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{`-${delayLabel}`}</Text>;
   }
 
   try {
