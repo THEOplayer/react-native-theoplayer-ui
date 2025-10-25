@@ -1,7 +1,8 @@
 import { StyleProp, Text, TextStyle } from 'react-native';
 import React, { useContext } from 'react';
 import { PlayerContext } from '../util/PlayerContext';
-import { isLiveDuration } from '../util/LiveUtils';
+import { isAtLive, isLiveDuration } from '../util/LiveUtils';
+import type { TimeRange } from 'react-native-theoplayer';
 
 export interface StaticTimeLabelProps {
   /**
@@ -20,13 +21,17 @@ export interface StaticTimeLabelProps {
    * The duration of the current source.
    */
   duration?: number;
+  /**
+   * The seekable window of the player
+   */
+  seekable?: TimeRange[];
 }
 
 /**
  * A static time label for the `react-native-theoplayer` UI.
  */
 export function StaticTimeLabel(props: StaticTimeLabelProps) {
-  const { style, showDuration, time, duration } = props;
+  const { style, showDuration, time, duration, seekable } = props;
   const context = useContext(PlayerContext);
 
   // An invalid duration
@@ -36,7 +41,9 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
 
   // Live streams report an Infinity duration.
   if (showDuration && isLiveDuration(duration)) {
-    return <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.liveLabel}</Text>;
+    if (isAtLive(duration, time, seekable)) {
+      return <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.liveLabel}</Text>;
+    }
   }
 
   try {

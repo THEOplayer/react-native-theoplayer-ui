@@ -1,6 +1,6 @@
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import React, { type ReactNode, useCallback, useContext } from 'react';
-import { ActionButton, PlayerContext, useDuration } from '@theoplayer/react-native-ui';
+import { ActionButton, PlayerContext, useDuration, useCurrentTime, useSeekable } from '@theoplayer/react-native-ui';
 import { TestIDs } from '../../utils/TestIDs';
 import { GoToLiveSvg } from './svg/GoToLiveSvg';
 import { isAtLive } from '../util/LiveUtils';
@@ -20,12 +20,14 @@ export function GoToLiveButton(props: LiveButtonProps) {
   const goLiveSvg: ReactNode = icon?.goToLive ?? <GoToLiveSvg />;
   const { player } = useContext(PlayerContext);
   const duration = useDuration();
+  const currentTime = useCurrentTime();
+  const seekable = useSeekable();
 
   const goToLive = useCallback(() => {
     player.currentTime = Infinity;
   }, [player]);
 
-  if (isNaN(duration) || isAtLive(player, player.currentTime)) {
+  if (isNaN(duration) || isAtLive(duration, currentTime, seekable)) {
     return <></>;
   }
 

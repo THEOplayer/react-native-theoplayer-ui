@@ -1,7 +1,7 @@
 import type { StyleProp, TextStyle } from 'react-native';
 import React from 'react';
 import { StaticTimeLabel } from './StaticTimeLabel';
-import { useCurrentTime, useDuration } from '../../hooks/barrel';
+import { useCurrentTime, useDuration, useSeekable } from '../../hooks/barrel';
 
 export interface TimeLabelProps {
   /**
@@ -30,6 +30,15 @@ export const DEFAULT_TIME_LABEL_STYLE: TextStyle = {
 export const TimeLabel = (props: TimeLabelProps) => {
   const currentTime = useCurrentTime();
   const duration = useDuration();
+  const seekable = useSeekable();
   const { showDuration, style } = props;
-  return <StaticTimeLabel showDuration={showDuration} time={currentTime} duration={duration} style={[DEFAULT_TIME_LABEL_STYLE, style]} />;
+  return (
+    <StaticTimeLabel
+      showDuration={showDuration}
+      time={currentTime}
+      duration={duration}
+      seekable={seekable}
+      style={[DEFAULT_TIME_LABEL_STYLE, style]}
+    />
+  );
 };

@@ -1,4 +1,4 @@
-import type { THEOplayer } from 'react-native-theoplayer';
+import type { TimeRange } from 'react-native-theoplayer';
 
 const LIVE_MARGIN = 10;
 
@@ -12,10 +12,9 @@ export function isLiveDuration(duration: number | undefined): boolean {
 /**
  * Check whether the given timestamp is at the live point.
  */
-export function isAtLive(player: THEOplayer, time: number): boolean {
-  if (isLiveDuration(player.duration)) {
-    const seekable = player.seekable;
-    if (seekable.length === 0) {
+export function isAtLive(duration: number | undefined, time: number, seekable: TimeRange[] | undefined): boolean {
+  if (isLiveDuration(duration)) {
+    if (!seekable || seekable.length === 0) {
       return true;
     }
     const seekableEnd = seekable[seekable.length - 1].end;
