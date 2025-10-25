@@ -3,6 +3,7 @@ import React, { type ReactNode, useCallback, useContext } from 'react';
 import { ActionButton, PlayerContext, useDuration } from '@theoplayer/react-native-ui';
 import { TestIDs } from '../../utils/TestIDs';
 import { GoToLiveSvg } from './svg/GoToLiveSvg';
+import { isAtLive } from '../util/LiveUtils';
 
 export interface LiveButtonProps extends ButtonBaseProps {
   /**
@@ -24,7 +25,7 @@ export function GoToLiveButton(props: LiveButtonProps) {
     player.currentTime = Infinity;
   }, [player]);
 
-  if (duration !== Infinity) {
+  if (isNaN(duration) || isAtLive(player, player.currentTime)) {
     return <></>;
   }
 
