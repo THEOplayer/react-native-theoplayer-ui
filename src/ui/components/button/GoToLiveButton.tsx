@@ -17,26 +17,26 @@ export interface LiveButtonProps extends ButtonBaseProps {
    */
   textStyle?: StyleProp<TextStyle>;
   /**
-   * The color for the live indicator at the live edge.
+   * The color of the live indicator at the live edge.
    */
   atLiveColor?: ColorValue | undefined;
   /**
-   * The color for the live indicator behind the live edge.
+   * The color of the live indicator behind the live edge.
    */
   behindLiveColor?: ColorValue | undefined;
 }
-
-const DEFAULT_GO_TO_LIVE_BUTTON_PROPS: LiveButtonProps = {
-  atLiveColor: '#f00',
-  behindLiveColor: '#888',
-};
 
 /**
  * The default go to live button for the `react-native-theoplayer` UI.
  */
 export function GoToLiveButton(props: LiveButtonProps) {
-  const { style, textStyle, atLiveColor, behindLiveColor } = props;
   const context = useContext(PlayerContext);
+  const {
+    style,
+    textStyle,
+    atLiveColor = context.style.colors.liveIndicatorAtLiveEdge,
+    behindLiveColor = context.style.colors.liveIndicatorBehindLiveEdge,
+  } = props;
   const duration = useDuration();
   const currentTime = useCurrentTime();
   const seekable = useSeekable();
@@ -45,9 +45,7 @@ export function GoToLiveButton(props: LiveButtonProps) {
     context.player.currentTime = Infinity;
   }, [context.player]);
 
-  const liveIndicatorColor = isAtLive(duration, currentTime, seekable)
-    ? (atLiveColor ?? DEFAULT_GO_TO_LIVE_BUTTON_PROPS.atLiveColor)
-    : (behindLiveColor ?? DEFAULT_GO_TO_LIVE_BUTTON_PROPS.behindLiveColor);
+  const liveIndicatorColor = isAtLive(duration, currentTime, seekable) ? atLiveColor : behindLiveColor;
 
   if (isNaN(duration) || !isLiveDuration(duration)) {
     return <></>;

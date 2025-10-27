@@ -56,6 +56,14 @@ export interface ColorTheme {
    * The color of the ad skip button background.
    */
   adSkipBackground: string;
+  /**
+   * The color of the live indicator at the live edge.
+   */
+  liveIndicatorAtLiveEdge: string;
+  /**
+   * The color of the live indicator behind the live edge.
+   */
+  liveIndicatorBehindLiveEdge: string;
 }
 
 /**
@@ -112,6 +120,8 @@ export const DEFAULT_THEOPLAYER_THEME: THEOplayerTheme = {
     adDiplayText: '#000',
     adDisplayBackground: '#FFC50F',
     adSkipBackground: '#00000070',
+    liveIndicatorAtLiveEdge: '#FF0000',
+    liveIndicatorBehindLiveEdge: '#888888',
   },
   text: {
     textAlignVertical: 'center',
