@@ -1,6 +1,6 @@
 import type { TimeRange } from 'react-native-theoplayer';
 
-const LIVE_MARGIN = 10;
+const LIVE_MARGIN = 10_000;
 
 /**
  * Check whether the player is playing a live stream.
