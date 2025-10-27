@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { PlayerContext } from '../util/PlayerContext';
 import { isAtLive, isLiveDuration } from '../util/LiveUtils';
 import type { TimeRange } from 'react-native-theoplayer';
+import { formatTime } from '../util/TimeUtils';
 
 export interface StaticTimeLabelProps {
   /**
@@ -39,35 +40,25 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
     return <></>;
   }
 
-  // Live streams report an Infinity duration.
-  if (showDuration && isLiveDuration(duration)) {
-    if (isAtLive(duration, time, seekable)) {
-      return <></>;
-    }
-
-    const seekableEnd = seekable && seekable.length > 0 ? seekable[seekable.length - 1].end : 0;
-    const delayFromLive = seekableEnd - time;
-    let delayLabel = new Date(delayFromLive).toISOString().substring(11, 19);
-    if (delayLabel.startsWith('00:')) {
-      // Don't render hours if not needed.
-      delayLabel = delayLabel.slice(3);
-    }
-    return <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{`-${delayLabel}`}</Text>;
-  }
-
-  try {
-    let currentTimeLabel = new Date(time).toISOString().substring(11, 19);
-    let durationLabel = new Date(duration ?? 0).toISOString().substring(11, 19);
-    if (durationLabel.startsWith('00:')) {
-      // Don't render hours if not needed.
-      currentTimeLabel = currentTimeLabel.slice(3);
-      durationLabel = durationLabel.slice(3);
-    }
-    const label = showDuration ? `${currentTimeLabel} / ${durationLabel}` : currentTimeLabel;
-    return <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{label}</Text>;
-  } catch {
+  const isLive = isLiveDuration(duration);
+  const atLive = isAtLive(duration, time, seekable);
+  if (isLive && atLive) {
     return <></>;
   }
+
+  const endTime = duration && isFinite(duration) ? duration : seekable && seekable.length > 0 ? seekable[seekable.length - 1].end : NaN;
+  let timeOnLabel = time;
+  if (isLive) {
+    timeOnLabel = -((endTime || 0) - time);
+  }
+  let text: string;
+  if (showDuration && !isLive) {
+    text = `${formatTime(timeOnLabel, endTime, isLive)} / ${formatTime(endTime)}`;
+  } else {
+    text = formatTime(timeOnLabel, endTime, isLive);
+  }
+
+  return <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{`${text}`}</Text>;
 }
 
 function isValidDuration(duration: number | undefined): boolean {
