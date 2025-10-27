@@ -1,6 +1,8 @@
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import React, { type ReactNode, useCallback, useContext } from 'react';
-import { ActionButton, PlayerContext, useDuration, useCurrentTime, useSeekable } from '@theoplayer/react-native-ui';
+import { PlayerContext } from '../util/PlayerContext';
+import { ActionButton } from './actionbutton/ActionButton';
+import { useCurrentTime, useDuration, useSeekable } from '../../hooks/barrel';
 import { TestIDs } from '../../utils/TestIDs';
 import { GoToLiveSvg } from './svg/GoToLiveSvg';
 import { isAtLive } from '../util/LiveUtils';
