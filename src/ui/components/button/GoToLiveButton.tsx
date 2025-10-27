@@ -1,11 +1,9 @@
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import React, { type ReactNode, useCallback, useContext } from 'react';
 import { PlayerContext } from '../util/PlayerContext';
-import { ActionButton } from './actionbutton/ActionButton';
 import { useCurrentTime, useDuration, useSeekable } from '../../hooks/barrel';
-import { TestIDs } from '../../utils/TestIDs';
-import { GoToLiveSvg } from './svg/GoToLiveSvg';
-import { isAtLive } from '../util/LiveUtils';
+import { isAtLive, isLiveDuration } from '../util/LiveUtils';
+import { Text, TouchableOpacity } from 'react-native';
 
 export interface LiveButtonProps extends ButtonBaseProps {
   /**
@@ -18,20 +16,26 @@ export interface LiveButtonProps extends ButtonBaseProps {
  * The default go to live button for the `react-native-theoplayer` UI.
  */
 export function GoToLiveButton(props: LiveButtonProps) {
-  const { icon, style } = props;
-  const goLiveSvg: ReactNode = icon?.goToLive ?? <GoToLiveSvg />;
-  const { player } = useContext(PlayerContext);
+  const { style } = props;
+  const context = useContext(PlayerContext);
   const duration = useDuration();
   const currentTime = useCurrentTime();
   const seekable = useSeekable();
 
   const goToLive = useCallback(() => {
-    player.currentTime = Infinity;
-  }, [player]);
+    context.player.currentTime = Infinity;
+  }, [context.player]);
 
-  if (isNaN(duration) || isAtLive(duration, currentTime, seekable)) {
+  const liveIndicatorColor = isAtLive(duration, currentTime, seekable) ? '#f00' : '#888';
+
+  if (isNaN(duration) || !isLiveDuration(duration)) {
     return <></>;
   }
 
-  return <ActionButton style={style} testID={props.testID ?? TestIDs.GO_TO_LIVE_BUTTON} touchable={true} svg={goLiveSvg} onPress={goToLive} />;
+  return (
+    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }} onPress={goToLive}>
+      <Text style={[context.style.text, { color: liveIndicatorColor, marginRight: 6 }, style]}>●</Text>
+      <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.liveLabel}</Text>
+    </TouchableOpacity>
+  );
 }
