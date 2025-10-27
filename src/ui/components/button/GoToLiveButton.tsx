@@ -1,9 +1,11 @@
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import React, { type ReactNode, useCallback, useContext } from 'react';
 import { PlayerContext } from '../util/PlayerContext';
+import { ActionButton } from './actionbutton/ActionButton';
 import { useCurrentTime, useDuration, useSeekable } from '../../hooks/barrel';
 import { isAtLive, isLiveDuration } from '../util/LiveUtils';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, View } from 'react-native';
+import { TestIDs } from '../../utils/TestIDs';
 
 export interface LiveButtonProps extends ButtonBaseProps {
   /**
@@ -33,9 +35,15 @@ export function GoToLiveButton(props: LiveButtonProps) {
   }
 
   return (
-    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }} onPress={goToLive}>
-      <Text style={[context.style.text, { color: liveIndicatorColor, marginRight: 6 }, style]}>●</Text>
-      <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.liveLabel}</Text>
-    </TouchableOpacity>
+    <ActionButton
+      style={[props.style, { justifyContent: 'center', aspectRatio: 1.5 }]}
+      testID={props.testID ?? TestIDs.GO_TO_LIVE_BUTTON}
+      onPress={goToLive}
+      touchable={true}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={[context.style.text, { color: liveIndicatorColor, marginRight: 6 }, style]}>●</Text>
+        <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.liveLabel}</Text>
+      </View>
+    </ActionButton>
   );
 }
