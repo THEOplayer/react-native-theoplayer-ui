@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## 0.21.0
+
+### ✨ Features
+
+- Added a `<GoToLiveButton>` component that only renders itself while playing a DVR stream and being behind the live point.
+
 ## 0.20.2
 
 ### 🐛 Issues
