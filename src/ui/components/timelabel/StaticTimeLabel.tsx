@@ -42,7 +42,7 @@ export function StaticTimeLabel(props: StaticTimeLabelProps) {
   // Live streams report an Infinity duration.
   if (showDuration && isLiveDuration(duration)) {
     if (isAtLive(duration, time, seekable)) {
-      return <Text style={[context.style.text, { color: context.style.colors.text }, style]}>{context.locale.liveLabel}</Text>;
+      return <></>;
     }
 
     const seekableEnd = seekable && seekable.length > 0 ? seekable[seekable.length - 1].end : 0;
