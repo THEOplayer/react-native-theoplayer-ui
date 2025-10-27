@@ -4,7 +4,7 @@ import { PlayerContext } from '../util/PlayerContext';
 import { ActionButton } from './actionbutton/ActionButton';
 import { useCurrentTime, useDuration, useSeekable } from '../../hooks/barrel';
 import { isAtLive, isLiveDuration } from '../util/LiveUtils';
-import { ColorValue, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { ColorValue, StyleProp, Text, TextStyle, View } from 'react-native';
 import { TestIDs } from '../../utils/TestIDs';
 
 export interface LiveButtonProps extends ButtonBaseProps {
