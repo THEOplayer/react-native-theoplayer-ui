@@ -12,6 +12,7 @@ import {
   ControlBar,
   DEFAULT_THEOPLAYER_THEME,
   FullscreenButton,
+  GoToLiveButton,
   LanguageMenuButton,
   type Locale,
   MuteButton,
@@ -30,7 +31,6 @@ import { PlayerConfiguration, PlayerEventType, TextTrackKind, THEOplayer, THEOpl
 
 import { Platform, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { GoToLiveButton } from '../src/ui/components/button/GoToLiveButton';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
