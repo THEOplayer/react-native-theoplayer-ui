@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## 0.21.1
+
+### 🐛 Issues
+
+- Fixed an issue where the `GoToLiveButton` was not available as an exported component.
+
 ## 0.21.0
 
 ### ✨ Features
