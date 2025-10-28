@@ -31,6 +31,7 @@ import {
   AdDisplay,
   AdCountdown,
   AdSkipButton,
+  GoToLiveButton,
 } from '..';
 
 export enum UIFeature {
@@ -147,6 +148,7 @@ export function THEOplayerDefaultUi(props: THEOplayerDefaultUiProps) {
                 <ControlBar>{!excludedFeatures.includes(UIFeature.SeekBar) && <SeekBar />}</ControlBar>
                 <ControlBar>
                   {!excludedFeatures.includes(UIFeature.Mute) && <MuteButton />}
+                  <GoToLiveButton />
                   <TimeLabel showDuration={true} />
                   <Spacer />
                   {bottomSlot}
