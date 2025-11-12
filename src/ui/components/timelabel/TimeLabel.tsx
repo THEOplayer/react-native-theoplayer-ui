@@ -35,8 +35,8 @@ export const DEFAULT_TIME_LABEL_STYLE: TextStyle = {
 export const TimeLabel = (props: TimeLabelProps) => {
   const currentTime = useCurrentTime();
   const duration = useDuration();
-  const expectedSeekTarget = scrubTime || currentTime
   const { showDuration, style, scrubTime } = props;
+  const expectedSeekTarget = scrubTime ?? currentTime
   const seekable = useSeekable();
   const { showDuration, style } = props;
   return (
