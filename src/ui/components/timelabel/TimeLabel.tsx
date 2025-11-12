@@ -36,6 +36,6 @@ export const TimeLabel = (props: TimeLabelProps) => {
   const currentTime = useCurrentTime();
   const duration = useDuration();
   const { showDuration, style, scrubTime } = props;
-  const expectedSeekTarget = scrubTime || currentTime
+  const expectedSeekTarget = scrubTime ?? currentTime
   return <StaticTimeLabel showDuration={showDuration} time={expectedSeekTarget} duration={duration} style={[DEFAULT_TIME_LABEL_STYLE, style]} />;
 };
