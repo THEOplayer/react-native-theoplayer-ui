@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
@@ -95,26 +95,26 @@ export const SeekBar = (props: SeekBarProps) => {
     player.currentTime = value;
   }, DEBOUNCE_SEEK_DELAY);
 
-  const onSlidingStart = (value: number[]) => {
+  const onSlidingStart = useCallback((value: number[]) => {
     setIsScrubbing(true);
     debounceSeek(value[0]);
-  };
+  },[player]);
 
-  const onSlidingValueChange = (value: number[]) => {
+  const onSlidingValueChange = useCallback((value: number[]) => {
     if (isScrubbing) {
       if (onScrubbing) onScrubbing(value[0]);
       debounceSeek(value[0]);
     }
-  };
+  },[player]);
 
-  const onSlidingComplete = (value: number[]) => {
+  const onSlidingComplete = useCallback((value: number[]) => {
     if (onScrubbing) {
       waitForSeeked(player).then( () => {
         onScrubbing(undefined)
       })
     };
     debounceSeek(value[0], true);
-  };
+  },[player]);
 
   const normalizedDuration = normalizedTime(duration);
   const seekableRange = {
