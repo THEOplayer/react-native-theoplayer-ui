@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
@@ -16,14 +16,23 @@ export type ThumbDimensions = {
 
 export const waitForSeeked = (player: THEOplayer): Promise<void> => {
   return new Promise<void>((resolve,reject) => {
-    if (!player) {
-      reject()
-    }
-    const onSeeked = () => {
-      player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
-      resolve()
-    }
-    player.addEventListener(PlayerEventType.SEEKED, onSeeked);
+    useEffect(() => {
+      if (!player) {
+        reject()
+      }
+      const onSeeked = () => {
+        player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
+        resolve()
+      }
+      player.addEventListener(PlayerEventType.SEEKED, onSeeked);
+      setTimeout(() => {
+        player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
+        reject()
+      }, 8000)
+      return () => {
+        player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
+      }
+    },[])
   })
 }
 
