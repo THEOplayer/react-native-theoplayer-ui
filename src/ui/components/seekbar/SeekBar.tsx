@@ -119,6 +119,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const onSlidingComplete = useCallback((value: number[]) => {
     if (onScrubbing) {
       waitForSeeked(player).then( () => {
+        setIsScrubbing(false)
         onScrubbing(undefined)
       })
     };
