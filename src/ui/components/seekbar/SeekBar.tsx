@@ -16,7 +16,6 @@ export type ThumbDimensions = {
 
 export const waitForSeeked = (player: THEOplayer): Promise<void> => {
   return new Promise<void>((resolve,reject) => {
-    useEffect(() => {
       if (!player) {
         reject()
       }
@@ -29,10 +28,6 @@ export const waitForSeeked = (player: THEOplayer): Promise<void> => {
         player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
         reject()
       }, 8000)
-      return () => {
-        player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
-      }
-    },[])
   })
 }
 
