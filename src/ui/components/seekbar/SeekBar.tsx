@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
