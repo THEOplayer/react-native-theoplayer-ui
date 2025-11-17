@@ -21,10 +21,7 @@ export const useSlider = (): [number, boolean, React.Dispatch<React.SetStateActi
   useEffect(() => {
     if (!player) return;
     // Block time updates while scrubbing
-    const onTimeUpdate = (event: TimeUpdateEvent | SeekingEvent | SeekedEvent) => {
-      if (event.type === PlayerEventType.SEEKED) {
-        setIsScrubbing(false)
-      }
+    const onTimeUpdate = () => {
       if (isScrubbing) return;
       setCurrentTime(player.currentTime);
     };
