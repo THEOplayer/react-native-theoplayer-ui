@@ -20,7 +20,6 @@ export const useSlider = (): [number, boolean, React.Dispatch<React.SetStateActi
   const [currentTime, setCurrentTime] = useState(player?.currentTime ?? 0);
   useEffect(() => {
     if (!player) return;
-    // Block time updates while scrubbing
     const onTimeUpdate = () => {
       if (isScrubbing) return;
       setCurrentTime(player.currentTime);
