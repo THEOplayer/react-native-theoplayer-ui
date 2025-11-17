@@ -6,23 +6,29 @@ import { useChaptersTrack, useDuration, useSeekable, useDebounce } from '../../h
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSlider } from './useSlider';
 import { TestIDs } from '../../utils/TestIDs';
-import { PlayerEventType } from 'react-native-theoplayer';
+import { PlayerEventType, SeekedEvent } from 'react-native-theoplayer';
 import type { THEOplayer } from 'react-native-theoplayer';
+import { fuzzyEquals } from '../../utils/NumberUtils';
 
 export type ThumbDimensions = {
   height: number;
   width: number;
 };
 
-export const waitForSeeked = (player: THEOplayer): Promise<void> => {
-  return new Promise<void>((resolve,reject) => {
+const SEEKED_TOLERANCE = 1e3
 const WAIT_FOR_SEEKED_TIMEOUT = 8e3
+
+export const waitForSeeked = (player: THEOplayer, target: number): Promise<number> => {
+  return new Promise<number>((resolve,reject) => {
       if (!player) {
         reject()
       }
-      const onSeeked = () => {
+      const onSeeked = (event: SeekedEvent) => {
+        if (!fuzzyEquals(event.currentTime, target, SEEKED_TOLERANCE)) {
+          return
+        }
         player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
-        resolve()
+        resolve(event.currentTime)
       }
       player.addEventListener(PlayerEventType.SEEKED, onSeeked);
       setTimeout(() => {
@@ -90,6 +96,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const { onScrubbing, renderAboveThumbComponent: customRenderAboveThumbComponent } = props;
   const { player, style: theme, adInProgress } = useContext(PlayerContext);
   const [width, setWidth] = useState(0);
+  const [seekTarget, setSeekTarget] = useState(0)
   const duration = useDuration();
   const seekable = useSeekable();
   const [sliderTime, isScrubbing, setIsScrubbing] = useSlider();
@@ -103,7 +110,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const onSlidingStart = useCallback((value: number[]) => {
     setIsScrubbing(true);
     debounceSeek(value[0]);
-  },[player]);
+  },[player, setIsScrubbing]);
 
   const onSlidingValueChange = useCallback((value: number[]) => {
     if (isScrubbing) {
@@ -113,12 +120,13 @@ export const SeekBar = (props: SeekBarProps) => {
   },[player,isScrubbing]);
 
   const onSlidingComplete = useCallback((value: number[]) => {
-    if (onScrubbing) {
-      waitForSeeked(player).then( () => {
+    setSeekTarget(value[0])
+      waitForSeeked(player, value[0]).then( (seekedTo) => {
+        if (!fuzzyEquals(seekedTo, seekTarget, SEEKED_TOLERANCE)) {
+          return
+        }
         setIsScrubbing(false)
-        onScrubbing(undefined)
       })
-    };
     debounceSeek(value[0], true);
   },[player]);
 
