@@ -16,6 +16,7 @@ export type ThumbDimensions = {
 
 export const waitForSeeked = (player: THEOplayer): Promise<void> => {
   return new Promise<void>((resolve,reject) => {
+const WAIT_FOR_SEEKED_TIMEOUT = 8e3
       if (!player) {
         reject()
       }
@@ -27,7 +28,7 @@ export const waitForSeeked = (player: THEOplayer): Promise<void> => {
       setTimeout(() => {
         player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
         reject()
-      }, 8000)
+      }, WAIT_FOR_SEEKED_TIMEOUT)
   })
 }
 
