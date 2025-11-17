@@ -21,7 +21,7 @@ const WAIT_FOR_SEEKED_TIMEOUT = 8e3
 export const waitForSeeked = (player: THEOplayer, target: number): Promise<number> => {
   return new Promise<number>((resolve,reject) => {
       if (!player) {
-        reject()
+        reject(new Error('Player not instantiated yet'))
       }
       const onSeeked = (event: SeekedEvent) => {
         if (!fuzzyEquals(event.currentTime, target, SEEKED_TOLERANCE)) {
@@ -33,7 +33,6 @@ export const waitForSeeked = (player: THEOplayer, target: number): Promise<numbe
       player.addEventListener(PlayerEventType.SEEKED, onSeeked);
       setTimeout(() => {
         player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
-        reject()
       }, WAIT_FOR_SEEKED_TIMEOUT)
   })
 }
@@ -121,12 +120,15 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingComplete = useCallback((value: number[]) => {
     setSeekTarget(value[0])
-      waitForSeeked(player, value[0]).then( (seekedTo) => {
+      waitForSeeked(player, value[0])
+      .then( (seekedTo) => {
         if (!fuzzyEquals(seekedTo, seekTarget, SEEKED_TOLERANCE)) {
           return
         }
         setIsScrubbing(false)
-      })
+      }).catch(
+        //do nothing
+      )
     debounceSeek(value[0], true);
   },[player]);
 
