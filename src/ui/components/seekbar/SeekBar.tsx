@@ -109,14 +109,14 @@ export const SeekBar = (props: SeekBarProps) => {
   const onSlidingStart = useCallback((value: number[]) => {
     setIsScrubbing(true);
     debounceSeek(value[0]);
-  },[player, setIsScrubbing]);
+  },[player, setIsScrubbing, debounceSeek]);
 
   const onSlidingValueChange = useCallback((value: number[]) => {
     if (isScrubbing) {
       if (onScrubbing) onScrubbing(value[0]);
       debounceSeek(value[0]);
     }
-  },[player,isScrubbing]);
+  },[player,isScrubbing,onScrubbing,debounceSeek]);
 
   const onSlidingComplete = useCallback((value: number[]) => {
     setSeekTarget(value[0])
@@ -130,7 +130,7 @@ export const SeekBar = (props: SeekBarProps) => {
         //do nothing
       )
     debounceSeek(value[0], true);
-  },[player]);
+  },[player, debounceSeek, seekTarget, setIsScrubbing]);
 
   const normalizedDuration = normalizedTime(duration);
   const seekableRange = {
