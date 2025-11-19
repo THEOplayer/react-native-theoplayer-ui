@@ -111,7 +111,7 @@ export const SeekBar = (props: SeekBarProps) => {
       setIsScrubbing(true);
       debounceSeek(value[0]);
     },
-    [player, setIsScrubbing, debounceSeek],
+    [setIsScrubbing, debounceSeek],
   );
 
   const onSlidingValueChange = useCallback(
@@ -121,7 +121,7 @@ export const SeekBar = (props: SeekBarProps) => {
         debounceSeek(value[0]);
       }
     },
-    [player, isScrubbing, onScrubbing, debounceSeek],
+    [isScrubbing, onScrubbing, debounceSeek],
   );
 
   const onSlidingComplete = useCallback(
