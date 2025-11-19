@@ -96,12 +96,13 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingValueChange = useCallback(
     ([value]: number[]) => {
+      setSeekTarget(value)
       if (isScrubbing) {
         if (onScrubbing) onScrubbing(value);
         debounceSeek(value);
       }
     },
-    [isScrubbing, onScrubbing, debounceSeek],
+    [isScrubbing, onScrubbing, debounceSeek, setSeekTarget],
   );
 
   const onSlidingComplete = useCallback(
