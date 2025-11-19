@@ -2,9 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { PlayerContext } from '@theoplayer/react-native-ui';
 import { type PlayerEventMap, PlayerEventType } from 'react-native-theoplayer';
 
-const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKED] satisfies ReadonlyArray<
-  keyof PlayerEventMap
->;
+const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKED] satisfies ReadonlyArray<keyof PlayerEventMap>;
 
 /**
  * Returns the player's current slider time, and its scrubbing state.

@@ -15,27 +15,27 @@ export type ThumbDimensions = {
   width: number;
 };
 
-const SEEKED_TOLERANCE = 1e3
-const WAIT_FOR_SEEKED_TIMEOUT = 8e3
+const SEEKED_TOLERANCE = 1e3;
+const WAIT_FOR_SEEKED_TIMEOUT = 8e3;
 
 export const waitForSeeked = (player: THEOplayer, target: number): Promise<number> => {
-  return new Promise<number>((resolve,reject) => {
-      if (!player) {
-        reject(new Error('Player not instantiated yet'))
+  return new Promise<number>((resolve, reject) => {
+    if (!player) {
+      reject(new Error('Player not instantiated yet'));
+    }
+    const onSeeked = (event: SeekedEvent) => {
+      if (!fuzzyEquals(event.currentTime, target, SEEKED_TOLERANCE)) {
+        return;
       }
-      const onSeeked = (event: SeekedEvent) => {
-        if (!fuzzyEquals(event.currentTime, target, SEEKED_TOLERANCE)) {
-          return
-        }
-        player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
-        resolve(event.currentTime)
-      }
-      player.addEventListener(PlayerEventType.SEEKED, onSeeked);
-      setTimeout(() => {
-        player.removeEventListener(PlayerEventType.SEEKED, onSeeked)
-      }, WAIT_FOR_SEEKED_TIMEOUT)
-  })
-}
+      player.removeEventListener(PlayerEventType.SEEKED, onSeeked);
+      resolve(event.currentTime);
+    };
+    player.addEventListener(PlayerEventType.SEEKED, onSeeked);
+    setTimeout(() => {
+      player.removeEventListener(PlayerEventType.SEEKED, onSeeked);
+    }, WAIT_FOR_SEEKED_TIMEOUT);
+  });
+};
 
 export interface SeekBarProps {
   /**
@@ -95,7 +95,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const { onScrubbing, renderAboveThumbComponent: customRenderAboveThumbComponent } = props;
   const { player, style: theme, adInProgress } = useContext(PlayerContext);
   const [width, setWidth] = useState(0);
-  const [seekTarget, setSeekTarget] = useState(0)
+  const [seekTarget, setSeekTarget] = useState(0);
   const duration = useDuration();
   const seekable = useSeekable();
   const [sliderTime, isScrubbing, setIsScrubbing] = useSlider();
@@ -106,31 +106,41 @@ export const SeekBar = (props: SeekBarProps) => {
     player.currentTime = value;
   }, DEBOUNCE_SEEK_DELAY);
 
-  const onSlidingStart = useCallback((value: number[]) => {
-    setIsScrubbing(true);
-    debounceSeek(value[0]);
-  },[player, setIsScrubbing, debounceSeek]);
-
-  const onSlidingValueChange = useCallback((value: number[]) => {
-    if (isScrubbing) {
-      if (onScrubbing) onScrubbing(value[0]);
+  const onSlidingStart = useCallback(
+    (value: number[]) => {
+      setIsScrubbing(true);
       debounceSeek(value[0]);
-    }
-  },[player,isScrubbing,onScrubbing,debounceSeek]);
+    },
+    [player, setIsScrubbing, debounceSeek],
+  );
 
-  const onSlidingComplete = useCallback((value: number[]) => {
-    setSeekTarget(value[0])
+  const onSlidingValueChange = useCallback(
+    (value: number[]) => {
+      if (isScrubbing) {
+        if (onScrubbing) onScrubbing(value[0]);
+        debounceSeek(value[0]);
+      }
+    },
+    [player, isScrubbing, onScrubbing, debounceSeek],
+  );
+
+  const onSlidingComplete = useCallback(
+    (value: number[]) => {
+      setSeekTarget(value[0]);
       waitForSeeked(player, value[0])
-      .then( (seekedTo) => {
-        if (!fuzzyEquals(seekedTo, seekTarget, SEEKED_TOLERANCE)) {
-          return
-        }
-        setIsScrubbing(false)
-      }).catch(
+        .then((seekedTo) => {
+          if (!fuzzyEquals(seekedTo, seekTarget, SEEKED_TOLERANCE)) {
+            return;
+          }
+          setIsScrubbing(false);
+        })
+        .catch
         //do nothing
-      )
-    debounceSeek(value[0], true);
-  },[player, debounceSeek, seekTarget, setIsScrubbing]);
+        ();
+      debounceSeek(value[0], true);
+    },
+    [player, debounceSeek, seekTarget, setIsScrubbing],
+  );
 
   const normalizedDuration = normalizedTime(duration);
   const seekableRange = {
