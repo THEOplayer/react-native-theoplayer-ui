@@ -2,12 +2,12 @@ import React, { useCallback, useContext, useState } from 'react';
 import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
-import { useChaptersTrack, useDuration, useSeekable, useDebounce } from '../../hooks/barrel';
+import { useChaptersTrack, useDebounce, useDuration, useSeekable } from '../../hooks/barrel';
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSlider } from './useSlider';
 import { TestIDs } from '../../utils/TestIDs';
-import { PlayerEventType, SeekedEvent } from 'react-native-theoplayer';
 import type { THEOplayer } from 'react-native-theoplayer';
+import { PlayerEventType, SeekedEvent } from 'react-native-theoplayer';
 import { fuzzyEquals } from '../../utils/NumberUtils';
 
 export type ThumbDimensions = {
@@ -107,27 +107,27 @@ export const SeekBar = (props: SeekBarProps) => {
   }, DEBOUNCE_SEEK_DELAY);
 
   const onSlidingStart = useCallback(
-    (value: number[]) => {
+    ([value]: number[]) => {
       setIsScrubbing(true);
-      debounceSeek(value[0]);
+      debounceSeek(value);
     },
     [setIsScrubbing, debounceSeek],
   );
 
   const onSlidingValueChange = useCallback(
-    (value: number[]) => {
+    ([value]: number[]) => {
       if (isScrubbing) {
-        if (onScrubbing) onScrubbing(value[0]);
-        debounceSeek(value[0]);
+        if (onScrubbing) onScrubbing(value);
+        debounceSeek(value);
       }
     },
     [isScrubbing, onScrubbing, debounceSeek],
   );
 
   const onSlidingComplete = useCallback(
-    (value: number[]) => {
-      setSeekTarget(value[0]);
-      waitForSeeked(player, value[0])
+    ([value]: number[]) => {
+      setSeekTarget(value);
+      waitForSeeked(player, value)
         .then((seekedTo) => {
           if (!fuzzyEquals(seekedTo, seekTarget, SEEKED_TOLERANCE)) {
             return;
@@ -137,7 +137,7 @@ export const SeekBar = (props: SeekBarProps) => {
         .catch
         //do nothing
         ();
-      debounceSeek(value[0], true);
+      debounceSeek(value, true);
     },
     [player, debounceSeek, seekTarget, setIsScrubbing],
   );
