@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { type LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import { Slider } from '@miblanchard/react-native-slider';
@@ -6,7 +6,6 @@ import { useChaptersTrack, useDebounce, useDuration, useSeekable } from '../../h
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSlider } from './useSlider';
 import { TestIDs } from '../../utils/TestIDs';
-import type { THEOplayer } from 'react-native-theoplayer';
 import { PlayerEventType, SeekedEvent } from 'react-native-theoplayer';
 import { fuzzyEquals } from '../../utils/NumberUtils';
 
@@ -17,25 +16,6 @@ export type ThumbDimensions = {
 
 const SEEKED_TOLERANCE = 1e3;
 const WAIT_FOR_SEEKED_TIMEOUT = 8e3;
-
-export const waitForSeeked = (player: THEOplayer, target: number): Promise<number> => {
-  return new Promise<number>((resolve, reject) => {
-    if (!player) {
-      reject(new Error('Player not instantiated yet'));
-    }
-    const onSeeked = (event: SeekedEvent) => {
-      if (!fuzzyEquals(event.currentTime, target, SEEKED_TOLERANCE)) {
-        return;
-      }
-      player.removeEventListener(PlayerEventType.SEEKED, onSeeked);
-      resolve(event.currentTime);
-    };
-    player.addEventListener(PlayerEventType.SEEKED, onSeeked);
-    setTimeout(() => {
-      player.removeEventListener(PlayerEventType.SEEKED, onSeeked);
-    }, WAIT_FOR_SEEKED_TIMEOUT);
-  });
-};
 
 export interface SeekBarProps {
   /**
@@ -95,7 +75,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const { onScrubbing, renderAboveThumbComponent: customRenderAboveThumbComponent } = props;
   const { player, style: theme, adInProgress } = useContext(PlayerContext);
   const [width, setWidth] = useState(0);
-  const [seekTarget, setSeekTarget] = useState(0);
+  const [seekTarget, setSeekTarget] = useState<number | undefined>(undefined);
   const duration = useDuration();
   const seekable = useSeekable();
   const [sliderTime, isScrubbing, setIsScrubbing] = useSlider();
@@ -127,20 +107,29 @@ export const SeekBar = (props: SeekBarProps) => {
   const onSlidingComplete = useCallback(
     ([value]: number[]) => {
       setSeekTarget(value);
-      waitForSeeked(player, value)
-        .then((seekedTo) => {
-          if (!fuzzyEquals(seekedTo, seekTarget, SEEKED_TOLERANCE)) {
-            return;
-          }
-          setIsScrubbing(false);
-        })
-        .catch
-        //do nothing
-        ();
       debounceSeek(value, true);
     },
-    [player, debounceSeek, seekTarget, setIsScrubbing],
+    [setSeekTarget, debounceSeek],
   );
+
+  useEffect(() => {
+    if (seekTarget === undefined) return;
+    const onSeeked = (event: SeekedEvent) => {
+      if (!fuzzyEquals(event.currentTime, seekTarget, SEEKED_TOLERANCE)) {
+        return;
+      }
+      cleanup();
+      setIsScrubbing(false);
+      setSeekTarget(undefined);
+    };
+    const cleanup = () => {
+      clearTimeout(timeout);
+      player.removeEventListener(PlayerEventType.SEEKED, onSeeked);
+    };
+    player.addEventListener(PlayerEventType.SEEKED, onSeeked);
+    const timeout = setTimeout(cleanup, WAIT_FOR_SEEKED_TIMEOUT);
+    return cleanup;
+  }, [player, seekTarget, setIsScrubbing]);
 
   const normalizedDuration = normalizedTime(duration);
   const seekableRange = {
