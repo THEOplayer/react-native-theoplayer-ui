@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## 0.21.2
+
+### 🐛 Issues
+
+- Fixed an issue where the `<SeekBar>` would occasionally jump back after seeking.
+
 ## 0.21.1
 
 ### 🐛 Issues
