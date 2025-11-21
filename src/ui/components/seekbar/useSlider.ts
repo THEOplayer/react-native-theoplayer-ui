@@ -2,9 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { PlayerContext } from '@theoplayer/react-native-ui';
 import { type PlayerEventMap, PlayerEventType } from 'react-native-theoplayer';
 
-const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKING, PlayerEventType.SEEKED] satisfies ReadonlyArray<
-  keyof PlayerEventMap
->;
+const TIME_CHANGE_EVENTS = [PlayerEventType.TIME_UPDATE, PlayerEventType.SEEKED] satisfies ReadonlyArray<keyof PlayerEventMap>;
 
 /**
  * Returns the player's current slider time, and its scrubbing state.
@@ -20,9 +18,8 @@ export const useSlider = (): [number, boolean, React.Dispatch<React.SetStateActi
   const [currentTime, setCurrentTime] = useState(player?.currentTime ?? 0);
   useEffect(() => {
     if (!player) return;
-    // Block time updates while scrubbing
-    if (isScrubbing) return;
     const onTimeUpdate = () => {
+      if (isScrubbing) return;
       setCurrentTime(player.currentTime);
     };
     TIME_CHANGE_EVENTS.forEach((event) => player.addEventListener(event, onTimeUpdate));

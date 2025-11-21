@@ -12,6 +12,11 @@ export interface TimeLabelProps {
    * The style overrides.
    */
   style?: StyleProp<TextStyle>;
+
+  /**
+   * The playhead position to which the user might seek. Use this property to pass slider values before the actual (debounced) seek happens.
+   */
+  scrubTime?: number;
 }
 
 /**
@@ -30,12 +35,13 @@ export const DEFAULT_TIME_LABEL_STYLE: TextStyle = {
 export const TimeLabel = (props: TimeLabelProps) => {
   const currentTime = useCurrentTime();
   const duration = useDuration();
+  const { showDuration, style, scrubTime } = props;
+  const expectedSeekTarget = scrubTime ?? currentTime;
   const seekable = useSeekable();
-  const { showDuration, style } = props;
   return (
     <StaticTimeLabel
       showDuration={showDuration}
-      time={currentTime}
+      time={expectedSeekTarget}
       duration={duration}
       seekable={seekable}
       style={[DEFAULT_TIME_LABEL_STYLE, style]}
