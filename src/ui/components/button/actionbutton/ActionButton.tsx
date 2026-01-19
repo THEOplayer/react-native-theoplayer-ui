@@ -54,6 +54,10 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
     return <View style={[DEFAULT_ACTION_BUTTON_STYLE, style]}>{svg}</View>;
   }
 
+  /**
+   * Rely on onPressIn and onPressOut, as a workaround for onPress events sometimes being filtered by React Native
+   * in fullscreen presentation mode on Android & iOS.
+   */
   const onTouchIn = () => {
     if (context.ui.buttonsEnabled_) {
       isPressed.current = true;
