@@ -1,5 +1,5 @@
 import { Image, ImageSourcePropType, Platform, TouchableOpacity, View, ViewStyle } from 'react-native';
-import React, { ReactNode, useContext, useState } from 'react';
+import React, { ReactNode, useContext, useRef, useState } from 'react';
 import { SvgContext } from '../svg/SvgUtils';
 import { PlayerContext } from '../../util/PlayerContext';
 import type { ButtonBaseProps } from '../ButtonBaseProps';
@@ -46,6 +46,7 @@ export const DEFAULT_ACTION_BUTTON_STYLE: ViewStyle = {
 export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) => {
   const { activeOpacity, children, icon, style, svg, onPress, highlighted, testID } = props;
   const [focused, setFocused] = useState<boolean>(false);
+  const isPressed = useRef<boolean>(false);
   const context = useContext(PlayerContext);
   const shouldChangeTintColor = highlighted || (focused && Platform.isTV);
   const touchable = props.touchable != false;
@@ -53,11 +54,17 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
     return <View style={[DEFAULT_ACTION_BUTTON_STYLE, style]}>{svg}</View>;
   }
 
-  const onTouch = () => {
+  const onTouchIn = () => {
+    if (context.ui.buttonsEnabled_) {
+      isPressed.current = true;
+    }
+    context.ui.onUserAction_();
+  };
+  const onTouchOut = () => {
     if (context.ui.buttonsEnabled_) {
       onPress?.();
     }
-    context.ui.onUserAction_();
+    isPressed.current = false;
   };
 
   return (
@@ -65,7 +72,8 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
       style={[DEFAULT_ACTION_BUTTON_STYLE, style]}
       testID={testID}
       activeOpacity={activeOpacity}
-      onPress={onTouch}
+      onPressIn={onTouchIn}
+      onPressOut={onTouchOut}
       onFocus={() => {
         context.ui.onUserAction_();
         setFocused(true);
