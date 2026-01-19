@@ -65,7 +65,7 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
     context.ui.onUserAction_();
   };
   const onTouchOut = () => {
-    if (context.ui.buttonsEnabled_) {
+    if (isPressed.current && context.ui.buttonsEnabled_) {
       onPress?.();
     }
     isPressed.current = false;
