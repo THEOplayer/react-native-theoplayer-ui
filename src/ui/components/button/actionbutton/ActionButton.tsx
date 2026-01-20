@@ -1,5 +1,5 @@
-import { Image, ImageSourcePropType, Platform, TouchableOpacity, View, ViewStyle } from 'react-native';
-import React, { ReactNode, useContext, useRef, useState } from 'react';
+import { Image, ImageSourcePropType, Platform, View, ViewStyle, PanResponder } from 'react-native';
+import React, { ReactNode, useContext, useState, useRef } from 'react';
 import { SvgContext } from '../svg/SvgUtils';
 import { PlayerContext } from '../../util/PlayerContext';
 import type { ButtonBaseProps } from '../ButtonBaseProps';
@@ -46,38 +46,53 @@ export const DEFAULT_ACTION_BUTTON_STYLE: ViewStyle = {
 export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) => {
   const { activeOpacity, children, icon, style, svg, onPress, highlighted, testID } = props;
   const [focused, setFocused] = useState<boolean>(false);
-  const isPressed = useRef<boolean>(false);
+  const [pressed, setPressed] = useState<boolean>(false);
   const context = useContext(PlayerContext);
   const shouldChangeTintColor = highlighted || (focused && Platform.isTV);
   const touchable = props.touchable != false;
+  const pressedRef = useRef(false);
+
+  const handlePressIn = () => {
+    setPressed(true);
+    pressedRef.current = true;
+    context.ui.onUserAction_();
+  };
+
+  const handlePressOut = () => {
+    setPressed(false);
+    pressedRef.current = false;
+  };
+
+  /**
+   * Use a PanResponder instead of Touchable component to fix the issue of onPress events sometimes being filtered by
+   * React Native in fullscreen presentation mode on Android & iOS.
+   */
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => touchable,
+      onMoveShouldSetPanResponder: () => false,
+      onPanResponderGrant: () => handlePressIn(),
+      onPanResponderRelease: () => {
+        if (pressedRef.current) {
+          onPress?.();
+        }
+        handlePressOut();
+      },
+      onPanResponderTerminate: () => handlePressOut(),
+      onPanResponderReject: () => handlePressOut(),
+    }),
+  ).current;
+
   if (!touchable) {
     return <View style={[DEFAULT_ACTION_BUTTON_STYLE, style]}>{svg}</View>;
   }
 
-  /**
-   * Rely on onPressIn and onPressOut, as a workaround for onPress events sometimes being filtered by React Native
-   * in fullscreen presentation mode on Android & iOS.
-   */
-  const onTouchIn = () => {
-    if (context.ui.buttonsEnabled_) {
-      isPressed.current = true;
-    }
-    context.ui.onUserAction_();
-  };
-  const onTouchOut = () => {
-    if (isPressed.current && context.ui.buttonsEnabled_) {
-      onPress?.();
-    }
-    isPressed.current = false;
-  };
-
   return (
-    <TouchableOpacity
-      style={[DEFAULT_ACTION_BUTTON_STYLE, style]}
+    <View
+      {...panResponder.panHandlers}
+      style={[DEFAULT_ACTION_BUTTON_STYLE, style, pressed && { opacity: activeOpacity ?? 0.2 }]}
       testID={testID}
-      activeOpacity={activeOpacity}
-      onPressIn={onTouchIn}
-      onPressOut={onTouchOut}
+      accessible
       onFocus={() => {
         context.ui.onUserAction_();
         setFocused(true);
@@ -106,6 +121,6 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
         />
       )}
       {children}
-    </TouchableOpacity>
+    </View>
   );
 };
