@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## 0.21.3
+
+### 🐛 Issues
+
+- Resolved an issue where button presses occasionally failed to register in fullscreen presentation mode on iOS and Android.
+
 ## 0.21.2
 
 ### 🐛 Issues
