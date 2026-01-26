@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import { Animated, AppState, Platform, StyleProp, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import { type TVOSEvent, useTVOSEventHandler } from '../util/TVUtils';
@@ -94,6 +94,17 @@ export interface UiContainerProps {
 }
 
 /**
+ * Ref interface for UiContainer, exposing methods to interact with the UI from parent components.
+ */
+export interface UiContainerRef {
+  /**
+   * Programmatically triggers the UI fade-in animation.
+   * Useful for showing the UI in response to external events (e.g., keyboard shortcuts).
+   */
+  onUserAction: () => void;
+}
+
+/**
  * The default style for a fullscreen centered view.
  */
 export const FULLSCREEN_CENTER_STYLE: ViewStyle = {
@@ -176,7 +187,7 @@ const WEB_POINTER_MOVE_THROTTLE = 500;
  * - It provides slots for UI components to be places in the top/center/bottom positions.
  * - It uses animations to fade the UI in and out when applicable.
  */
-export const UiContainer = (props: UiContainerProps) => {
+export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, ref) => {
   const _currentFadeOutTimeout = useRef<number | undefined>(undefined);
   const fadeAnimation = useRef(new Animated.Value(1)).current;
   const [currentMenu, setCurrentMenu] = useState<React.ReactNode | undefined>(undefined);
@@ -372,6 +383,15 @@ export const UiContainer = (props: UiContainerProps) => {
     fadeInUI_();
   }, [fadeInUI_, didPlay]);
 
+  // Expose onUserAction_ to parent components via ref
+  useImperativeHandle(
+    ref,
+    () => ({
+      onUserAction: onUserAction_,
+    }),
+    [onUserAction_],
+  );
+
   /**
    * On Web platform, use (throttled) pointer moves on the root container to enable showing/hiding instead of the UI container.
    * If an ad is playing, the UI should pass through all pointer events ("box-none") in order for ad clickThrough to work.
@@ -473,4 +493,4 @@ export const UiContainer = (props: UiContainerProps) => {
       </Animated.View>
     </PlayerContext.Provider>
   );
-};
+});
