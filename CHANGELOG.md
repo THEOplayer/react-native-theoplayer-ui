@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## 0.22.0
+
+### ✨ Features
+
+- Exposed `onUserAction()` via a ref in `UiContainer`, enabling parent components to programmatically trigger the UI fade-in animation.
+
 ## 0.21.3
 
 ### 🐛 Issues
