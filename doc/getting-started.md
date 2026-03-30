@@ -5,7 +5,7 @@ sidebar_position: 1
 sidebar_custom_props: { 'icon': '🚀' }
 ---
 
-# Getting started with the React Native THEOplayer UI
+# Getting started with the Open Video UI for React Native
 
 The [`@theoplayer/react-native-ui`](https://www.npmjs.com/package/@theoplayer/react-native-ui) package provides
 a collection of UI components for [`react-native-theoplayer`](https://www.npmjs.com/package/react-native-theoplayer),
