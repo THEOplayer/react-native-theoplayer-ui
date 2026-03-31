@@ -4,7 +4,7 @@ module.exports = {
   tsconfig: 'tsconfig.build.json',
   out: 'api',
   sitemapBaseUrl: 'https://theoplayer.github.io/react-native-theoplayer-ui/api/',
-  name: 'React Native THEOplayer UI',
+  name: 'Open Video UI for React Native',
   readme: 'none',
   plugin: ['typedoc-plugin-external-resolver', 'typedoc-plugin-mdn-links'],
   navigationLinks: {
