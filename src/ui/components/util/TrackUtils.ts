@@ -26,7 +26,7 @@ export function getMediaTrackLabel(track: MediaTrack): string {
       return iso639Language.local;
     }
   }
-  return languageCode || '';
+  return languageCode || label || '';
 }
 
 export function getTextTrackLabel(track: TextTrack): string {
@@ -50,7 +50,7 @@ export function getTextTrackLabel(track: TextTrack): string {
   if (track.type === 'cea608' && typeof track.captionChannel === 'number') {
     return `CC${track.captionChannel}`;
   }
-  return languageCode || '';
+  return languageCode || label || '';
 }
 
 export function stringFromTextTrackListEvent(type: TrackListEventType): string {
