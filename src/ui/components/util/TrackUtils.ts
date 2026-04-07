@@ -4,10 +4,15 @@ import { getISO639LanguageByCode } from '../../utils/language/Language';
 import type { QualityLabelLocaleParams } from './Locale';
 
 export function getMediaTrackLabel(track: MediaTrack): string {
-  if (track.label) {
-    return track.label;
+  const label = track.label;
+  const languageCode = track.language;
+  if (label) {
+    if (label === languageCode) {
+      // Ignore default label with just the language code.
+    } else {
+      return label;
+    }
   }
-  const languageCode: string = track.language;
   if (languageCode) {
     const iso639Language = getISO639LanguageByCode(languageCode);
     if (iso639Language) {
@@ -18,10 +23,17 @@ export function getMediaTrackLabel(track: MediaTrack): string {
 }
 
 export function getTextTrackLabel(track: TextTrack): string {
-  if (track.label) {
-    return track.label;
+  const label = track.label;
+  const languageCode = track.language;
+  if (label) {
+    if (label === languageCode) {
+      // Ignore default label with just the language code.
+    } else if (track.type === 'cea608' && /^CC\d+$/.test(track.label)) {
+      // Ignore default label with just the caption channel.
+    } else {
+      return label;
+    }
   }
-  const languageCode: string = track.language;
   if (languageCode) {
     const iso639Language = getISO639LanguageByCode(languageCode);
     if (iso639Language) {
