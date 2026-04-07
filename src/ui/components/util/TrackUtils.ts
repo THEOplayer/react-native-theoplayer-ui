@@ -3,6 +3,13 @@ import { TrackListEventType } from 'react-native-theoplayer';
 import { getISO639LanguageByCode } from '../../utils/language/Language';
 import type { QualityLabelLocaleParams } from './Locale';
 
+declare module 'react-native-theoplayer' {
+  interface TextTrack {
+    // TODO Remove after updating to THEOplayer 10.14.0.
+    captionChannel?: number;
+  }
+}
+
 export function getMediaTrackLabel(track: MediaTrack): string {
   const label = track.label;
   const languageCode = track.language;
@@ -39,6 +46,9 @@ export function getTextTrackLabel(track: TextTrack): string {
     if (iso639Language) {
       return iso639Language.local;
     }
+  }
+  if (track.type === 'cea608' && typeof track.captionChannel === 'number') {
+    return `CC${track.captionChannel}`;
   }
   return languageCode || '';
 }
