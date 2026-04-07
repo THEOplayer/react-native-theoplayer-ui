@@ -6,7 +6,7 @@ import { LanguageSvg } from '../button/svg/LanguageSvg';
 import { ScrollableMenu } from './common/ScrollableMenu';
 import { MenuRadioButton } from './common/MenuRadioButton';
 import { MenuButton } from './common/MenuButton';
-import { filterRenderableTracks, getTrackLabel } from '../util/TrackUtils';
+import { filterRenderableTracks, getMediaTrackLabel, getTextTrackLabel } from '../util/TrackUtils';
 import { MenuView } from './common/MenuView';
 import type { StyleProp, ViewStyle } from 'react-native';
 
@@ -156,7 +156,7 @@ export class LanguageMenuView extends PureComponent<LanguageMenuViewProps, Langu
                     items={selectableAudioTracks.map((track, id) => (
                       <MenuRadioButton
                         key={id}
-                        label={getTrackLabel(track)}
+                        label={getMediaTrackLabel(track)}
                         uid={track.uid}
                         onSelect={this.selectAudioTrack}
                         selected={track.uid === selectedAudioTrack}></MenuRadioButton>
@@ -178,7 +178,7 @@ export class LanguageMenuView extends PureComponent<LanguageMenuViewProps, Langu
                         {selectableTextTracks.map((track, id) => (
                           <MenuRadioButton
                             key={id + 1}
-                            label={getTrackLabel(track)}
+                            label={getTextTrackLabel(track)}
                             uid={track.uid}
                             onSelect={this.onSelectTextTrack}
                             selected={track.uid === selectedTextTrack}

@@ -3,7 +3,21 @@ import { TrackListEventType } from 'react-native-theoplayer';
 import { getISO639LanguageByCode } from '../../utils/language/Language';
 import type { QualityLabelLocaleParams } from './Locale';
 
-export function getTrackLabel(track: MediaTrack | TextTrack): string {
+export function getMediaTrackLabel(track: MediaTrack): string {
+  if (track.label) {
+    return track.label;
+  }
+  const languageCode: string = track.language;
+  if (languageCode) {
+    const iso639Language = getISO639LanguageByCode(languageCode);
+    if (iso639Language) {
+      return iso639Language.local;
+    }
+  }
+  return languageCode || '';
+}
+
+export function getTextTrackLabel(track: TextTrack): string {
   if (track.label) {
     return track.label;
   }
