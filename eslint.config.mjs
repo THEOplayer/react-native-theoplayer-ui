@@ -7,8 +7,8 @@ import reactHooks from 'eslint-plugin-react-hooks';
 export default typescriptEslint.config(
   eslint.configs.recommended,
   ...typescriptEslint.configs.recommended,
+  reactHooks.configs.flat.recommended,
   eslintConfigPrettier,
-  reactHooks.configs['recommended-latest'],
   {
     rules: {
       '@typescript-eslint/no-unused-vars': [

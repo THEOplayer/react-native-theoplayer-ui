@@ -19,6 +19,7 @@ export function MuteButton(props: MuteButtonProps) {
   const { player } = useContext(PlayerContext);
   const muted = useMuted();
   const toggleMuted = useCallback(() => {
+    // eslint-disable-next-line react-hooks/immutability
     player.muted = !player.muted;
   }, [player]);
 

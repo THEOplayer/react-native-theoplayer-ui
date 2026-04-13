@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs */
 import { Image, ImageSourcePropType, Platform, View, ViewStyle, PanResponder } from 'react-native';
 import React, { ReactNode, useContext, useState, useRef } from 'react';
 import { SvgContext } from '../svg/SvgUtils';
@@ -68,6 +69,7 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
    * React Native in fullscreen presentation mode on Android & iOS.
    */
   const panResponder = useRef(
+    // eslint-disable-next-line react-hooks/refs
     PanResponder.create({
       onStartShouldSetPanResponder: () => touchable,
       onMoveShouldSetPanResponder: () => false,

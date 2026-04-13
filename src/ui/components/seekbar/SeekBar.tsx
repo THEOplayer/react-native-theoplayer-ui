@@ -83,6 +83,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const chapterMarkerTimes: number[] = chapters?.cues?.map((cue) => cue.endTime).slice(0, -1) ?? [];
   // Do not continuously seek while dragging the slider
   const debounceSeek = useDebounce((value: number) => {
+    // eslint-disable-next-line react-hooks/immutability
     player.currentTime = value;
   }, DEBOUNCE_SEEK_DELAY);
 
@@ -96,7 +97,7 @@ export const SeekBar = (props: SeekBarProps) => {
 
   const onSlidingValueChange = useCallback(
     ([value]: number[]) => {
-      setSeekTarget(value)
+      setSeekTarget(value);
       if (isScrubbing) {
         if (onScrubbing) onScrubbing(value);
         debounceSeek(value);
