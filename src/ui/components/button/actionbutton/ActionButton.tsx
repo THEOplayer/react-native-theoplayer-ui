@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs */
 import { Image, ImageSourcePropType, Platform, View, ViewStyle, PanResponder } from 'react-native';
 import React, { ReactNode, useContext, useState, useRef } from 'react';
 import { SvgContext } from '../svg/SvgUtils';
@@ -89,7 +90,6 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
   }
 
   return (
-    /* eslint-disable-next-line react-hooks/refs */
     <View
       {...panResponder.panHandlers}
       style={[DEFAULT_ACTION_BUTTON_STYLE, style, pressed && { opacity: activeOpacity ?? 0.2 }]}
