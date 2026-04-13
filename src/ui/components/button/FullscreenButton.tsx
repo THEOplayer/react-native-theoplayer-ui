@@ -26,6 +26,7 @@ export function FullscreenButton(props: FullscreenProps) {
     switch (player.presentationMode) {
       case 'picture-in-picture':
       case 'inline':
+        // eslint-disable-next-line react-hooks/immutability
         player.presentationMode = PresentationMode.fullscreen;
         break;
       case 'fullscreen':

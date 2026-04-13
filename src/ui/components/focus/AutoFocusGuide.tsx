@@ -33,6 +33,7 @@ export const AutoFocusGuide = (props: React.PropsWithChildren<AutoFocusGuideProp
     }
     if (!hasWarnedAboutTVFocusGuideView) {
       console.warn('TVFocusGuideView not supported, a dependency on react-native-tvos is required.');
+      // eslint-disable-next-line react-hooks/globals
       hasWarnedAboutTVFocusGuideView = true;
     }
   }

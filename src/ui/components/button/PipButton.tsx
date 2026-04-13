@@ -29,6 +29,7 @@ export function PipButton(props: PipButtonProps) {
         ui.enterPip_();
         break;
       case 'picture-in-picture':
+        // eslint-disable-next-line react-hooks/immutability
         player.presentationMode = PresentationMode.inline;
         break;
     }

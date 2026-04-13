@@ -68,6 +68,7 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
    * React Native in fullscreen presentation mode on Android & iOS.
    */
   const panResponder = useRef(
+    // eslint-disable-next-line react-hooks/refs
     PanResponder.create({
       onStartShouldSetPanResponder: () => touchable,
       onMoveShouldSetPanResponder: () => false,
@@ -88,6 +89,7 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
   }
 
   return (
+    /* eslint-disable-next-line react-hooks/refs */
     <View
       {...panResponder.panHandlers}
       style={[DEFAULT_ACTION_BUTTON_STYLE, style, pressed && { opacity: activeOpacity ?? 0.2 }]}

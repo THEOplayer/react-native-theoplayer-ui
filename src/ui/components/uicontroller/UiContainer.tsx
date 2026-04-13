@@ -370,6 +370,7 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
     clearTimeout(_currentFadeOutTimeout.current);
     fadeAnimation.setValue(0);
     setUiVisible(false);
+    // eslint-disable-next-line react-hooks/immutability
     player.presentationMode = PresentationMode.pip;
   };
 

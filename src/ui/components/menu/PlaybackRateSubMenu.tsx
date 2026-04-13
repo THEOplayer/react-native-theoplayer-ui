@@ -87,6 +87,7 @@ export const PlaybackSelectionView = (props: PlaybackSelectionViewProps) => {
   const [selectedPlaybackRate, setSelectedPlaybackRate] = useState(player.playbackRate);
   const onChangePlaybackRate = (playbackRate: number | undefined) => {
     if (playbackRate) {
+      // eslint-disable-next-line react-hooks/immutability
       player.playbackRate = playbackRate;
       setSelectedPlaybackRate(playbackRate);
     }

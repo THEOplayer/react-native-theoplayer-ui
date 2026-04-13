@@ -45,6 +45,7 @@ export function SkipButton(props: SkipButtonProps) {
   });
 
   const doSkip = useCallback(() => {
+    // eslint-disable-next-line react-hooks/immutability
     player.currentTime = player.currentTime + skip * 1e3;
     if (rotate === true) {
       Animated.timing(spinValue, {
