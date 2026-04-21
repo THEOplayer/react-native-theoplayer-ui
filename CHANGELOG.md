@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## 0.23.1
+
+### 🐛 Issues
+
+- Improve labels for text tracks and audio tracks in the `<LanguageMenuView>`.
+
 ## 0.23.0
 
 ### ✨ Features
