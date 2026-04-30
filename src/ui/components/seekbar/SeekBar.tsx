@@ -6,6 +6,7 @@ import { useChaptersTrack, useDebounce, useDuration, useSeekable } from '../../h
 import { SingleThumbnailView } from './thumbnail/SingleThumbnailView';
 import { useSlider } from './useSlider';
 import { TestIDs } from '../../utils/TestIDs';
+import { SeekBarTouchHandler } from './SeekBarTouchHandler';
 import { PlayerEventType, SeekedEvent } from 'react-native-theoplayer';
 import { fuzzyEquals } from '../../utils/NumberUtils';
 
@@ -164,27 +165,29 @@ export const SeekBar = (props: SeekBarProps) => {
       onLayout={(event: LayoutChangeEvent) => {
         setWidth(event.nativeEvent.layout.width);
       }}>
-      <Slider
-        disabled={disabled}
-        minimumValue={normalizedTime(seekableRange.start)}
-        maximumValue={normalizedTime(seekableRange.end)}
-        containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
-        minimumTrackStyle={props.sliderMinimumTrackStyle ?? {}}
-        maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
-        step={1000}
-        renderAboveThumbComponent={renderAboveThumbComponent}
-        onSlidingStart={onSlidingStart}
-        onValueChange={onSlidingValueChange}
-        onSlidingComplete={onSlidingComplete}
-        value={sliderTime}
-        minimumTrackTintColor={theme.colors.seekBarMinimum}
-        maximumTrackTintColor={theme.colors.seekBarMaximum}
-        thumbTintColor={theme.colors.seekBarDot}
-        thumbStyle={StyleSheet.flatten(props.thumbStyle)}
-        thumbTouchSize={props.thumbTouchSize}
-        renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
-        trackMarks={chapterMarkerTimes}
-      />
+      <SeekBarTouchHandler>
+        <Slider
+          disabled={disabled}
+          minimumValue={normalizedTime(seekableRange.start)}
+          maximumValue={normalizedTime(seekableRange.end)}
+          containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
+          minimumTrackStyle={props.sliderMinimumTrackStyle ?? {}}
+          maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
+          step={1000}
+          renderAboveThumbComponent={renderAboveThumbComponent}
+          onSlidingStart={onSlidingStart}
+          onValueChange={onSlidingValueChange}
+          onSlidingComplete={onSlidingComplete}
+          value={sliderTime}
+          minimumTrackTintColor={theme.colors.seekBarMinimum}
+          maximumTrackTintColor={theme.colors.seekBarMaximum}
+          thumbTintColor={theme.colors.seekBarDot}
+          thumbStyle={StyleSheet.flatten(props.thumbStyle)}
+          thumbTouchSize={props.thumbTouchSize}
+          renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
+          trackMarks={chapterMarkerTimes}
+        />
+      </SeekBarTouchHandler>
     </View>
   );
 };
