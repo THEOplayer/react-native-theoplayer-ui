@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## 0.23.2
+
+### 🐛 Issues
+
+- Fixed an issue where the playhead on the `<SeekBar>` would occasionally snap back after scrubbing on iOS Safari.
+
 ## 0.23.1
 
 ### 🐛 Issues
