@@ -436,8 +436,7 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
       <Animated.View
         style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
         onTouchMove={onUserAction_}
-        onStartShouldSetResponder={() => true}
-        onResponderRelease={onUserAction_}
+        onTouchEnd={onUserAction_}
         pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}>
         {uiVisible_ && (
           <>
