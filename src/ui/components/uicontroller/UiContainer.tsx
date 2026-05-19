@@ -8,7 +8,7 @@ import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
 import { type Locale, defaultLocale } from '../util/Locale';
-import { usePointerMove } from '../../hooks/usePointerMove';
+import { useWebMouseEvents } from '../../hooks/useWebMouseEvents';
 import { useThrottledCallback } from '../../hooks/useThrottledCallback';
 
 export interface UiContainerProps {
@@ -398,7 +398,7 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
    * If an ad is playing, the UI should pass through all pointer events ("box-none") in order for ad clickThrough to work.
    * Throttle the callback avoids hammering the fade-in animation.
    */
-  usePointerMove('#theoplayer-root-container', useThrottledCallback(onUserAction_, WEB_POINTER_MOVE_THROTTLE), doFadeOut_);
+  useWebMouseEvents('#theoplayer-root-container', useThrottledCallback(onUserAction_, WEB_POINTER_MOVE_THROTTLE), doFadeOut_);
 
   const combinedUiContainerStyle = [UI_CONTAINER_STYLE, props.style];
 
@@ -437,7 +437,6 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
         style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
         onTouchMove={onUserAction_}
         onTouchEnd={onUserAction_}
-        onClick={onUserAction_}
         pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}>
         {uiVisible_ && (
           <>

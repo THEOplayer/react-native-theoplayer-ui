@@ -2,29 +2,27 @@ import { useEffect } from 'react';
 import { Platform } from 'react-native';
 
 /**
- * Listens to pointer events on Web.
+ * Listens to mouse events on Web.
  */
-export const usePointerMove = (elementId: string, onMove: () => void, onLeave?: () => void) => {
+export const useWebMouseEvents = (elementId: string, onInteraction: () => void, onLeave?: () => void) => {
   useEffect(() => {
     if (Platform.OS !== 'web') {
       return;
     }
     const elementRef = document?.querySelector(elementId);
     if (elementRef) {
-      /**
-       * Listening to `mousemove` events instead of `pointermove`, which requires the page to be "activated" through
-       * a tap/click first.
-       */
-      elementRef?.addEventListener('mousemove', onMove);
+      elementRef?.addEventListener('mousemove', onInteraction);
+      elementRef?.addEventListener('click', onInteraction);
       if (onLeave) {
         elementRef?.addEventListener('mouseleave', onLeave);
       }
     }
     return () => {
-      elementRef?.removeEventListener('mousemove', onMove);
+      elementRef?.removeEventListener('mousemove', onInteraction);
+      elementRef?.removeEventListener('click', onInteraction);
       if (onLeave) {
         elementRef?.removeEventListener('mouseleave', onLeave);
       }
     };
-  }, [onMove, onLeave, elementId]);
+  }, [onInteraction, onLeave, elementId]);
 };
