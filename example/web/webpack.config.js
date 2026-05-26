@@ -54,7 +54,7 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin({
 // /.*@theoplayer\/.*\.js$/ : process all js files from @theoplayer packages to apply the root import alias. This is only needed for this example.
 const babelLoaderConfiguration = {
   test: [/\.tsx?$/, /.*@theoplayer\/.*\.js$/],
-  exclude: ['/**/*.d.ts', '/**/node_modules/'],
+  exclude: [/\.d\.ts$/, /cmcd-connector\.esm\.js$/],
   use: {
     loader: 'babel-loader',
     options: {
