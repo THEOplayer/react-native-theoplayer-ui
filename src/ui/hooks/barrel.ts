@@ -1,6 +1,7 @@
 export * from './useAirplay';
 export * from './useChaptersTrack';
 export * from './useChromecast';
+export * from './useError';
 export * from './useCurrentTime';
 export { useDebouncedCallback as useDebounce } from './useDebouncedCallback';
 export * from './useDebouncedValue';

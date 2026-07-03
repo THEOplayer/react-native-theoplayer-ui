@@ -1,12 +1,13 @@
-import React, { ReactNode, useCallback, useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
+import React, { type PropsWithChildren, ReactNode, useCallback, useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import { Animated, AppState, Platform, StyleProp, View, ViewStyle } from 'react-native';
 import { PlayerContext } from '../util/PlayerContext';
 import { type TVOSEvent, useTVOSEventHandler } from '../util/TVUtils';
 import type { AdEvent, PresentationModeChangeEvent, THEOplayer } from 'react-native-theoplayer';
-import { AdEventType, CastEvent, CastEventType, ErrorEvent, PlayerError, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
+import { AdEventType, CastEvent, CastEventType, PlayerEventType, PresentationMode } from 'react-native-theoplayer';
 import type { THEOplayerTheme } from '../../THEOplayerTheme';
 import type { MenuConstructor, UiControls } from './UiControls';
 import { ErrorDisplay } from '../message/ErrorDisplay';
+import { useError } from '../../hooks/useError';
 import { type Locale, defaultLocale } from '../util/Locale';
 import { useWebMouseEvents } from '../../hooks/useWebMouseEvents';
 import { useThrottledCallback } from '../../hooks/useThrottledCallback';
@@ -192,7 +193,6 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
   const fadeAnimation = useRef(new Animated.Value(1)).current;
   const [currentMenu, setCurrentMenu] = useState<React.ReactNode | undefined>(undefined);
   const [uiVisible_, setUiVisible] = useState(true);
-  const [error, setError] = useState<PlayerError | undefined>(undefined);
   const [didPlay, setDidPlay] = useState(false);
   const [paused, setPaused] = useState(true);
   const [casting, setCasting] = useState(false);
@@ -294,14 +294,6 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
       setPaused(player.paused);
     };
 
-    const handleLoadStart = () => {
-      setError(undefined);
-    };
-
-    const handleError = (event: ErrorEvent) => {
-      setError(event.error);
-    };
-
     const handleCastEvent = (event: CastEvent) => {
       if (event.subType === CastEventType.CHROMECAST_STATE_CHANGE || event.subType === CastEventType.AIRPLAY_STATE_CHANGE) {
         setCasting(event.state === 'connecting' || event.state === 'connected');
@@ -319,8 +311,6 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
       }
     };
 
-    player.addEventListener(PlayerEventType.LOAD_START, handleLoadStart);
-    player.addEventListener(PlayerEventType.ERROR, handleError);
     player.addEventListener(PlayerEventType.CAST_EVENT, handleCastEvent);
     player.addEventListener(PlayerEventType.PLAY, handlePlay);
     player.addEventListener(PlayerEventType.PLAYING, handlePlay);
@@ -332,8 +322,6 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
     setPip(player.presentationMode === 'picture-in-picture');
 
     return () => {
-      player.removeEventListener(PlayerEventType.LOAD_START, handleLoadStart);
-      player.removeEventListener(PlayerEventType.ERROR, handleError);
       player.removeEventListener(PlayerEventType.CAST_EVENT, handleCastEvent);
       player.removeEventListener(PlayerEventType.PLAY, handlePlay);
       player.removeEventListener(PlayerEventType.PLAYING, handlePlay);
@@ -402,10 +390,6 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
 
   const combinedUiContainerStyle = [UI_CONTAINER_STYLE, props.style];
 
-  if (error !== undefined) {
-    return <ErrorDisplay error={error} />;
-  }
-
   if (Platform.OS !== 'web' && pip) {
     return <></>;
   }
@@ -424,6 +408,7 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
 
   return (
     <PlayerContext.Provider value={{ player, style: props.theme, ui, adInProgress, locale: combinedLocale }}>
+      <ErrorGate>
       {/* The View behind the UI, that is always visible. Typically contains a spinner to indicate buffering. */}
       <View style={FULLSCREEN_CENTER_STYLE} pointerEvents={'none'}>
         {props.behind}
@@ -491,6 +476,15 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
           </>
         )}
       </Animated.View>
+      </ErrorGate>
     </PlayerContext.Provider>
   );
 });
+
+function ErrorGate({ children }: PropsWithChildren) {
+  const error = useError();
+  if (error !== undefined) {
+    return <ErrorDisplay error={error} />;
+  }
+  return <>{children}</>;
+}
