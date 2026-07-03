@@ -1,5 +1,12 @@
 # @theoplayer/react-native-ui
 
+## 0.23.3
+
+### 🐛 Issues
+
+- Fixed an issue on Web where the live indicator was rendered as a corrupted character (mojibake) in release builds.
+- Fixed an issue on mobile platforms where the Chromecast button would not be tappable.
+
 ## 0.23.2
 
 ### 🐛 Issues
