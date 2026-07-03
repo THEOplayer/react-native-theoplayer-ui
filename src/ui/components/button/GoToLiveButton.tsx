@@ -58,7 +58,7 @@ export function GoToLiveButton(props: LiveButtonProps) {
       onPress={goToLive}
       touchable={true}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={[context.style.text, { color: liveIndicatorColor, marginRight: 6 }]}>●</Text>
+        <Text style={[context.style.text, { color: liveIndicatorColor, marginRight: 6 }]}>{String.fromCodePoint(9679)}</Text>
         <Text style={[context.style.text, { color: context.style.colors.text }, textStyle]}>{context.locale.liveLabel}</Text>
       </View>
     </ActionButton>
