@@ -7,6 +7,7 @@ import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { BackwardSvg } from './svg/BackwardSvg';
 import type { ButtonBaseProps } from './ButtonBaseProps';
 import { useSeekable } from '../../hooks/useSeekable';
+import { useDuration } from '../../hooks/useDuration';
 
 export interface SkipButtonProps extends ButtonBaseProps {
   /**
@@ -38,6 +39,7 @@ export function SkipButton(props: SkipButtonProps) {
   const spinValue = useRef<Animated.Value>(new Animated.Value(0)).current;
   const { player, ui, style: uiStyle } = useContext(PlayerContext);
   const seekable = useSeekable();
+  const duration = useDuration();
 
   const spin = spinValue.interpolate({
     inputRange: [0, 1],
@@ -67,7 +69,11 @@ export function SkipButton(props: SkipButtonProps) {
   const forwardSvg: ReactNode = icon?.forward ?? <ForwardSvg />;
   const backwardSvg: ReactNode = icon?.backward ?? <BackwardSvg />;
 
-  if (seekable.length === 0) {
+  // Mirror the SeekBar seekable-range fallback: treat the media as seekable when there is a
+  // seekable range, or when only a finite duration is known (e.g. MP4, where seekable stays
+  // empty). Kept inline rather than extracted into a shared hook to keep this change minimal.
+  const isSeekable = seekable.length > 0 || (isFinite(duration) && duration > 0);
+  if (!isSeekable) {
     return <></>;
   }
 
