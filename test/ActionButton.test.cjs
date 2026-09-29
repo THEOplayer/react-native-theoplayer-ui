@@ -104,6 +104,29 @@ test('TV presses use current callback and respect UI enablement', () => {
   assert.equal(app.userActions, 2);
 });
 
+test('TV user activity precedes the callback so controls remain hidden after PiP entry', () => {
+  const app = setup(true);
+  const calls = [];
+  let visible = true;
+  let opacity = 1;
+  app.context.ui.onUserAction_ = () => {
+    calls.push('userAction');
+    visible = true;
+    opacity = 1;
+  };
+  const button = app.render({
+    onPress: () => {
+      calls.push('press');
+      visible = false;
+      opacity = 0;
+    },
+  });
+  button.props.onPress();
+  assert.deepEqual(calls, ['userAction', 'press']);
+  assert.equal(visible, false);
+  assert.equal(opacity, 0);
+});
+
 test('TV focus changes icon tint without adding a border', () => {
   const app = setup(true);
   const props = { svg: 'icon' };
