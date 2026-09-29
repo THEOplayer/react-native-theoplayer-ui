@@ -94,10 +94,10 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
     ? {
         activeOpacity: activeOpacity ?? 0.2,
         onPress: () => {
+          context.ui.onUserAction_();
           if (context.ui.buttonsEnabled_) {
             onPress?.();
           }
-          context.ui.onUserAction_();
         },
       }
     : panResponder.panHandlers;
