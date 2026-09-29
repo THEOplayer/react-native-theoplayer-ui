@@ -19,6 +19,7 @@
   "scripts": {
     "changeset:version": "changeset version && node .changeset/post-process.mjs",
     "typescript": "tsc --noEmit",
+    "test": "node --test test/*.test.cjs",
     "prettier": "prettier --check \"(src|example)/**/*.{js,jsx,ts,tsx}\"",
     "prettier:fix": "prettier --write \"(src|example)/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint \"{src,example}/**/*.{ts,tsx}\"",

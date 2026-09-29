@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/refs */
-import { Image, ImageSourcePropType, Platform, View, ViewStyle, PanResponder } from 'react-native';
+import { Image, ImageSourcePropType, Platform, View, ViewStyle, PanResponder, TouchableOpacity } from 'react-native';
 import React, { ReactNode, useContext, useState, useRef } from 'react';
 import { SvgContext } from '../svg/SvgUtils';
 import { PlayerContext } from '../../util/PlayerContext';
@@ -89,9 +89,22 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
     return <View style={[DEFAULT_ACTION_BUTTON_STYLE, style]}>{svg}</View>;
   }
 
+  const Button = Platform.isTV ? TouchableOpacity : View;
+  const interactionProps = Platform.isTV
+    ? {
+        activeOpacity: activeOpacity ?? 0.2,
+        onPress: () => {
+          if (context.ui.buttonsEnabled_) {
+            onPress?.();
+          }
+          context.ui.onUserAction_();
+        },
+      }
+    : panResponder.panHandlers;
+
   return (
-    <View
-      {...panResponder.panHandlers}
+    <Button
+      {...interactionProps}
       style={[DEFAULT_ACTION_BUTTON_STYLE, style, pressed && { opacity: activeOpacity ?? 0.2 }]}
       testID={testID}
       accessible
@@ -123,6 +136,6 @@ export const ActionButton = (props: React.PropsWithChildren<ActionButtonProps>) 
         />
       )}
       {children}
-    </View>
+    </Button>
   );
 };
