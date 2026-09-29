@@ -1,5 +1,12 @@
 # @theoplayer/react-native-ui
 
+## 0.23.5
+
+### 🐛 Issues
+
+- Fixed TV action buttons notifying user activity after their press callback, which could reveal controls again when entering Picture-in-Picture.
+- Fixed action button focus navigation and remote activation on TV platforms while preserving touch gesture handling on mobile and web.
+
 ## 0.23.4
 
 ### 🐛 Issues
