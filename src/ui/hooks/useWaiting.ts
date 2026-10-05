@@ -7,6 +7,10 @@ const WAITING_CHANGE_EVENTS = [
   PlayerEventType.READYSTATE_CHANGE,
   PlayerEventType.ERROR,
   PlayerEventType.PLAYING,
+  PlayerEventType.PLAY,
+  PlayerEventType.PAUSE,
+  PlayerEventType.ENDED,
+  PlayerEventType.SEEKING,
   PlayerEventType.SOURCE_CHANGE,
   PlayerEventType.LOAD_START,
 ] satisfies ReadonlyArray<keyof PlayerEventMap>;
@@ -23,34 +27,58 @@ type WaitingChangeEventType = (typeof WAITING_CHANGE_EVENTS)[number];
  */
 export const useWaiting = () => {
   const [waiting, setWaiting] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const { player } = useContext(PlayerContext);
 
   useEffect(() => {
     if (!player) return;
+    let buffering = false;
+    let hasError = false;
+    let ended = false;
+    const updateWaiting = () => setWaiting(buffering && !hasError && !ended && !player.paused);
     const onUpdateWaiting = (event: Event<WaitingChangeEventType>) => {
-      if (!player) return;
       switch (event.type) {
         case PlayerEventType.WAITING:
-          setWaiting(!hasError && !player.paused);
+          buffering = true;
+          updateWaiting();
           break;
         case PlayerEventType.READYSTATE_CHANGE:
-          setWaiting((event as ReadyStateChangeEvent).readyState < 3 && !hasError && !player.paused);
+          buffering = (event as ReadyStateChangeEvent).readyState < 3;
+          updateWaiting();
           break;
         case PlayerEventType.ERROR:
-          setHasError(true);
+          hasError = true;
           setWaiting(false);
           break;
+        case PlayerEventType.ENDED:
+          ended = true;
+          buffering = false;
+          setWaiting(false);
+          break;
+        case PlayerEventType.PAUSE:
+          setWaiting(false);
+          break;
+        case PlayerEventType.SEEKING:
+          ended = false;
+          updateWaiting();
+          break;
+        case PlayerEventType.PLAY:
+          updateWaiting();
+          break;
         case PlayerEventType.PLAYING:
+          buffering = false;
           setWaiting(false);
           break;
         case PlayerEventType.SOURCE_CHANGE:
-          setHasError(false);
+          hasError = false;
+          ended = false;
+          buffering = false;
           setWaiting(false);
           break;
         case PlayerEventType.LOAD_START:
-          setHasError(false);
-          setWaiting(!player.paused);
+          hasError = false;
+          ended = false;
+          buffering = true;
+          updateWaiting();
           break;
       }
     };
@@ -59,7 +87,7 @@ export const useWaiting = () => {
     return () => {
       player.removeEventListener(WAITING_CHANGE_EVENTS, onUpdateWaiting);
     };
-  }, [player, hasError]);
+  }, [player]);
 
   return waiting;
 };
