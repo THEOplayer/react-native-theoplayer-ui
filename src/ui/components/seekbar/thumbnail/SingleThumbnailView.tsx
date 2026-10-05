@@ -31,7 +31,7 @@ export interface ThumbnailViewProps {
 export function SingleThumbnailView(props: ThumbnailViewProps) {
   const player = useContext(PlayerContext).player;
   const thumbnailTrack = useThumbnailTrack();
-  const thumbnailSize = useMemo(() => {
+  const preferredThumbnailSize = useMemo(() => {
     const window = Dimensions.get('window');
     return 0.35 * Math.min(window.height, window.width);
   }, []);
@@ -43,6 +43,7 @@ export function SingleThumbnailView(props: ThumbnailViewProps) {
   }
 
   const { currentTime, seekBarWidth } = props;
+  const thumbnailSize = Math.min(preferredThumbnailSize, Math.max(0, seekBarWidth));
   const normalizedDuration = isNaN(duration) || !isFinite(duration) ? 0 : Math.max(0, duration);
   const seekableRange = {
     start: seekable.length > 0 ? seekable[0].start : 0,
@@ -61,7 +62,14 @@ export function SingleThumbnailView(props: ThumbnailViewProps) {
 
   return (
     <View style={{ left }}>
-      <ThumbnailView thumbnailTrack={thumbnailTrack} duration={player.duration} time={currentTime} size={thumbnailSize} showTimeLabel={false} />
+      <ThumbnailView
+        key={thumbnailSize}
+        thumbnailTrack={thumbnailTrack}
+        duration={player.duration}
+        time={currentTime}
+        size={thumbnailSize}
+        showTimeLabel={false}
+      />
     </View>
   );
 }

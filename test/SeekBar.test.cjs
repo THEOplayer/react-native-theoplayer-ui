@@ -27,7 +27,7 @@ function load(filename, modules) {
 }
 
 function setup({ width = 1000, duration = 9000000, seekable = [], currentTime = 4500000, rtl = false, adInProgress = false, props = {} } = {}) {
-  const player = { currentTime };
+  const player = { currentTime, duration };
   const slots = [];
   let cursor = 0;
   const flatten = (style) => (Array.isArray(style) ? Object.assign({}, ...style.map(flatten)) : (style ?? {}));
@@ -45,6 +45,7 @@ function setup({ width = 1000, duration = 9000000, seekable = [], currentTime = 
     useCallback: (callback) => callback,
     useContext: () => ({ player, adInProgress, style: { colors: { seekBarDot: 'white' } } }),
     useEffect: () => {},
+    useMemo: (callback) => callback(),
     useState(initial) {
       const index = cursor++;
       if (!(index in slots)) slots[index] = initial;
@@ -75,6 +76,7 @@ function setup({ width = 1000, duration = 9000000, seekable = [], currentTime = 
       add: (a, b) => ({ __getValue: () => raw(a) + raw(b) }),
       multiply: (a, b) => ({ __getValue: () => raw(a) * raw(b) }),
     },
+    Dimensions: { get: () => ({ width: 1000, height: 1000 }) },
     Easing: { inOut: () => {} },
     I18nManager: { isRTL: rtl },
     PanResponder: { create: (handlers) => ({ panHandlers: handlers }) },
@@ -87,6 +89,15 @@ function setup({ width = 1000, duration = 9000000, seekable = [], currentTime = 
     'react-native': native,
     './styles': load(path.join(path.dirname(sliderFilename), 'styles.js'), {}),
   });
+  const { SingleThumbnailView } = load(path.resolve(__dirname, '../src/ui/components/seekbar/thumbnail/SingleThumbnailView.tsx'), {
+    react,
+    'react-native': native,
+    '../../util/PlayerContext': { PlayerContext: {} },
+    './ThumbnailView': { ThumbnailView: 'ThumbnailImage' },
+    '../../../hooks/useThumbnailTrack': { useThumbnailTrack: () => ({}) },
+    '../../../hooks/useSeekable': { useSeekable: () => seekable },
+    '../../../hooks/useDuration': { useDuration: () => duration },
+  });
   const { SeekBar } = load(path.resolve(__dirname, '../src/ui/components/seekbar/SeekBar.tsx'), {
     react,
     'react-native': native,
@@ -98,25 +109,43 @@ function setup({ width = 1000, duration = 9000000, seekable = [], currentTime = 
       useDuration: () => duration,
       useSeekable: () => seekable,
     },
-    './thumbnail/SingleThumbnailView': { SingleThumbnailView: 'Thumbnail' },
+    './thumbnail/SingleThumbnailView': { SingleThumbnailView },
     './useSlider': { useSlider: () => [currentTime, true, () => {}] },
     '../../utils/TestIDs': { TestIDs: { SEEK_BAR: 'seek-bar' } },
     './SeekBarTouchHandler': { SeekBarTouchHandler: 'TouchHandler' },
     'react-native-theoplayer': { PlayerEventType: {} },
     '../../utils/NumberUtils': { fuzzyEquals: () => true },
   });
-  let tree = SeekBar(props);
-  tree.props.onLayout({ nativeEvent: { layout: { width } } });
-  cursor = 0;
-  tree = SeekBar(props);
-  const sliderElement = tree.props.children[0].props.children[0];
-  const slider = new Slider({ ...Slider.defaultProps, ...sliderElement.props });
-  const containerStyle = flatten(slider.props.containerStyle);
-  const margin = containerStyle.marginHorizontal ?? containerStyle.margin ?? 0;
-  const left = containerStyle.marginLeft ?? margin;
-  const right = containerStyle.marginRight ?? margin;
-  const trackWidth = width - left - right;
   const elements = (element) => (!element?.props ? [] : [element, ...element.props.children.flat(Infinity).flatMap(elements)]);
+  const pixels = (value, availableWidth) => (typeof value === 'string' ? (parseFloat(value) / 100) * availableWidth : (value ?? 0));
+  let trackWidth;
+  let left;
+  let previewOrigin;
+  const layout = (element, availableWidth, origin = 0) => {
+    if (!element?.props) return;
+    const style = flatten(element.type === Slider ? element.props.containerStyle : element.props.style);
+    const margin = style.marginHorizontal ?? style.margin ?? 0;
+    const marginLeft = pixels(style.marginLeft ?? margin, availableWidth);
+    const marginRight = pixels(style.marginRight ?? margin, availableWidth);
+    const measuredWidth = style.width === undefined ? availableWidth - marginLeft - marginRight : pixels(style.width, availableWidth);
+    const x = origin + marginLeft;
+    if (element.type === Slider) {
+      trackWidth = measuredWidth;
+      left = x;
+      previewOrigin = origin;
+      return;
+    }
+    element.props.onLayout?.({ nativeEvent: { layout: { x: marginLeft, y: 0, width: measuredWidth, height: 40 } } });
+    const padding = style.paddingHorizontal ?? style.padding ?? 0;
+    const paddingLeft = pixels(style.paddingLeft ?? padding, measuredWidth);
+    const paddingRight = pixels(style.paddingRight ?? padding, measuredWidth);
+    for (const child of element.props.children.flat(Infinity)) layout(child, measuredWidth - paddingLeft - paddingRight, x + paddingLeft);
+  };
+  layout(SeekBar(props), width);
+  cursor = 0;
+  const tree = SeekBar(props);
+  const sliderElement = elements(tree).find((element) => element.type === Slider);
+  const slider = new Slider({ ...Slider.defaultProps, ...sliderElement.props });
   const layoutWidth = (element) =>
     flatten(element.props.style).width ??
     Math.max(
@@ -144,6 +173,22 @@ function setup({ width = 1000, duration = 9000000, seekable = [], currentTime = 
     },
     end(dx = 0) {
       slider._handlePanResponderEnd({}, { dx, dy: 0 });
+    },
+    resize(newWidth) {
+      cursor = 0;
+      layout(SeekBar(props), newWidth);
+      cursor = 0;
+      const updatedSlider = elements(SeekBar(props)).find((element) => element.type === Slider);
+      slider.props = { ...Slider.defaultProps, ...updatedSlider.props };
+      slider._measureContainer({ nativeEvent: { layout: { width: trackWidth, height: 40 } } });
+    },
+    previewBounds() {
+      const anchor = elements(slider.render()).find((element) => element.props.key === 'slider-above-thumb-0');
+      const preview = anchor.props.children[0];
+      const thumbnail = SingleThumbnailView(preview.props);
+      const anchorStyle = flatten(anchor.props.style);
+      const thumbnailLeft = previewOrigin + anchorStyle.left + raw(anchorStyle.transform[0].translateX) + thumbnail.props.style.left;
+      return { left: thumbnailLeft, right: thumbnailLeft + thumbnail.props.children[0].props.size };
     },
     thumbPosition() {
       thumb = elements(slider.render()).find((element) => element.props.key === 'slider-thumb-0');
@@ -208,6 +253,57 @@ test('custom container margins define visible track bounds', () => {
   app.begin(20 + 920 * 0.25);
   app.end();
   assert.equal(app.player.currentTime, 2250000);
+});
+
+for (const width of [1000, 800]) {
+  for (const fraction of [0, 0.1, 0.5, 0.9, 1]) {
+    test(`thumbnail stays within asymmetric track margins at ${fraction} of ${width}px`, () => {
+      const left = 20;
+      const right = width - 60;
+      const x = left + (right - left) * fraction;
+      const app = setup({ width, props: { sliderContainerStyle: { marginLeft: 20, marginRight: 60 } } });
+      app.begin(x);
+      app.end();
+      const preview = app.previewBounds();
+      const expectedLeft = Math.max(left, Math.min(right - 350, x - 175));
+      assert.ok(Math.abs(preview.left - expectedLeft) < 0.001, `${preview.left} !== ${expectedLeft}`);
+      assert.ok(preview.left >= left);
+      assert.ok(preview.right <= right);
+    });
+  }
+}
+
+test('thumbnail uses measured track width with percentage margins and container padding', () => {
+  const app = setup({ props: { sliderContainerStyle: { marginLeft: '10%', marginRight: '20%', paddingHorizontal: 15 } } });
+  app.begin(115 + 670 * 0.9);
+  app.end();
+  assert.equal(app.player.currentTime, 8100000);
+  assert.deepEqual(app.previewBounds(), { left: 435, right: 785 });
+});
+
+test('thumbnail layout follows track resizing', () => {
+  const app = setup({ props: { sliderContainerStyle: { marginLeft: 20, marginRight: 60 } } });
+  app.begin(480);
+  app.end();
+  assert.deepEqual(app.previewBounds(), { left: 305, right: 655 });
+  app.resize(800);
+  assert.deepEqual(app.previewBounds(), { left: 205, right: 555 });
+});
+
+test('thumbnail shrinks to fit a track narrower than its preferred size', () => {
+  const app = setup({ width: 320, props: { sliderContainerStyle: { marginLeft: 20, marginRight: 60 } } });
+  app.begin(236);
+  app.end();
+  assert.deepEqual(app.previewBounds(), { left: 20, right: 260 });
+});
+
+test('custom preview retains outer seekbar width argument', () => {
+  const widths = [];
+  const app = setup({
+    props: { sliderContainerStyle: { marginLeft: 20, marginRight: 60 }, renderAboveThumbComponent: (_scrubbing, _time, width) => widths.push(width) },
+  });
+  app.slider.render();
+  assert.equal(widths.at(-1), 1000);
 });
 
 test('RTL reverses click mapping and thumb travel together', () => {
