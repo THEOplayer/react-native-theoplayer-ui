@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## [Unreleased]
+
+### Fixed
+
+- Fixed the buffering indicator remaining visible after playback ends or pauses, or reappearing after playback ends or fails.
+
 ## 0.23.5
 
 ### 🐛 Issues
