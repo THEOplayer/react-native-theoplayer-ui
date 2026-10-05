@@ -1,5 +1,12 @@
 # @theoplayer/react-native-ui
 
+## 0.23.6
+
+### 🐛 Issues
+
+- Fixed seekbar clicks and dragging selecting a different time than an edge-to-edge time preview, especially on long streams.
+- Fixed the buffering indicator remaining visible after playback ends or pauses, or reappearing after playback ends or fails.
+
 ## [Unreleased]
 
 ### Fixed
