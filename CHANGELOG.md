@@ -1,5 +1,11 @@
 # @theoplayer/react-native-ui
 
+## [Unreleased]
+
+### Fixed
+
+- Fixed seekbar clicks and dragging selecting a different time than an edge-to-edge time preview, especially on long streams.
+
 ## 0.23.4
 
 ### 🐛 Issues

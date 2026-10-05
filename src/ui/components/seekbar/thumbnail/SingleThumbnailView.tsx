@@ -43,7 +43,6 @@ export function SingleThumbnailView(props: ThumbnailViewProps) {
   }
 
   const { currentTime, seekBarWidth } = props;
-  const marginHorizontal = 8;
   const normalizedDuration = isNaN(duration) || !isFinite(duration) ? 0 : Math.max(0, duration);
   const seekableRange = {
     start: seekable.length > 0 ? seekable[0].start : 0,
@@ -54,14 +53,14 @@ export function SingleThumbnailView(props: ThumbnailViewProps) {
   const range = seekableRange.end - seekableRange.start;
   const offset = range ? (seekBarWidth * (currentTime - seekableRange.start)) / range : 0;
   let left = -0.5 * thumbnailSize;
-  if (offset + marginHorizontal < 0.5 * thumbnailSize) {
-    left = -offset - marginHorizontal;
-  } else if (offset - marginHorizontal > seekBarWidth - 0.5 * thumbnailSize) {
-    left = -offset + marginHorizontal + seekBarWidth - thumbnailSize;
+  if (offset < 0.5 * thumbnailSize) {
+    left = -offset;
+  } else if (offset > seekBarWidth - 0.5 * thumbnailSize) {
+    left = -offset + seekBarWidth - thumbnailSize;
   }
 
   return (
-    <View style={{ left, marginHorizontal }}>
+    <View style={{ left }}>
       <ThumbnailView thumbnailTrack={thumbnailTrack} duration={player.duration} time={currentTime} size={thumbnailSize} showTimeLabel={false} />
     </View>
   );

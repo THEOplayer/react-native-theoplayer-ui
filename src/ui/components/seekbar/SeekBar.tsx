@@ -170,7 +170,7 @@ export const SeekBar = (props: SeekBarProps) => {
           disabled={disabled}
           minimumValue={normalizedTime(seekableRange.start)}
           maximumValue={normalizedTime(seekableRange.end)}
-          containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
+          containerStyle={props.sliderContainerStyle}
           minimumTrackStyle={props.sliderMinimumTrackStyle ?? {}}
           maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
           step={1000}
@@ -181,8 +181,14 @@ export const SeekBar = (props: SeekBarProps) => {
           value={sliderTime}
           minimumTrackTintColor={theme.colors.seekBarMinimum}
           maximumTrackTintColor={theme.colors.seekBarMaximum}
-          thumbTintColor={theme.colors.seekBarDot}
-          thumbStyle={StyleSheet.flatten(props.thumbStyle)}
+          renderThumbComponent={() => (
+            // The slider subtracts the measured thumb width from its travel range. This zero-width
+            // wrapper keeps pointer-to-time mapping edge-to-edge while centering the visible thumb,
+            // so thumb styling cannot introduce an offset relative to a full-width time preview.
+            <View style={styles.thumbAnchor}>
+              <View style={[styles.thumb, { backgroundColor: theme.colors.seekBarDot }, props.thumbStyle]} />
+            </View>
+          )}
           thumbTouchSize={props.thumbTouchSize}
           renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
           trackMarks={chapterMarkerTimes}
@@ -195,3 +201,15 @@ export const SeekBar = (props: SeekBarProps) => {
 function normalizedTime(time: number): number {
   return isNaN(time) || !isFinite(time) ? 0 : Math.max(0, time);
 }
+
+const styles = StyleSheet.create({
+  thumbAnchor: {
+    width: 0,
+    alignItems: 'center',
+  },
+  thumb: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+  },
+});
