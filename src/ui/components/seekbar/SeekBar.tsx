@@ -76,6 +76,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const { onScrubbing, renderAboveThumbComponent: customRenderAboveThumbComponent } = props;
   const { player, style: theme, adInProgress } = useContext(PlayerContext);
   const [width, setWidth] = useState(0);
+  const [trackWidth, setTrackWidth] = useState(0);
   const [seekTarget, setSeekTarget] = useState<number | undefined>(undefined);
   const duration = useDuration();
   const seekable = useSeekable();
@@ -144,7 +145,7 @@ export const SeekBar = (props: SeekBarProps) => {
     if (customRenderAboveThumbComponent) {
       return customRenderAboveThumbComponent(isScrubbing, value, width);
     }
-    return renderThumbnailView(isScrubbing, value, width);
+    return renderThumbnailView(isScrubbing, value, trackWidth);
   };
 
   /**
@@ -166,27 +167,41 @@ export const SeekBar = (props: SeekBarProps) => {
         setWidth(event.nativeEvent.layout.width);
       }}>
       <SeekBarTouchHandler>
-        <Slider
-          disabled={disabled}
-          minimumValue={normalizedTime(seekableRange.start)}
-          maximumValue={normalizedTime(seekableRange.end)}
-          containerStyle={props.sliderContainerStyle ?? { marginHorizontal: 8 }}
-          minimumTrackStyle={props.sliderMinimumTrackStyle ?? {}}
-          maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
-          step={1000}
-          renderAboveThumbComponent={renderAboveThumbComponent}
-          onSlidingStart={onSlidingStart}
-          onValueChange={onSlidingValueChange}
-          onSlidingComplete={onSlidingComplete}
-          value={sliderTime}
-          minimumTrackTintColor={theme.colors.seekBarMinimum}
-          maximumTrackTintColor={theme.colors.seekBarMaximum}
-          thumbTintColor={theme.colors.seekBarDot}
-          thumbStyle={StyleSheet.flatten(props.thumbStyle)}
-          thumbTouchSize={props.thumbTouchSize}
-          renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
-          trackMarks={chapterMarkerTimes}
-        />
+        <View style={[styles.sliderContainer, props.sliderContainerStyle]}>
+          <View
+            style={styles.slider}
+            onLayout={(event: LayoutChangeEvent) => {
+              setTrackWidth(event.nativeEvent.layout.width);
+            }}>
+            <Slider
+              disabled={disabled}
+              minimumValue={normalizedTime(seekableRange.start)}
+              maximumValue={normalizedTime(seekableRange.end)}
+              containerStyle={styles.slider}
+              minimumTrackStyle={props.sliderMinimumTrackStyle ?? {}}
+              maximumTrackStyle={props.sliderMaximumTrackStyle ?? {}}
+              step={1000}
+              renderAboveThumbComponent={renderAboveThumbComponent}
+              onSlidingStart={onSlidingStart}
+              onValueChange={onSlidingValueChange}
+              onSlidingComplete={onSlidingComplete}
+              value={sliderTime}
+              minimumTrackTintColor={theme.colors.seekBarMinimum}
+              maximumTrackTintColor={theme.colors.seekBarMaximum}
+              renderThumbComponent={() => (
+                // The slider subtracts the measured thumb width from its travel range. This zero-width
+                // wrapper keeps pointer-to-time mapping edge-to-edge while centering the visible thumb,
+                // so thumb styling cannot introduce an offset relative to a full-width time preview.
+                <View style={styles.thumbAnchor}>
+                  <View style={[styles.thumb, { backgroundColor: theme.colors.seekBarDot }, props.thumbStyle]} />
+                </View>
+              )}
+              thumbTouchSize={props.thumbTouchSize}
+              renderTrackMarkComponent={chapterMarkerTimes.length ? props.chapterMarkers : undefined}
+              trackMarks={chapterMarkerTimes}
+            />
+          </View>
+        </View>
       </SeekBarTouchHandler>
     </View>
   );
@@ -195,3 +210,21 @@ export const SeekBar = (props: SeekBarProps) => {
 function normalizedTime(time: number): number {
   return isNaN(time) || !isFinite(time) ? 0 : Math.max(0, time);
 }
+
+const styles = StyleSheet.create({
+  sliderContainer: {
+    height: 40,
+  },
+  slider: {
+    flex: 1,
+  },
+  thumbAnchor: {
+    width: 0,
+    alignItems: 'center',
+  },
+  thumb: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+  },
+});
