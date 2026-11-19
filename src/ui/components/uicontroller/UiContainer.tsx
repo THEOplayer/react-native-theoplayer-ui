@@ -183,8 +183,6 @@ export const AD_UI_BOTTOM_CONTAINER_STYLE: ViewStyle = BOTTOM_UI_CONTAINER_STYLE
 
 const WEB_POINTER_MOVE_THROTTLE = 500;
 
-const PASS_THROUGH_TAPS_TO_PLAYER = Platform.OS === 'web' || Platform.OS === 'android';
-
 /**
  * A component that does all the coordination between UI components.
  * - It provides all UI components with the PlayerContext, so they can access the styling and player.
@@ -389,7 +387,7 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
     }
   }, [adInProgress, uiVisible_, doFadeOut_, onUserAction_]);
 
-  const passThrough = usePlayerViewTap(player, onViewTap_, PASS_THROUGH_TAPS_TO_PLAYER);
+  const passThrough = usePlayerViewTap(player, onViewTap_);
 
   // Expose onUserAction_ to parent components via ref
   useImperativeHandle(

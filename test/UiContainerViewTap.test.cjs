@@ -210,21 +210,26 @@ test('web: a view tap before playback started does not toggle the UI', () => {
   assert.equal(ui.uiVisible(), true);
 });
 
-test('Android: a view tap hides the visible UI and shows it again on the next tap', () => {
-  const ui = setup({ OS: 'android' });
-  assert.equal(ui.container().props.pointerEvents, 'box-none');
-  startPlayback(ui);
-  ui.emit({ type: 'viewtap' });
-  assert.equal(ui.uiVisible(), false);
-  ui.emit({ type: 'viewtap' });
-  assert.equal(ui.uiVisible(), true);
+test('Android and iOS: a view tap hides the visible UI and shows it again on the next tap', () => {
+  for (const OS of ['android', 'ios']) {
+    const ui = setup({ OS });
+    assert.equal(ui.container().props.pointerEvents, 'box-none');
+    assert.equal(ui.background().props.pointerEvents, 'none');
+    startPlayback(ui);
+    ui.emit({ type: 'viewtap' });
+    assert.equal(ui.uiVisible(), false);
+    ui.emit({ type: 'viewtap' });
+    assert.equal(ui.uiVisible(), true);
+  }
 });
 
-test('iOS keeps catching taps on the UI', () => {
-  const ui = setup({ OS: 'ios' });
-  assert.equal(ui.container().props.pointerEvents, 'auto');
-  assert.equal(ui.background().props.pointerEvents, 'auto');
-  assert.equal(ui.player.listenerCount('viewtap'), 0);
+test('Android and iOS: without the view tap event the UI keeps catching taps', () => {
+  for (const OS of ['android', 'ios']) {
+    const ui = setup({ OS, viewTap: false });
+    assert.equal(ui.container().props.pointerEvents, 'auto');
+    assert.equal(ui.background().props.pointerEvents, 'auto');
+    assert.equal(ui.player.listenerCount('viewtap'), 0);
+  }
 });
 
 test('web: without the view tap event the UI keeps catching taps', () => {
