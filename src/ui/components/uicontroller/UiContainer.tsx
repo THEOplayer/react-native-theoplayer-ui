@@ -183,7 +183,7 @@ export const AD_UI_BOTTOM_CONTAINER_STYLE: ViewStyle = BOTTOM_UI_CONTAINER_STYLE
 
 const WEB_POINTER_MOVE_THROTTLE = 500;
 
-const PASS_THROUGH_TAPS_TO_PLAYER = Platform.OS === 'web';
+const PASS_THROUGH_TAPS_TO_PLAYER = Platform.OS === 'web' || Platform.OS === 'android';
 
 /**
  * A component that does all the coordination between UI components.
