@@ -11,6 +11,7 @@ import { useError } from '../../hooks/useError';
 import { type Locale, defaultLocale } from '../util/Locale';
 import { useWebMouseEvents } from '../../hooks/useWebMouseEvents';
 import { useThrottledCallback } from '../../hooks/useThrottledCallback';
+import { usePlayerViewTap } from '../../hooks/usePlayerViewTap';
 
 export interface UiContainerProps {
   /**
@@ -372,6 +373,22 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
     fadeInUI_();
   }, [fadeInUI_, didPlay]);
 
+  /**
+   * Toggle the UI when the player view itself is tapped, while the UI lets taps through to the player.
+   */
+  const onViewTap_ = useCallback(() => {
+    if (adInProgress) {
+      return;
+    }
+    if (uiVisible_) {
+      doFadeOut_();
+    } else {
+      onUserAction_();
+    }
+  }, [adInProgress, uiVisible_, doFadeOut_, onUserAction_]);
+
+  const passThrough = usePlayerViewTap(player, onViewTap_);
+
   // Expose onUserAction_ to parent components via ref
   useImperativeHandle(
     ref,
@@ -386,7 +403,7 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
    * If an ad is playing, the UI should pass through all pointer events ("box-none") in order for ad clickThrough to work.
    * Throttle the callback avoids hammering the fade-in animation.
    */
-  useWebMouseEvents('#theoplayer-root-container', useThrottledCallback(onUserAction_, WEB_POINTER_MOVE_THROTTLE), doFadeOut_);
+  useWebMouseEvents('#theoplayer-root-container', useThrottledCallback(onUserAction_, WEB_POINTER_MOVE_THROTTLE), doFadeOut_, passThrough);
 
   const combinedUiContainerStyle = [UI_CONTAINER_STYLE, props.style];
 
@@ -405,77 +422,78 @@ export const UiContainer = forwardRef<UiContainerRef, UiContainerProps>((props, 
   const hasUIComponents = props.top || props.center || props.bottom;
   const hasAdUIComponents = props.adTop || props.adCenter || props.adBottom;
   const showUIBackground = (!adInProgress && hasUIComponents) || (adInProgress && hasAdUIComponents);
+  const uiPointerEvents = adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only';
 
   return (
     <PlayerContext.Provider value={{ player, style: props.theme, ui, adInProgress, locale: combinedLocale }}>
       <ErrorGate>
-      {/* The View behind the UI, that is always visible. Typically contains a spinner to indicate buffering. */}
-      <View style={FULLSCREEN_CENTER_STYLE} pointerEvents={'none'}>
-        {props.behind}
-      </View>
+        {/* The View behind the UI, that is always visible. Typically contains a spinner to indicate buffering. */}
+        <View style={FULLSCREEN_CENTER_STYLE} pointerEvents={'none'}>
+          {props.behind}
+        </View>
 
-      {/* The UI Container. */}
-      {/* - Enable onTouchMove to make sure keeps visible while scrubbing the slider. */}
-      {/* - Enable tap/click to force-fully fade-in the UI. */}
-      {/* - Disable tap/click when ad is in progress to allow clickThrough. */}
-      <Animated.View
-        style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
-        onTouchMove={onUserAction_}
-        onTouchEnd={onUserAction_}
-        pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}>
-        {uiVisible_ && (
-          <>
-            {/* The UI background. */}
-            {/* - Enable tap/click to force-fully fade-out the UI when it is visible. */}
-            {/* - Disable tap/click when ad is in progress to allow clickThrough. */}
-            {/* - Don't show when all UI slots are empty. */}
-            {showUIBackground && (
-              <View
-                style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]}
-                // become responder on the start of a touch or mouse click
-                onStartShouldSetResponder={() => true}
-                // at the end of the touch or mouse click, fade-out UI
-                onResponderRelease={doFadeOut_}
-                pointerEvents={adInProgress ? 'box-none' : uiVisible_ ? 'auto' : 'box-only'}
-              />
-            )}
+        {/* The UI Container. */}
+        {/* - Enable onTouchMove to make sure keeps visible while scrubbing the slider. */}
+        {/* - Enable tap/click to force-fully fade-in the UI. */}
+        {/* - Disable tap/click when ad is in progress to allow clickThrough. */}
+        <Animated.View
+          style={[combinedUiContainerStyle, { opacity: fadeAnimation }]}
+          onTouchMove={onUserAction_}
+          onTouchEnd={onUserAction_}
+          pointerEvents={passThrough ? 'box-none' : uiPointerEvents}>
+          {uiVisible_ && (
+            <>
+              {/* The UI background. */}
+              {/* - Enable tap/click to force-fully fade-out the UI when it is visible. */}
+              {/* - Disable tap/click when ad is in progress to allow clickThrough. */}
+              {/* - Don't show when all UI slots are empty. */}
+              {showUIBackground && (
+                <View
+                  style={[combinedUiContainerStyle, { backgroundColor: props.theme.colors.uiBackground }]}
+                  // become responder on the start of a touch or mouse click
+                  onStartShouldSetResponder={() => true}
+                  // at the end of the touch or mouse click, fade-out UI
+                  onResponderRelease={doFadeOut_}
+                  pointerEvents={passThrough ? 'none' : uiPointerEvents}
+                />
+              )}
 
-            {/* The Settings Menu */}
-            {currentMenu !== undefined && <View style={[combinedUiContainerStyle]}>{currentMenu}</View>}
+              {/* The Settings Menu */}
+              {currentMenu !== undefined && <View style={[combinedUiContainerStyle]}>{currentMenu}</View>}
 
-            {/* The content UI */}
-            {/* - Hide while ad break is in progress. */}
-            {currentMenu === undefined && !adInProgress && (
-              <>
-                {didPlay && (
-                  <View style={[TOP_UI_CONTAINER_STYLE, props.topStyle]} pointerEvents={'box-none'}>
-                    {props.top}
+              {/* The content UI */}
+              {/* - Hide while ad break is in progress. */}
+              {currentMenu === undefined && !adInProgress && (
+                <>
+                  {didPlay && (
+                    <View style={[TOP_UI_CONTAINER_STYLE, props.topStyle]} pointerEvents={'box-none'}>
+                      {props.top}
+                    </View>
+                  )}
+                  <View style={[CENTER_UI_CONTAINER_STYLE, props.centerStyle]} pointerEvents={'box-none'}>
+                    {props.center}
                   </View>
-                )}
-                <View style={[CENTER_UI_CONTAINER_STYLE, props.centerStyle]} pointerEvents={'box-none'}>
-                  {props.center}
-                </View>
-                {didPlay && (
-                  <View style={[BOTTOM_UI_CONTAINER_STYLE, props.bottomStyle]} pointerEvents={'box-none'}>
-                    {props.bottom}
-                  </View>
-                )}
-                {props.children}
-              </>
-            )}
+                  {didPlay && (
+                    <View style={[BOTTOM_UI_CONTAINER_STYLE, props.bottomStyle]} pointerEvents={'box-none'}>
+                      {props.bottom}
+                    </View>
+                  )}
+                  {props.children}
+                </>
+              )}
 
-            {/* The Ad UI */}
-            {/* - Show while ad break is in progress. */}
-            {currentMenu === undefined && adInProgress && (
-              <>
-                <View style={[AD_UI_TOP_CONTAINER_STYLE, props.adTopStyle]}>{props.adTop}</View>
-                <View style={[AD_UI_CENTER_CONTAINER_STYLE, props.adCenterStyle]}>{props.adCenter}</View>
-                <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, props.adBottomStyle]}>{props.adBottom}</View>
-              </>
-            )}
-          </>
-        )}
-      </Animated.View>
+              {/* The Ad UI */}
+              {/* - Show while ad break is in progress. */}
+              {currentMenu === undefined && adInProgress && (
+                <>
+                  <View style={[AD_UI_TOP_CONTAINER_STYLE, props.adTopStyle]}>{props.adTop}</View>
+                  <View style={[AD_UI_CENTER_CONTAINER_STYLE, props.adCenterStyle]}>{props.adCenter}</View>
+                  <View style={[AD_UI_BOTTOM_CONTAINER_STYLE, props.adBottomStyle]}>{props.adBottom}</View>
+                </>
+              )}
+            </>
+          )}
+        </Animated.View>
       </ErrorGate>
     </PlayerContext.Provider>
   );
